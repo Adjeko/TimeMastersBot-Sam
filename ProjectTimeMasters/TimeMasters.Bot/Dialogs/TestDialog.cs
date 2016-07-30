@@ -13,7 +13,7 @@ namespace TimeMasters.Bot.Dialogs
     public class TestDialog : LuisDialog<object>
     {
 
-        [LuisIntent("")]
+        [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
             string message = $"Sorry I did not understand: " + string.Join(", ", result.Intents.Select(i => i.Intent));
