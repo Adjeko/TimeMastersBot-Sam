@@ -10,6 +10,7 @@ using System.Web.UI.WebControls;
 using TimeMasters.PortableClassLibrary.Helpers;
 using Xamarin.Forms;
 
+
 namespace TimeMasters.PortableClassLibrary.Translator
 {
     public class AdmAuthentication
@@ -19,9 +20,6 @@ namespace TimeMasters.PortableClassLibrary.Translator
         private string _clientSecret;
         private readonly string _request;
         private AdmAccessToken _token;
-        //Access token expires every 10 minutes. Renew it every 9 minutes only.
-        private Timer _accessTokenTimer;
-        private const int RefreshTokenDuration = 9;
         public AdmAuthentication(string clientId, string clientSecret)
         {
             this._clientId = clientId;
@@ -31,14 +29,12 @@ namespace TimeMasters.PortableClassLibrary.Translator
                 $"grant_type=client_credentials&client_id={HttpUtility.UrlEncode(clientId)}&client_secret={HttpUtility.UrlEncode(clientSecret)}&scope=http://api.microsofttranslator.com";
             Task<AdmAccessToken> tokenTask = Task.Run(() => this.HttpPost(DatamarketAccessUri, this._request));
             this._token = tokenTask.Result;
-            //renew the token every specified minutes
-            _accessTokenTimer = new Timer(new TimerCallback(OnTokenExpiredCallback), this, TimeSpan.FromMinutes(RefreshTokenDuration), TimeSpan.FromMilliseconds(-1));
         }
         public AdmAccessToken GetAccessToken()
         {
             return this._token;
         }
-        private async void RenewAccessToken()
+        public async void RenewAccessToken()
         {
             AdmAccessToken newAccessToken = await HttpPost(DatamarketAccessUri, this._request);
             //swap the new token with old one
@@ -46,22 +42,7 @@ namespace TimeMasters.PortableClassLibrary.Translator
             this._token = newAccessToken;
             //Console.WriteLine(string.Format("Renewed token for user: {0} is: {1}", this.clientId, this.token.access_token));
         }
-        private void OnTokenExpiredCallback(object state)
-        {
-            try
-            {
-                RenewAccessToken();
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine(string.Format("Failed renewing access token. Details: {0}", ex.Message));
-            }
-            finally
-            {
-                _accessTokenTimer.Dispose();
-                _accessTokenTimer = new Timer(new TimerCallback(OnTokenExpiredCallback), this, TimeSpan.FromMinutes(RefreshTokenDuration), TimeSpan.FromMilliseconds(-1));
-            }
-        }
+
         private async Task<AdmAccessToken> HttpPost(string DatamarketAccessUri, string requestDetails)
         {
             //Prepare OAuth request 

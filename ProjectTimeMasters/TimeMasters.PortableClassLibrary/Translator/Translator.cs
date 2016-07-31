@@ -38,8 +38,7 @@ namespace TimeMasters.PortableClassLibrary.Translator
             }
             catch (Exception)
             {
-
-                throw;
+                return "Something bad happened during translation";
             }
 
             return "Something bad happened during translation";
@@ -48,6 +47,11 @@ namespace TimeMasters.PortableClassLibrary.Translator
         public static string Translate(string text, Languages fromLanguage, Languages toLanguage)
         {
             return "";
+        }
+
+        public static void RenewAccessToken()
+        {
+            admAuth.RenewAccessToken();
         }
     }
 }
