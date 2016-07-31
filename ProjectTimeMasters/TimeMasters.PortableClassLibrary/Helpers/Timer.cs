@@ -9,9 +9,9 @@ namespace TimeMasters.PortableClassLibrary.Helpers
     internal delegate void TimerCallback(object state);
     internal sealed class Timer : CancellationTokenSource, IDisposable
     {
-        internal Timer(TimerCallback callback, object state, int dueTime, int period)
+        internal Timer(TimerCallback callback, object state, TimeSpan dueTime, TimeSpan period)
         {
-            Contract.Assert(period == -1, "This stub implementation only supports dueTime.");
+            Contract.Assert(period.Minutes == -1, "This stub implementation only supports dueTime.");
             Task.Delay(dueTime, Token).ContinueWith((t, s) =>
             {
                 var tuple = (Tuple<TimerCallback, object>) s;
