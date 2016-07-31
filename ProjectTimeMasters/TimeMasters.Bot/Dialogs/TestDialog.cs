@@ -22,7 +22,7 @@ namespace TimeMasters.Bot.Dialogs
         }
 
         [LuisIntent("addCalenderEntry")]
-        public async Task addEntry(IDialogContext context, LuisResult result)
+        public async Task AddEntry(IDialogContext context, LuisResult result)
         {
             string message = $"I've added ";
 

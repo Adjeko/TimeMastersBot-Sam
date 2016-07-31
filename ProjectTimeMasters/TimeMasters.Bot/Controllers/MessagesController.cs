@@ -9,6 +9,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using Newtonsoft.Json;
 using TimeMasters.Bot.Dialogs;
+using TimeMasters.PortableClassLibrary.Translator;
 
 namespace TimeMasters.Bot
 {
@@ -30,6 +31,7 @@ namespace TimeMasters.Bot
                 // return our reply to the user
                 Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
                 await connector.Conversations.ReplyToActivityAsync(reply);*/
+                activity.Text = Translator.Translate(activity.Text, Languages.English);
 
                 await Conversation.SendAsync(activity, () => new TestDialog());
             }
