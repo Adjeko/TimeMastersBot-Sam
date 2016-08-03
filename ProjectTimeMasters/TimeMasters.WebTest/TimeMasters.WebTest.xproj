@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>d259c4dc-71af-4ffe-9464-4e0fff5b31f7</ProjectGuid>
+    <ProjectGuid>254c11db-a26a-46f5-85cc-dd9fa51f375f</ProjectGuid>
     <RootNamespace>TimeMasters.WebTest</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>

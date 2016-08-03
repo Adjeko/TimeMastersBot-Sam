@@ -19,6 +19,12 @@ namespace TimeMasters.WebTest
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+            if (env.IsDevelopment())
+            {
+                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
+                builder.AddApplicationInsightsSettings(developerMode: true);
+            }
             Configuration = builder.Build();
         }
 
@@ -28,6 +34,8 @@ namespace TimeMasters.WebTest
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddApplicationInsightsTelemetry(Configuration);
+
             services.AddMvc();
         }
 
@@ -36,6 +44,8 @@ namespace TimeMasters.WebTest
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
@@ -46,6 +56,8 @@ namespace TimeMasters.WebTest
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseStaticFiles();
 
