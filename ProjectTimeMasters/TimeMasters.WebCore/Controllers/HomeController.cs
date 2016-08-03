@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TimeMasters.WebTest.Controllers
+namespace TimeMasters.WebCore.Controllers
 {
     public class HomeController : Controller
     {
