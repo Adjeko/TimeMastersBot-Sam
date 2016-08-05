@@ -4,8 +4,12 @@ namespace TimeMasters.Web.Models.Logging
 {
     public class Events
     {
-        public Exception Exception { get; set; }
-        public ExceptionWrapper ExceptionWrapper { get; set; }
+        public int ID { get; set; }
+        public int ExceptionID { get; set; }
+        public int ExceptionWrapperID { get; set; }
+
+        public virtual Exception Exception { get; set; }
+        public virtual ExceptionWrapper ExceptionWrapper { get; set; }
 
         public string Level { get; set; }
         public string Logger { get; set; }

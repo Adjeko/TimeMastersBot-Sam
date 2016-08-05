@@ -2,6 +2,7 @@
 {
     public class MetroLogVersion
     {
+        public int ID { get; set; }
         public int Build { get; set; }
         public int Major { get; set; }
         public int MajorRevision { get; set; }
