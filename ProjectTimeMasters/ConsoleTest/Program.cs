@@ -38,6 +38,8 @@ namespace ConsoleTest
             log.Trace("Trace Test");
             log.Info("Info", new Exception("Exception info test"));
 
+            log.Error("Error Message !!!", "Help", "me", "pls", 5);
+
             Console.WriteLine("Logged dat shit");
             Console.ReadLine();
         }
