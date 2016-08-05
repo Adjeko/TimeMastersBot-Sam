@@ -9,5 +9,10 @@
 
         public virtual Environment Environment { get; set; }
         public virtual Events Events { get; set; }
+
+        public Log()
+        {
+
+        }
     }
 }

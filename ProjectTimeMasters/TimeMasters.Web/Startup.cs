@@ -83,6 +83,8 @@ namespace TimeMasters.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            TimeMasters.Web.Models.Logging.SeedData.Initialize(app.ApplicationServices);
         }
     }
 }

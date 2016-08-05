@@ -7,6 +7,7 @@ namespace TimeMasters.Web.Models.Logging
         public int ID { get; set; }
         public int ExceptionID { get; set; }
         public int ExceptionWrapperID { get; set; }
+        public int LogID { get; set; }
 
         public virtual Exception Exception { get; set; }
         public virtual ExceptionWrapper ExceptionWrapper { get; set; }
@@ -16,5 +17,11 @@ namespace TimeMasters.Web.Models.Logging
         public string Message { get; set; }
         public int SequenceID { get; set; }
         public DateTime TimeStamp { get; set; }
+        public virtual Log Log { get; set; }
+
+        public Events()
+        {
+
+        }
     }
 }
