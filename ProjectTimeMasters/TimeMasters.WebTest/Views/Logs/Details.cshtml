@@ -1,4 +1,4 @@
-@model TimeMasters.WebTest.Models.Log
+@model TimeMasters.WebTest.Models.Logging.Log
 
 @{
     ViewData["Title"] = "Details";
@@ -11,16 +11,16 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Message)
+            @Html.DisplayNameFor(model => model.EnvironmentID)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Message)
+            @Html.DisplayFor(model => model.EnvironmentID)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.TimeStamp)
+            @Html.DisplayNameFor(model => model.EventsID)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.TimeStamp)
+            @Html.DisplayFor(model => model.EventsID)
         </dd>
     </dl>
 </div>

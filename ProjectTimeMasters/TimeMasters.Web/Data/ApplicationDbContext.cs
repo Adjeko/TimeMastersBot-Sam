@@ -25,10 +25,10 @@ namespace TimeMasters.Web.Data
         }
 
         public DbSet<Log> Log { get; set; }
-        /*public DbSet<TimeMasters.Web.Models.Logging.Environment> Environment { get; set; }
+        public DbSet<TimeMasters.Web.Models.Logging.Environment> Environment { get; set; }
         public DbSet<Events> Events { get; set; }
         public DbSet<MetroLogVersion> MetroLogVersion { get; set; }
         public DbSet<TimeMasters.Web.Models.Logging.Exception> Exception { get; set; }
-        public DbSet<ExceptionWrapper> ExceptionWrapper { get; set; }*/
+        public DbSet<ExceptionWrapper> ExceptionWrapper { get; set; }
     }
 }

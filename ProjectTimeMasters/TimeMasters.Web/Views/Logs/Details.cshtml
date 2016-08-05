@@ -1,0 +1,168 @@
+@model TimeMasters.Web.Models.Logging.Log
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Log</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.FxProfile)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.FxProfile)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.IsDebugging)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.IsDebugging)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.MachineName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.MachineName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.MetroLogVersion.Build)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.MetroLogVersion.Build)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.MetroLogVersion.Major)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.MetroLogVersion.Major)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.MetroLogVersion.MajorRevision)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.MetroLogVersion.MajorRevision)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.MetroLogVersion.Minor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.MetroLogVersion.Minor)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.MetroLogVersion.MinorRevision)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.MetroLogVersion.MinorRevision)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.MetroLogVersion.Revision)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.MetroLogVersion.Revision)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Environment.SessionId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Environment.SessionId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Exception.Data)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Exception.Data)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Exception.HelpLint)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Exception.HelpLint)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Exception.HResult)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Exception.HResult)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Exception.InnerException)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Exception.InnerException)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Exception.Message)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Exception.Message)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Exception.Source)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Exception.Source)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Exception.StackTrace)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Exception.StackTrace)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Exception.TargetSite)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Exception.TargetSite)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.ExceptionWrapper.AsString)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.ExceptionWrapper.AsString)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.ExceptionWrapper.Hresult)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.ExceptionWrapper.TypeName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Level)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Level)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Logger)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Logger)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.Message)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.Message)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.SequenceID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.SequenceID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Events.TimeStamp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Events.TimeStamp)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

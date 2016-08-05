@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using TimeMasters.WebTest.Data;
+using TimeMasters.Web.Data;
 
-namespace TimeMasters.WebTest.Data.Migrations
+namespace TimeMasters.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160805143910_Initial")]
+    [Migration("20160805180610_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,7 +124,7 @@ namespace TimeMasters.WebTest.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("TimeMasters.WebTest.Models.ApplicationUser", b =>
+            modelBuilder.Entity("TimeMasters.Web.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id");
 
@@ -173,18 +173,141 @@ namespace TimeMasters.WebTest.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("TimeMasters.WebTest.Models.Log", b =>
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.Environment", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("FxProfile");
+
+                    b.Property<bool>("IsDebugging");
+
+                    b.Property<int>("LogID");
+
+                    b.Property<string>("MachineName");
+
+                    b.Property<string>("SessionId");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("LogID")
+                        .IsUnique();
+
+                    b.ToTable("Environment");
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.Events", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Level");
+
+                    b.Property<int>("LogID");
+
+                    b.Property<string>("Logger");
+
                     b.Property<string>("Message");
+
+                    b.Property<int>("SequenceID");
 
                     b.Property<DateTime>("TimeStamp");
 
                     b.HasKey("ID");
 
+                    b.HasIndex("LogID")
+                        .IsUnique();
+
+                    b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.Exception", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Data");
+
+                    b.Property<int>("EventsID");
+
+                    b.Property<string>("HResult");
+
+                    b.Property<string>("HelpLint");
+
+                    b.Property<string>("InnerException");
+
+                    b.Property<string>("Message");
+
+                    b.Property<string>("Source");
+
+                    b.Property<string>("StackTrace");
+
+                    b.Property<string>("TargetSite");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("EventsID")
+                        .IsUnique();
+
+                    b.ToTable("Exception");
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.ExceptionWrapper", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AsString");
+
+                    b.Property<int>("EventsID");
+
+                    b.Property<int>("Hresult");
+
+                    b.Property<string>("TypeName");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("EventsID")
+                        .IsUnique();
+
+                    b.ToTable("ExceptionWrapper");
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.Log", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.HasKey("ID");
+
                     b.ToTable("Log");
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.MetroLogVersion", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Build");
+
+                    b.Property<int>("EnvironmentID");
+
+                    b.Property<int>("Major");
+
+                    b.Property<int>("MajorRevision");
+
+                    b.Property<int>("Minor");
+
+                    b.Property<int>("MinorRevision");
+
+                    b.Property<int>("Revision");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("EnvironmentID")
+                        .IsUnique();
+
+                    b.ToTable("MetroLogVersion");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
@@ -197,7 +320,7 @@ namespace TimeMasters.WebTest.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("TimeMasters.WebTest.Models.ApplicationUser")
+                    b.HasOne("TimeMasters.Web.Models.ApplicationUser")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -205,7 +328,7 @@ namespace TimeMasters.WebTest.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("TimeMasters.WebTest.Models.ApplicationUser")
+                    b.HasOne("TimeMasters.Web.Models.ApplicationUser")
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -218,9 +341,49 @@ namespace TimeMasters.WebTest.Data.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TimeMasters.WebTest.Models.ApplicationUser")
+                    b.HasOne("TimeMasters.Web.Models.ApplicationUser")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.Environment", b =>
+                {
+                    b.HasOne("TimeMasters.Web.Models.Logging.Log", "Log")
+                        .WithOne("Environment")
+                        .HasForeignKey("TimeMasters.Web.Models.Logging.Environment", "LogID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.Events", b =>
+                {
+                    b.HasOne("TimeMasters.Web.Models.Logging.Log", "Log")
+                        .WithOne("Events")
+                        .HasForeignKey("TimeMasters.Web.Models.Logging.Events", "LogID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.Exception", b =>
+                {
+                    b.HasOne("TimeMasters.Web.Models.Logging.Events", "Events")
+                        .WithOne("Exception")
+                        .HasForeignKey("TimeMasters.Web.Models.Logging.Exception", "EventsID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.ExceptionWrapper", b =>
+                {
+                    b.HasOne("TimeMasters.Web.Models.Logging.Events", "Events")
+                        .WithOne("ExceptionWrapper")
+                        .HasForeignKey("TimeMasters.Web.Models.Logging.ExceptionWrapper", "EventsID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TimeMasters.Web.Models.Logging.MetroLogVersion", b =>
+                {
+                    b.HasOne("TimeMasters.Web.Models.Logging.Environment", "Environment")
+                        .WithOne("MetroLogVersion")
+                        .HasForeignKey("TimeMasters.Web.Models.Logging.MetroLogVersion", "EnvironmentID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }

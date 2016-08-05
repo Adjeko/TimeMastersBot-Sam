@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TimeMasters.WebTest.Models;
+using TimeMasters.WebTest.Models.Logging;
 
 namespace TimeMasters.WebTest.Data
 {

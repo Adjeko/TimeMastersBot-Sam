@@ -10,7 +10,7 @@
         public int Minor { get; set; }
         public int MinorRevision { get; set; }
         public int Revision { get; set; }
-        public virtual Environment Environment { get; set; }
+        public Environment Environment { get; set; }
 
 
         public MetroLogVersion()

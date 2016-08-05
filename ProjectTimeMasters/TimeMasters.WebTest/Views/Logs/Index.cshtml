@@ -1,4 +1,4 @@
-@model IEnumerable<TimeMasters.WebTest.Models.Log>
+@model IEnumerable<TimeMasters.WebTest.Models.Logging.Log>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,10 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Message)
+                @Html.DisplayNameFor(model => model.EnvironmentID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TimeStamp)
+                @Html.DisplayNameFor(model => model.EventsID)
             </th>
             <th></th>
         </tr>
@@ -25,10 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Message)
+                @Html.DisplayFor(modelItem => item.EnvironmentID)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TimeStamp)
+                @Html.DisplayFor(modelItem => item.EventsID)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

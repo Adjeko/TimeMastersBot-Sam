@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TimeMasters.WebTest.Data;
-using TimeMasters.WebTest.Models;
+using TimeMasters.WebTest.Models.Logging;
 
 namespace TimeMasters.WebTest.Controllers
 {
@@ -53,7 +53,7 @@ namespace TimeMasters.WebTest.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Message,TimeStamp")] Log log)
+        public async Task<IActionResult> Create([Bind("ID,EnvironmentID,EventsID")] Log log)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace TimeMasters.WebTest.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Message,TimeStamp")] Log log)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,EnvironmentID,EventsID")] Log log)
         {
             if (id != log.ID)
             {

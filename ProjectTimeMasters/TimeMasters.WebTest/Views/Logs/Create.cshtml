@@ -1,4 +1,4 @@
-@model TimeMasters.WebTest.Models.Log
+@model TimeMasters.WebTest.Models.Logging.Log
 
 @{
     ViewData["Title"] = "Create";
@@ -12,17 +12,17 @@
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="Message" class="col-md-2 control-label"></label>
+            <label asp-for="EnvironmentID" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Message" class="form-control" />
-                <span asp-validation-for="Message" class="text-danger" />
+                <input asp-for="EnvironmentID" class="form-control" />
+                <span asp-validation-for="EnvironmentID" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="TimeStamp" class="col-md-2 control-label"></label>
+            <label asp-for="EventsID" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="TimeStamp" class="form-control" />
-                <span asp-validation-for="TimeStamp" class="text-danger" />
+                <input asp-for="EventsID" class="form-control" />
+                <span asp-validation-for="EventsID" class="text-danger" />
             </div>
         </div>
         <div class="form-group">

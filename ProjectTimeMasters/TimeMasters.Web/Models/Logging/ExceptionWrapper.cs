@@ -7,7 +7,7 @@
         public string AsString { get; set; }
         public int Hresult { get; set; }
         public string TypeName { get; set; }
-        public virtual Events Events { get; set; }
+        public Events Events { get; set; }
 
         public ExceptionWrapper()
         {

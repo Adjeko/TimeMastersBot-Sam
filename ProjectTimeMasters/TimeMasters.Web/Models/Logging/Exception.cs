@@ -12,7 +12,7 @@
         public string Source { get; set; }
         public string StackTrace { get; set; }
         public string TargetSite { get; set; }
-        public virtual Events Events { get; set; }
+        public Events Events { get; set; }
 
         public Exception()
         {
