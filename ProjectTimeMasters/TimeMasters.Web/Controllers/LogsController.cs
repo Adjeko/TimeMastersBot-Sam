@@ -22,7 +22,17 @@ namespace TimeMasters.Web.Controllers
         // GET: Logs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Log.ToListAsync());
+            IEnumerable<Log> tmp = await _context.Log.ToListAsync();
+            foreach(Log l in tmp)
+            {
+                l.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == l.ID);
+                l.Environment.MetroLogVersion = await _context.MetroLogVersion.SingleOrDefaultAsync(m => m.EnvironmentID == l.Environment.ID);
+                l.Events = await _context.Events.SingleOrDefaultAsync(m => m.LogID == l.ID);
+                l.Events.Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == l.Events.ID);
+                l.Events.ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == l.Events.ID);
+            }
+
+            return View(tmp);
         }
 
         // GET: Logs/Details/5
@@ -38,6 +48,11 @@ namespace TimeMasters.Web.Controllers
             {
                 return NotFound();
             }
+            log.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == id);
+            log.Environment.MetroLogVersion = await _context.MetroLogVersion.SingleOrDefaultAsync(m => m.EnvironmentID == log.Environment.ID);
+            log.Events = await _context.Events.SingleOrDefaultAsync(m => m.LogID == id);
+            log.Events.Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == log.Events.ID);
+            log.Events.ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == log.Events.ID);
 
             return View(log);
         }
