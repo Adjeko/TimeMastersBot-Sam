@@ -16,20 +16,20 @@ namespace TimeMasters.Web.Controllers
 
         public LogsController(ApplicationDbContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: Logs
         public async Task<IActionResult> Index()
         {
             IEnumerable<Log> tmp = await _context.Log.ToListAsync();
-            foreach(Log l in tmp)
+            foreach (Log l in tmp)
             {
                 l.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == l.ID);
                 l.Environment.MetroLogVersion = await _context.MetroLogVersion.SingleOrDefaultAsync(m => m.EnvironmentID == l.Environment.ID);
-                l.Events = await _context.Events.SingleOrDefaultAsync(m => m.LogID == l.ID);
-                l.Events.Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == l.Events.ID);
-                l.Events.ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == l.Events.ID);
+                l.Events[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == l.ID);
+                l.Events[0].Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == l.Events[0].ID);
+                l.Events[0].ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == l.Events[0].ID);
             }
 
             return View(tmp);
@@ -50,9 +50,9 @@ namespace TimeMasters.Web.Controllers
             }
             log.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == id);
             log.Environment.MetroLogVersion = await _context.MetroLogVersion.SingleOrDefaultAsync(m => m.EnvironmentID == log.Environment.ID);
-            log.Events = await _context.Events.SingleOrDefaultAsync(m => m.LogID == id);
-            log.Events.Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == log.Events.ID);
-            log.Events.ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == log.Events.ID);
+            log.Events[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == id);
+            log.Events[0].Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == log.Events[0].ID);
+            log.Events[0].ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == log.Events[0].ID);
 
             return View(log);
         }
@@ -78,6 +78,62 @@ namespace TimeMasters.Web.Controllers
             }
             return View(log);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Send([FromBody] Log root)
+        {
+            //Log tmp = new Log();
+
+            //Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Log> ent = _context.Log.Add(tmp);
+            //await _context.SaveChangesAsync();
+
+            //Environment env = new Environment
+            //{
+            //    MachineName = root.Environment.MachineName,
+
+            //};
+
+            return new ObjectResult(root);
+        }
+
+        #region RECEIVING OBJECT
+        public class Rootobject
+        {
+            public Environment Environment { get; set; }
+            public Event[] Events { get; set; }
+        }
+
+        public class Environment
+        {
+            public string MachineName { get; set; }
+            public string SessionId { get; set; }
+            public string FxProfile { get; set; }
+            public bool IsDebugging { get; set; }
+            public Metrologversion MetroLogVersion { get; set; }
+        }
+
+        public class Metrologversion
+        {
+            public int Major { get; set; }
+            public int Minor { get; set; }
+            public int Build { get; set; }
+            public int Revision { get; set; }
+            public int MajorRevision { get; set; }
+            public int MinorRevision { get; set; }
+        }
+
+        public class Event
+        {
+            public int SequenceID { get; set; }
+            public string Level { get; set; }
+            public string Logger { get; set; }
+            public string Message { get; set; }
+            public DateTime TimeStamp { get; set; }
+            public object Exception { get; set; }
+            public object ExceptionWrapper { get; set; }
+        }
+        #endregion
+
 
         // GET: Logs/Edit/5
         public async Task<IActionResult> Edit(int? id)

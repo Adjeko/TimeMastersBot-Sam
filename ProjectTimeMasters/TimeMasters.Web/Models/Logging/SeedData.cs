@@ -18,7 +18,7 @@ namespace TimeMasters.Web.Models.Logging
                 {
                     return;
                 }
-
+/*
                 var logs = new List<Log>
                 {
                     new Log {},
@@ -54,8 +54,8 @@ namespace TimeMasters.Web.Models.Logging
 
                 var ex = new List<TimeMasters.Web.Models.Logging.Exception>
                 {
-                    new Exception {EventsID=1, Data="", HelpLint="", HResult="", InnerException="", Message="fuckedSomethingUpException", Source="yo mama", StackTrace="trace to yo mama", TargetSite="" },
-                    new Exception {EventsID=2, Data="", HelpLint="", HResult="", InnerException="", Message="FUCKEDException", Source="FUCK", StackTrace="trace to FUCK", TargetSite="" }
+                    new Exception {EventsID=1, Data=null, HelpLink=null, HResult=0, InnerException=null, Message="fuckedSomethingUpException", Source=null, StackTrace=null, TargetSite=null },
+                    new Exception {EventsID=2, Data=null, HelpLink=null, HResult=0, InnerException=null, Message="FUCKEDException", Source=null, StackTrace=null, TargetSite=null }
                 };
                 ex.ForEach(e => context.Exception.Add(e));
                 context.SaveChanges();
@@ -66,7 +66,7 @@ namespace TimeMasters.Web.Models.Logging
                     new ExceptionWrapper {EventsID=2, AsString="FUCKED", Hresult=2, TypeName="" },
                 };
                 exw.ForEach(e => context.ExceptionWrapper.Add(e));
-                context.SaveChanges();
+                context.SaveChanges();*/
             }
         }
     }

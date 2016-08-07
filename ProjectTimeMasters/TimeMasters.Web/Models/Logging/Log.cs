@@ -5,7 +5,7 @@
         public int ID { get; set; }
 
         public Environment Environment { get; set; }
-        public Events Events { get; set; }
+        public Events[] Events { get; set; }
 
         public Log()
         {
