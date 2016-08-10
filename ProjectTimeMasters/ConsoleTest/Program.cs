@@ -58,7 +58,8 @@ namespace ConsoleTest
                     
                 };
 
-                log.Info("Test", new CustomException(soex));
+
+                log.Info("Test", soex);
                 //log.Trace("sadads", soex);
 
                 Console.WriteLine("logged");
@@ -66,30 +67,6 @@ namespace ConsoleTest
             }
             Console.WriteLine("Logged dat shit");
             Console.ReadLine();
-        }
-    }
-
-    public class CustomException : Exception
-    {
-        new string Message { get; set; }
-        string StackTrace { get; set; }
-
-        public CustomException(string message) : base(message)
-        {
-            Message = message;
-            StackTrace = "";
-            Source = "";
-            HResult = 0;
-            HelpLink = "";
-        }
-
-        public CustomException(Exception ex) : base()
-        {
-            Message = ex.Message;
-            StackTrace = ex.StackTrace;
-            Source = ex.Source;
-            HResult = ex.HResult;
-            HelpLink = ex.HelpLink;
         }
     }
 }
