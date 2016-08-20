@@ -56,19 +56,6 @@ namespace TimeMasters.Web.Controllers
             log.Events.Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == log.Events.ID);
             log.Events.ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == log.Events.ID);
 
-            //List<Events> tmpEvents;
-            //if (log.Events != null)
-            //{
-            //    tmpEvents = log.Events.ToList();
-            //    tmpEvents[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == id);
-            //    tmpEvents[0].Exception =
-            //        await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
-            //    tmpEvents[0].ExceptionWrapper =
-            //        await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
-
-            //    log.Events = tmpEvents;
-            //}
-
             return View(log);
         }
 
@@ -109,7 +96,7 @@ namespace TimeMasters.Web.Controllers
                 Revision = root.Environment.MetroLogVersion.Revision
             };
 
-            TimeMasters.Web.Models.Logging.Environment env = new TimeMasters.Web.Models.Logging.Environment
+            Models.Logging.Environment env = new Models.Logging.Environment
             {
                 MachineName = root.Environment.MachineName,
                 FxProfile = root.Environment.FxProfile,
@@ -122,7 +109,7 @@ namespace TimeMasters.Web.Controllers
 
             string[] exString = root.Events.ElementAt(0).Exception.Message.Split('@');
 
-            TimeMasters.Web.Models.Logging.Exception ex = new TimeMasters.Web.Models.Logging.Exception
+            Models.Logging.Exception ex = new Models.Logging.Exception
             {
                 Message = exString[0],
                 Source = exString[1],
@@ -131,7 +118,7 @@ namespace TimeMasters.Web.Controllers
                 HResult = root.Events.ElementAt(0).Exception.HResult,
             };
 
-            TimeMasters.Web.Models.Logging.ExceptionWrapper exw = new TimeMasters.Web.Models.Logging.ExceptionWrapper
+            Models.Logging.ExceptionWrapper exw = new Models.Logging.ExceptionWrapper
             {
                 AsString = root.Events.ElementAt(0).ExceptionWrapper.AsString,
                 Hresult = root.Events.ElementAt(0).ExceptionWrapper.Hresult,

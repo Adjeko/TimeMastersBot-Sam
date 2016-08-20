@@ -47,11 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Logging\Environment.cs" />
-    <Compile Include="Logging\Events.cs" />
-    <Compile Include="Logging\ExceptionWrapper.cs" />
-    <Compile Include="Logging\Log.cs" />
-    <Compile Include="Logging\MetroLogVersion.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
