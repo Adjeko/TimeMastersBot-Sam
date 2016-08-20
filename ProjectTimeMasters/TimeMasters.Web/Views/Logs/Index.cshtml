@@ -1,7 +1,7 @@
 @model IEnumerable<TimeMasters.Web.Models.Logging.Log>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Logging";
 }
 
 <h2>Index</h2>
@@ -13,52 +13,54 @@
     <thead>
         <tr>
             <td>
-                @Html.DisplayNameFor(model => model.Events.ElementAt(0).SequenceID)
+                @Html.DisplayNameFor(model => model.Events.SequenceID)
             </td>
             <td>
-                @Html.DisplayNameFor(model => model.Events.ElementAt(0).TimeStamp)
+                @Html.DisplayNameFor(model => model.Events.TimeStamp)
             </td>
             <td>
-                @Html.DisplayNameFor(model => model.Events.ElementAt(0).Level)
+                @Html.DisplayNameFor(model => model.Events.Level)
             </td>
             <td>
-                @Html.DisplayNameFor(model => model.Events.ElementAt(0).Logger)
+                @Html.DisplayNameFor(model => model.Events.Logger)
             </td>
             <td>
-                @Html.DisplayNameFor(model => model.Events.ElementAt(0).Message)
+                @Html.DisplayNameFor(model => model.Events.Message)
             </td>
             <td>
-                Exception @Html.DisplayNameFor(model => model.Events.ElementAt(0).Exception.Message)
+                Exception @Html.DisplayNameFor(model => model.Events.Exception.Message)
             </td>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Events.ElementAt(0).SequenceID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Events.ElementAt(0).TimeStamp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Events.ElementAt(0).Level)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Events.ElementAt(0).Logger)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Events.ElementAt(0).Message)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Events.ElementAt(0).Exception.Message)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
+    if (item.Events != null) {
+         <tr>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Events.SequenceID)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Events.TimeStamp)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Events.Level)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Events.Logger)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Events.Message)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Events.Exception.Message)
+             </td>
+             <td>
+                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+             </td>
+         </tr>
+     }
 }
     </tbody>
 </table>

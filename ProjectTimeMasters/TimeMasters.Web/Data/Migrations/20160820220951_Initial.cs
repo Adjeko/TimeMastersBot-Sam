@@ -99,15 +99,12 @@ namespace TimeMasters.Web.Data.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Data = table.Column<string>(nullable: true),
                     EventsID = table.Column<int>(nullable: false),
-                    HResult = table.Column<string>(nullable: true),
-                    HelpLint = table.Column<string>(nullable: true),
-                    InnerException = table.Column<string>(nullable: true),
+                    HResult = table.Column<int>(nullable: false),
+                    HelpLink = table.Column<string>(nullable: true),
                     Message = table.Column<string>(nullable: true),
                     Source = table.Column<string>(nullable: true),
-                    StackTrace = table.Column<string>(nullable: true),
-                    TargetSite = table.Column<string>(nullable: true)
+                    StackTrace = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

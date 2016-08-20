@@ -7,7 +7,7 @@ namespace TimeMasters.Web.Models.Logging
         public int ID { get; set; }
 
         public Environment Environment { get; set; }
-        public ICollection<Events> Events { get; set; }
+        public Events Events { get; set; }
 
         public Log()
         {

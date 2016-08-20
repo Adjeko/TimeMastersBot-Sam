@@ -28,18 +28,9 @@ namespace TimeMasters.Web.Controllers
                 l.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == l.ID);
                 l.Environment.MetroLogVersion = await _context.MetroLogVersion.SingleOrDefaultAsync(m => m.EnvironmentID == l.Environment.ID);
 
-                List<Events> tmpEvents;
-                if (l.Events != null)
-                {
-                    tmpEvents = l.Events.ToList();
-                    tmpEvents[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == l.ID);
-                    tmpEvents[0].Exception =
-                        await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
-                    tmpEvents[0].ExceptionWrapper =
-                        await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
-
-                    l.Events = tmpEvents;
-                }   
+                l.Events = await _context.Events.SingleOrDefaultAsync(m => m.LogID == l.ID);
+                l.Events.Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == l.Events.ID);
+                l.Events.ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == l.Events.ID);
             }
 
             return View(tmp);
@@ -61,19 +52,22 @@ namespace TimeMasters.Web.Controllers
             log.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == id);
             log.Environment.MetroLogVersion = await _context.MetroLogVersion.SingleOrDefaultAsync(m => m.EnvironmentID == log.Environment.ID);
 
+            log.Events = await _context.Events.SingleOrDefaultAsync(m => m.LogID == id);
+            log.Events.Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == log.Events.ID);
+            log.Events.ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == log.Events.ID);
 
-            List<Events> tmpEvents;
-            if (log.Events != null)
-            {
-                tmpEvents = log.Events.ToList();
-                tmpEvents[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == id);
-                tmpEvents[0].Exception =
-                    await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
-                tmpEvents[0].ExceptionWrapper =
-                    await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
+            //List<Events> tmpEvents;
+            //if (log.Events != null)
+            //{
+            //    tmpEvents = log.Events.ToList();
+            //    tmpEvents[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == id);
+            //    tmpEvents[0].Exception =
+            //        await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
+            //    tmpEvents[0].ExceptionWrapper =
+            //        await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
 
-                log.Events = tmpEvents;
-            }
+            //    log.Events = tmpEvents;
+            //}
 
             return View(log);
         }
@@ -101,24 +95,76 @@ namespace TimeMasters.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddLog([FromBody] Log root)
+        public async Task<IActionResult> AddLog([FromBody] LogReceiveMessage root)
         {
-            //Log tmp = new Log();
+            Log tmp = new Log();
 
-            //Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Log> ent = _context.Log.Add(tmp);
-            //await _context.SaveChangesAsync();
+            MetroLogVersion mlv = new MetroLogVersion
+            {
+                Build = root.Environment.MetroLogVersion.Build,
+                Major = root.Environment.MetroLogVersion.Major,
+                MajorRevision = root.Environment.MetroLogVersion.MajorRevision,
+                Minor =  root.Environment.MetroLogVersion.Minor,
+                MinorRevision =  root.Environment.MetroLogVersion.MinorRevision,
+                Revision = root.Environment.MetroLogVersion.Revision
+            };
 
-            //Environment env = new Environment
-            //{
-            //    MachineName = root.Environment.MachineName,
+            TimeMasters.Web.Models.Logging.Environment env = new TimeMasters.Web.Models.Logging.Environment
+            {
+                MachineName = root.Environment.MachineName,
+                FxProfile = root.Environment.FxProfile,
+                IsDebugging = root.Environment.IsDebugging,
+                SessionId = root.Environment.SessionId,
+                MetroLogVersion = mlv,
+            };
 
-            //};
+            tmp.Environment = env;
 
-            return new ObjectResult(root);
+            string[] exString = root.Events.ElementAt(0).Exception.Message.Split('@');
+
+            TimeMasters.Web.Models.Logging.Exception ex = new TimeMasters.Web.Models.Logging.Exception
+            {
+                Message = exString[0],
+                Source = exString[1],
+                StackTrace = exString[2],
+                HelpLink = exString[3],
+                HResult = root.Events.ElementAt(0).Exception.HResult,
+            };
+
+            TimeMasters.Web.Models.Logging.ExceptionWrapper exw = new TimeMasters.Web.Models.Logging.ExceptionWrapper
+            {
+                AsString = root.Events.ElementAt(0).ExceptionWrapper.AsString,
+                Hresult = root.Events.ElementAt(0).ExceptionWrapper.Hresult,
+                TypeName = root.Events.ElementAt(0).ExceptionWrapper.TypeName
+            };
+
+            Events ev = new Events
+            {
+                Exception = ex,
+                ExceptionWrapper = exw,
+                Message = root.Events.ElementAt(0).Message,
+                Level = root.Events.ElementAt(0).Level,
+                Logger = root.Events.ElementAt(0).Logger,
+                SequenceID = root.Events.ElementAt(0).SequenceID,
+                TimeStamp = root.Events.ElementAt(0).TimeStamp,
+            };
+
+            tmp.Events = ev;
+
+            Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Log> ent = _context.Log.Add(tmp);
+            await _context.SaveChangesAsync();
+
+            Log returnLog = new Log
+            {
+                Environment = ent.Entity.Environment,
+                Events = ent.Entity.Events
+            };
+
+            return new ObjectResult(returnLog);
         }
 
         #region RECEIVING OBJECT
-        public class Rootobject
+        public class LogReceiveMessage
         {
             public Environment Environment { get; set; }
             public Event[] Events { get; set; }
@@ -150,8 +196,27 @@ namespace TimeMasters.Web.Controllers
             public string Logger { get; set; }
             public string Message { get; set; }
             public DateTime TimeStamp { get; set; }
-            public object Exception { get; set; }
-            public object ExceptionWrapper { get; set; }
+            public Exception Exception { get; set; }
+            public ExceptionWrapper ExceptionWrapper { get; set; }
+        }
+
+        public class Exception
+        {
+            //public string Data { get; set; }
+            public string HelpLink { get; set; }
+            public int HResult { get; set; }
+            //public string InnerException { get; set; }
+            public string Message { get; set; }
+            public string Source { get; set; }
+            public string StackTrace { get; set; }
+            //public string TargetSite { get; set; }
+        }
+
+        public class ExceptionWrapper
+        {
+            public string AsString { get; set; }
+            public int Hresult { get; set; }
+            public string TypeName { get; set; }
         }
         #endregion
 

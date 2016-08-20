@@ -8,7 +8,7 @@ using TimeMasters.Web.Data;
 namespace TimeMasters.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160805180610_Initial")]
+    [Migration("20160820220951_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -226,23 +226,17 @@ namespace TimeMasters.Web.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Data");
-
                     b.Property<int>("EventsID");
 
-                    b.Property<string>("HResult");
+                    b.Property<int>("HResult");
 
-                    b.Property<string>("HelpLint");
-
-                    b.Property<string>("InnerException");
+                    b.Property<string>("HelpLink");
 
                     b.Property<string>("Message");
 
                     b.Property<string>("Source");
 
                     b.Property<string>("StackTrace");
-
-                    b.Property<string>("TargetSite");
 
                     b.HasKey("ID");
 
