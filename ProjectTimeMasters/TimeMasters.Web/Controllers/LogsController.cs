@@ -27,9 +27,19 @@ namespace TimeMasters.Web.Controllers
             {
                 l.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == l.ID);
                 l.Environment.MetroLogVersion = await _context.MetroLogVersion.SingleOrDefaultAsync(m => m.EnvironmentID == l.Environment.ID);
-                l.Events[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == l.ID);
-                l.Events[0].Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == l.Events[0].ID);
-                l.Events[0].ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == l.Events[0].ID);
+
+                List<Events> tmpEvents;
+                if (l.Events != null)
+                {
+                    tmpEvents = l.Events.ToList();
+                    tmpEvents[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == l.ID);
+                    tmpEvents[0].Exception =
+                        await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
+                    tmpEvents[0].ExceptionWrapper =
+                        await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
+
+                    l.Events = tmpEvents;
+                }   
             }
 
             return View(tmp);
@@ -50,9 +60,20 @@ namespace TimeMasters.Web.Controllers
             }
             log.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == id);
             log.Environment.MetroLogVersion = await _context.MetroLogVersion.SingleOrDefaultAsync(m => m.EnvironmentID == log.Environment.ID);
-            log.Events[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == id);
-            log.Events[0].Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == log.Events[0].ID);
-            log.Events[0].ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == log.Events[0].ID);
+
+
+            List<Events> tmpEvents;
+            if (log.Events != null)
+            {
+                tmpEvents = log.Events.ToList();
+                tmpEvents[0] = await _context.Events.SingleOrDefaultAsync(m => m.LogID == id);
+                tmpEvents[0].Exception =
+                    await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
+                tmpEvents[0].ExceptionWrapper =
+                    await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == tmpEvents[0].ID);
+
+                log.Events = tmpEvents;
+            }
 
             return View(log);
         }
@@ -80,7 +101,7 @@ namespace TimeMasters.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Send([FromBody] Log root)
+        public async Task<IActionResult> AddLog([FromBody] Log root)
         {
             //Log tmp = new Log();
 

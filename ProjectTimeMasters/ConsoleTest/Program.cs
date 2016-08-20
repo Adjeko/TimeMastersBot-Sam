@@ -13,7 +13,7 @@ namespace ConsoleTest
         static void Main(string[] args)
         {
             //Uri u = new Uri("http://localhost:12647/logs/send");
-            Uri u = new Uri("http://timemastersweb.azurewebsites.net/logs/send");
+            Uri u = new Uri("http://timemastersweb.azurewebsites.net/logs/addlog");
 
             //LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new JsonPostTarget(Int32.MaxValue, u));
 
@@ -34,14 +34,6 @@ namespace ConsoleTest
             string tmp = Console.ReadLine();
             while (tmp != "quit")
             {
-                //if (log.IsInfoEnabled)
-                //{
-                //    log.Info("I can also format {0}.", "strings");
-                //}
-                //log.Trace("Trace Test");
-                //log.Info("Info", new Exception("Exception info test"));
-
-                //log.Error("Error Message !!!", "Help", "me", "pls", 5);
 
                 StackOverflowException soex;
                 try
@@ -59,7 +51,7 @@ namespace ConsoleTest
                 };
 
 
-                log.Info("Test", soex);
+                log.Info("Test", new Exception(soex.Message + "@" + soex.Source + "@" + soex.StackTrace + "@" + soex.HelpLink));
                 //log.Trace("sadads", soex);
 
                 Console.WriteLine("logged");
