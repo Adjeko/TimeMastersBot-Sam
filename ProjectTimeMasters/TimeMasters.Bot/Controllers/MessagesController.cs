@@ -37,9 +37,20 @@ namespace TimeMasters.Bot
                 //await connector.Conversations.ReplyToActivityAsync(reply);
                 activity.Text = Translator.Translate(activity.Text, Languages.English);
                 Logger log = Logger.GetInstance();
-                log.Info<MessagesController>("user said: " + activity.Text);
+                //log.Info<MessagesController>("user said: " + activity.Text);
 
-                Activity reply = activity.CreateReply($"Log: {log} is null ? {log == null} ");
+                bool trace = false;
+                string exMessage = "";
+                //try
+                //{
+                //    trace = log.IsTraceEnabled;
+                //}
+                //catch (Exception ex)
+                //{
+                //    exMessage += ex.Message;
+                //}
+
+                Activity reply = activity.CreateReply($"Log: {log} is null ? {log == null} Trace: {trace} Message: {exMessage}");//Trace: {log.IsTraceEnabled} Debug: {log.IsDebugEnabled} Warn: {log.IsWarnEnabled} Error: {log.IsErrorEnabled} Fatal: {log.IsFatalEnabled} Info: {log.IsInfoEnabled}");
                 await connector.Conversations.ReplyToActivityAsync(reply);
 
 

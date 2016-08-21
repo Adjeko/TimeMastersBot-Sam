@@ -49,13 +49,21 @@ namespace ConsoleTest
                     soex = ex;
                 }
 
-                Exception e = new Exception
+                //Exception e = new Exception
+                //{
+
+                //};
+
+                try
                 {
-                    
-                };
+                    log.TestRestSharp();
+                }
+                catch (System.Exception ex)
+                {
+                    Console.WriteLine("Post error");
+                }
 
-
-                log.Info<Program>("Test", soex);
+                //log.Info<Program>("Test", soex);
 
                 Console.WriteLine("logged");
                 tmp = Console.ReadLine();
