@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MetroLog;
 using MetroLog.Targets;
+using TimeMasters.PortableClassLibrary.Logging;
 
 namespace ConsoleTest
 {
@@ -13,23 +14,26 @@ namespace ConsoleTest
         static void Main(string[] args)
         {
             //Uri u = new Uri("http://localhost:12647/logs/send");
-            Uri u = new Uri("http://timemastersweb.azurewebsites.net/logs/addlog");
+            //Uri u = new Uri("http://timemastersweb.azurewebsites.net/logs/addlog");
 
-            //LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new JsonPostTarget(Int32.MaxValue, u));
+            ////LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new JsonPostTarget(Int32.MaxValue, u));
 
-            LoggingConfiguration conf = new LoggingConfiguration();
-            conf.AddTarget(LogLevel.Trace, LogLevel.Fatal, new JsonPostTarget(1, u));
+            //LoggingConfiguration conf = new LoggingConfiguration();
+            //conf.AddTarget(LogLevel.Trace, LogLevel.Fatal, new JsonPostTarget(1, u));
 
-            ILogManager manager = LogManagerFactory.CreateLogManager(conf);
+            //ILogManager manager = LogManagerFactory.CreateLogManager(conf);
 
-            ILogger log = manager.GetLogger<Program>();
+            //ILogger log = manager.GetLogger<Program>();
 
-            Console.WriteLine(log.IsInfoEnabled);
-            Console.WriteLine(log.IsDebugEnabled);
-            Console.WriteLine(log.IsErrorEnabled);
-            Console.WriteLine(log.IsFatalEnabled);
-            Console.WriteLine(log.IsTraceEnabled);
-            Console.WriteLine(log.IsWarnEnabled);
+            //Console.WriteLine(log.IsInfoEnabled);
+            //Console.WriteLine(log.IsDebugEnabled);
+            //Console.WriteLine(log.IsErrorEnabled);
+            //Console.WriteLine(log.IsFatalEnabled);
+            //Console.WriteLine(log.IsTraceEnabled);
+            //Console.WriteLine(log.IsWarnEnabled);
+
+            Logger log = new Logger();
+
 
             string tmp = Console.ReadLine();
             while (tmp != "quit")
@@ -51,8 +55,7 @@ namespace ConsoleTest
                 };
 
 
-                log.Info("Test", new Exception(soex.Message + "@" + soex.Source + "@" + soex.StackTrace + "@" + soex.HelpLink));
-                //log.Trace("sadads", soex);
+                log.Info<Program>("Test", soex);
 
                 Console.WriteLine("logged");
                 tmp = Console.ReadLine();

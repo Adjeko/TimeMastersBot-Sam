@@ -54,6 +54,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TimeMasters.PortableClassLibrary\TimeMasters.PortableClassLibrary.csproj">
+      <Project>{0cd96cf0-d6aa-4acb-b87d-f8d1d9607728}</Project>
+      <Name>TimeMasters.PortableClassLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
