@@ -9,7 +9,9 @@ namespace TimeMasters.PortableClassLibrary.Logging
     {
         private ILogManager _manager;
 
-        public Logger()
+        private Logger _logger;
+
+        private Logger()
         {
             Uri u = new Uri("http://timemastersweb.azurewebsites.net/logs/addlog");
 
@@ -17,6 +19,16 @@ namespace TimeMasters.PortableClassLibrary.Logging
             conf.AddTarget(LogLevel.Trace, LogLevel.Fatal, new JsonPostTarget(1, u));
 
             _manager = LogManagerFactory.CreateLogManager(conf);
+        }
+
+        public Logger GetInstance()
+        {
+            if (_logger == null)
+            {
+                _logger = new Logger();
+            }
+
+            return _logger;
         }
 
 
