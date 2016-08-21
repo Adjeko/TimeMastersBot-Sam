@@ -9,7 +9,7 @@ namespace TimeMasters.PortableClassLibrary.Logging
     {
         private ILogManager _manager;
 
-        private Logger _logger;
+        private static Logger _logger;
 
         private Logger()
         {
@@ -21,7 +21,7 @@ namespace TimeMasters.PortableClassLibrary.Logging
             _manager = LogManagerFactory.CreateLogManager(conf);
         }
 
-        public Logger GetInstance()
+        public static Logger GetInstance()
         {
             if (_logger == null)
             {
