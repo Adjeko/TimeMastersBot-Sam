@@ -12,6 +12,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Newtonsoft.Json;
 using TimeMasters.Bot.Dialogs;
 using TimeMasters.PortableClassLibrary.Translator;
+using TimeMasters.PortableClassLibrary.Logging;
 
 
 namespace TimeMasters.Bot
@@ -27,16 +28,24 @@ namespace TimeMasters.Bot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-               /* ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                 // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
+                //int length = (activity.Text ?? string.Empty).Length;
 
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                await connector.Conversations.ReplyToActivityAsync(reply);*/
+                ////return our reply to the user
+                //Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+                //await connector.Conversations.ReplyToActivityAsync(reply);
                 activity.Text = Translator.Translate(activity.Text, Languages.English);
+                Logger log = Logger.GetInstance();
+                log.Info<MessagesController>("user said: " + activity.Text);
+
+                Activity reply = activity.CreateReply($"Log: {log} is null ? {log == null} ");
+                await connector.Conversations.ReplyToActivityAsync(reply);
+
 
                 await Conversation.SendAsync(activity, () => new TestDialog());
+
+                
             }
             else
             {

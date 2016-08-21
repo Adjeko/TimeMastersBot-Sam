@@ -9,7 +9,7 @@ namespace TimeMasters.PortableClassLibrary.Logging
     {
         private ILogManager _manager;
 
-        private Logger _logger;
+        private static Logger _logger;
 
         private Logger()
         {
@@ -21,7 +21,7 @@ namespace TimeMasters.PortableClassLibrary.Logging
             _manager = LogManagerFactory.CreateLogManager(conf);
         }
 
-        public Logger GetInstance()
+        public static Logger GetInstance()
         {
             if (_logger == null)
             {
@@ -79,5 +79,12 @@ namespace TimeMasters.PortableClassLibrary.Logging
                 }
             }
         }
+
+        public bool IsTraceEnabled => _logger.IsTraceEnabled;
+        public bool IsDebugEnabled => _logger.IsDebugEnabled;
+        public bool IsInfoEnabled => _logger.IsInfoEnabled;
+        public bool IsWarnEnabled => _logger.IsWarnEnabled;
+        public bool IsErrorEnabled => _logger.IsErrorEnabled;
+        public bool IsFatalEnabled => _logger.IsFatalEnabled;
     }
 }

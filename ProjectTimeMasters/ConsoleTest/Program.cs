@@ -32,7 +32,7 @@ namespace ConsoleTest
             //Console.WriteLine(log.IsTraceEnabled);
             //Console.WriteLine(log.IsWarnEnabled);
 
-            Logger log = new Logger();
+            Logger log = Logger.GetInstance();
 
 
             string tmp = Console.ReadLine();
