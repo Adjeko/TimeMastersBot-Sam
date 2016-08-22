@@ -11,9 +11,9 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using Newtonsoft.Json;
 using TimeMasters.Bot.Dialogs;
+using TimeMasters.PortableClassLibrary.Helpers;
 using TimeMasters.PortableClassLibrary.Translator;
 using TimeMasters.PortableClassLibrary.Logging;
-
 
 namespace TimeMasters.Bot
 {
@@ -37,20 +37,32 @@ namespace TimeMasters.Bot
                 //await connector.Conversations.ReplyToActivityAsync(reply);
                 activity.Text = Translator.Translate(activity.Text, Languages.English);
                 Logger log = Logger.GetInstance();
-                //log.Info<MessagesController>("user said: " + activity.Text);
 
-                bool trace = false;
                 string exMessage = "";
-                //try
-                //{
-                //    trace = log.IsTraceEnabled;
-                //}
-                //catch (Exception ex)
-                //{
-                //    exMessage += ex.Message;
-                //}
+                Activity logReply = activity.CreateReply("Try TestRestSharp");
+                try
+                {
+                    logReply = activity.CreateReply("Try TestRestSharp");
+                    await connector.Conversations.ReplyToActivityAsync(logReply);
+                    log.SetClient();
+                    logReply = activity.CreateReply("Client Success TestRestSharp");
+                    await connector.Conversations.ReplyToActivityAsync(logReply);
+                    log.SetRequest();
+                    logReply = activity.CreateReply("Request Success TestRestSharp");
+                    await connector.Conversations.ReplyToActivityAsync(logReply);
+                    exMessage = log.ExecuteRequest();
+                    logReply = activity.CreateReply($"{exMessage} Success TestRestSharp");
+                    await connector.Conversations.ReplyToActivityAsync(logReply);
+                }
+                catch (System.Exception ex)
+                {
+                    logReply = activity.CreateReply($"Exception TestRestSharp => {ex.Message}");
+                    await connector.Conversations.ReplyToActivityAsync(logReply);
+                    exMessage += ex.Message;
+                }
 
-                Activity reply = activity.CreateReply($"Log: {log} is null ? {log == null} Trace: {trace} Message: {exMessage}");//Trace: {log.IsTraceEnabled} Debug: {log.IsDebugEnabled} Warn: {log.IsWarnEnabled} Error: {log.IsErrorEnabled} Fatal: {log.IsFatalEnabled} Info: {log.IsInfoEnabled}");
+
+                Activity reply = activity.CreateReply($"Log: {log} is null ? {log == null} Trace: Message: {exMessage}");//Trace: {log.IsTraceEnabled} Debug: {log.IsDebugEnabled} Warn: {log.IsWarnEnabled} Error: {log.IsErrorEnabled} Fatal: {log.IsFatalEnabled} Info: {log.IsInfoEnabled}");
                 await connector.Conversations.ReplyToActivityAsync(reply);
 
 

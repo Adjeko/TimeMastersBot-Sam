@@ -9,6 +9,9 @@ namespace TimeMasters.PortableClassLibrary.Logging
     public class Logger
     {
         private static Logger _logger;
+        private RestClient _client;
+        private RestRequest _request;
+        private Task<IRestResponse> _asyncHandle;
 
         private Logger()
         {
@@ -28,7 +31,40 @@ namespace TimeMasters.PortableClassLibrary.Logging
 
         public string TestRestSharp()
         {
-            Log log = new Log()
+            var client = new RestClient("http://timemastersweb.azurewebsites.net");
+
+            var request = new RestRequest("/logs/addLog", Method.POST);
+            request.AddJsonBody(GetLog());
+
+            //IRestResponse response;
+
+            Task<IRestResponse> asyncHandle = client.Execute(request);
+
+            return asyncHandle.Result.Content;
+
+        }
+
+        public void SetClient()
+        {
+            _client = new RestClient("http://timemastersweb.azurewebsites.net");
+        }
+
+        public void SetRequest()
+        {
+            _request = new RestRequest("/logs/addLog", Method.POST);
+            _request.AddJsonBody(GetLog());
+        }
+
+        public string ExecuteRequest()
+        {
+            _asyncHandle = _client.Execute(_request);
+            _asyncHandle.Start();
+            return _asyncHandle.Status.ToString();
+        }
+
+        public Log GetLog()
+        {
+            return new Log()
             {
                 Environment = new Environment
                 {
@@ -48,7 +84,7 @@ namespace TimeMasters.PortableClassLibrary.Logging
                 },
                 Events = new Events
                 {
-                    Logger = "PortableClassLibrary",
+                    Logger = "Bot2",
                     Level = "Experimental",
                     Message = "RestSharp for the win",
                     SequenceID = 2,
@@ -69,20 +105,6 @@ namespace TimeMasters.PortableClassLibrary.Logging
                     }
                 }
             };
-
-            var client = new RestClient("http://timemasterswebgame.azurewebsites.net");
-
-            var request = new RestRequest("/logs/addLog", Method.POST);
-            request.AddJsonBody(log);
-
-            //IRestResponse response;
-
-            
-
-            Task<IRestResponse> asyncHandle = client.Execute(request);
-
-            return asyncHandle.Result.Content;
-
         }
 
 
