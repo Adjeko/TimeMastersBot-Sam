@@ -91,8 +91,8 @@ namespace TimeMasters.Web.Controllers
                 Build = root.Environment.MetroLogVersion.Build,
                 Major = root.Environment.MetroLogVersion.Major,
                 MajorRevision = root.Environment.MetroLogVersion.MajorRevision,
-                Minor =  root.Environment.MetroLogVersion.Minor,
-                MinorRevision =  root.Environment.MetroLogVersion.MinorRevision,
+                Minor = root.Environment.MetroLogVersion.Minor,
+                MinorRevision = root.Environment.MetroLogVersion.MinorRevision,
                 Revision = root.Environment.MetroLogVersion.Revision
             };
 
@@ -107,33 +107,31 @@ namespace TimeMasters.Web.Controllers
 
             tmp.Environment = env;
 
-            string[] exString = root.Events.ElementAt(0).Exception.Message.Split('@');
-
             Models.Logging.Exception ex = new Models.Logging.Exception
             {
-                Message = exString[0],
-                Source = exString[1],
-                StackTrace = exString[2],
-                HelpLink = exString[3],
-                HResult = root.Events.ElementAt(0).Exception.HResult,
+                Message = root.Events.Exception.Message,
+                Source = root.Events.Exception.Source,
+                StackTrace = root.Events.Exception.StackTrace,
+                HelpLink = root.Events.Exception.HelpLink,
+                HResult = root.Events.Exception.HResult,
             };
 
             Models.Logging.ExceptionWrapper exw = new Models.Logging.ExceptionWrapper
             {
-                AsString = root.Events.ElementAt(0).ExceptionWrapper.AsString,
-                Hresult = root.Events.ElementAt(0).ExceptionWrapper.Hresult,
-                TypeName = root.Events.ElementAt(0).ExceptionWrapper.TypeName
+                AsString = root.Events.ExceptionWrapper.AsString,
+                Hresult = root.Events.ExceptionWrapper.Hresult,
+                TypeName = root.Events.ExceptionWrapper.TypeName
             };
 
             Events ev = new Events
             {
                 Exception = ex,
                 ExceptionWrapper = exw,
-                Message = root.Events.ElementAt(0).Message,
-                Level = root.Events.ElementAt(0).Level,
-                Logger = root.Events.ElementAt(0).Logger,
-                SequenceID = root.Events.ElementAt(0).SequenceID,
-                TimeStamp = root.Events.ElementAt(0).TimeStamp,
+                Message = root.Events.Message,
+                Level = root.Events.Level,
+                Logger = root.Events.Logger,
+                SequenceID = root.Events.SequenceID,
+                TimeStamp = root.Events.TimeStamp,
             };
 
             tmp.Events = ev;
@@ -154,7 +152,7 @@ namespace TimeMasters.Web.Controllers
         public class LogReceiveMessage
         {
             public Environment Environment { get; set; }
-            public Event[] Events { get; set; }
+            public Event Events { get; set; }
         }
 
         public class Environment
