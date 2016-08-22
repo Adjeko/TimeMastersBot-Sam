@@ -15,5 +15,17 @@
         {
 
         }
+
+        public static Exception CreateFromSystemException(System.Exception sysex)
+        {
+            return new Exception
+            {
+                Message = sysex.Message,
+                HResult = sysex.HResult,
+                HelpLink = sysex.HelpLink,
+                Source = sysex.Source,
+                StackTrace = sysex.StackTrace,
+            };
+        }
     }
 }

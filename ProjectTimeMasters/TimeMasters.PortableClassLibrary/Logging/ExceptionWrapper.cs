@@ -10,5 +10,15 @@
         {
 
         }
+
+        public static ExceptionWrapper CreateFromSystemException(System.Exception sysex)
+        {
+            return new ExceptionWrapper
+            {
+                AsString = sysex.ToString(),
+                Hresult = sysex.HResult,
+                TypeName = sysex.GetType().FullName
+            };
+        }
     }
 }

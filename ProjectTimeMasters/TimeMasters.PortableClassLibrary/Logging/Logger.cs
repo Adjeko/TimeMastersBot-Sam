@@ -15,8 +15,9 @@ namespace TimeMasters.PortableClassLibrary.Logging
 
         private Logger()
         {
-            Uri u = new Uri("http://timemastersweb.azurewebsites.net/logs/addlog");
+            //Uri u = new Uri("http://timemastersweb.azurewebsites.net/logs/addlog");
 
+            _client = new RestClient("http://timemastersweb.azurewebsites.net");
         }
 
         public static Logger GetInstance()
@@ -29,138 +30,107 @@ namespace TimeMasters.PortableClassLibrary.Logging
             return _logger;
         }
 
-        public string TestRestSharp()
-        {
-            var client = new RestClient("http://timemastersweb.azurewebsites.net");
-
-            var request = new RestRequest("/logs/addLog", Method.POST);
-            request.AddJsonBody(GetLog());
-
-            //IRestResponse response;
-
-            Task<IRestResponse> asyncHandle = client.Execute(request);
-
-            return asyncHandle.Result.Content;
-
-        }
-
-        public void SetClient()
-        {
-            _client = new RestClient("http://timemastersweb.azurewebsites.net");
-        }
-
-        public void SetRequest()
-        {
-            _request = new RestRequest("/logs/addLog", Method.POST);
-            _request.AddJsonBody(GetLog());
-        }
-
-        public string ExecuteRequest()
-        {
-            _asyncHandle = _client.Execute(_request);
-            _asyncHandle.Start();
-            return _asyncHandle.Status.ToString();
-        }
-
         public Log GetLog()
         {
             return new Log()
             {
                 Environment = new Environment
                 {
-                    FxProfile = ".NET Core",
+                    FxProfile = "YOUR FRAMEWORK",
                     IsDebugging = false,
-                    MachineName = "Adjeko_Desktop",
-                    SessionId = "1234",
+                    MachineName = "YOUR COMPUTER",
+                    SessionId = Guid.NewGuid().ToString(),
                     MetroLogVersion = new MetroLogVersion
                     {
                         Revision = 1,
-                        Build = 2,
-                        Major = 3,
-                        MajorRevision = 4,
-                        Minor = 5,
-                        MinorRevision = 6
+                        Build = 1,
+                        Major = 1,
+                        MajorRevision = 1,
+                        Minor = 1,
+                        MinorRevision = 1
                     }
                 },
                 Events = new Events
                 {
-                    Logger = "Bot2",
-                    Level = "Experimental",
-                    Message = "RestSharp for the win",
-                    SequenceID = 2,
+                    Logger = "LOGGER NOT SET",
+                    Level = "LOGLEVEL NOT SET",
+                    Message = "MESSAGE NOT SET",
+                    SequenceID = 1,
                     TimeStamp = DateTime.Now,
                     Exception = new TimeMasters.PortableClassLibrary.Logging.Exception
                     {
-                        Message = "you just fucked up",
-                        HelpLink = "fuckyoudotcom",
-                        StackTrace = "where you fucked up",
+                        Message = "",
+                        HelpLink = "",
+                        StackTrace = "",
                         HResult = 0,
-                        Source = "yo mama"
+                        Source = ""
                     },
                     ExceptionWrapper = new ExceptionWrapper
                     {
-                        AsString = "ExceptionWrapper fuck you",
-                        Hresult = 1321214,
-                        TypeName = "FuckYouException"
+                        AsString = "",
+                        Hresult = 0,
+                        TypeName = ""
                     }
                 }
             };
         }
 
 
-        //public void Trace<T>(string message, Exception ex = null)
-        //{
-        //    Log<T>(LogLevel.Trace, message, ex);
-        //}
+        public void Trace<T>(string message, System.Exception ex = null)
+        {
+            Log<T>(LogLevel.Trace, message, ex);
+        }
 
-        //public void Debug<T>(string message, Exception ex = null)
-        //{
-        //    Log<T>(LogLevel.Debug, message, ex);
-        //}
+        public void Debug<T>(string message, System.Exception ex = null)
+        {
+            Log<T>(LogLevel.Debug, message, ex);
+        }
 
-        //public void Info<T>(string message, Exception ex = null)
-        //{
-        //    Log<T>(LogLevel.Info, message, ex);
-        //}
+        public void Info<T>(string message, System.Exception ex = null)
+        {
+            Log<T>(LogLevel.Info, message, ex);
+        }
 
-        //public void Warn<T>(string message, Exception ex = null)
-        //{
-        //    Log<T>(LogLevel.Warn, message, ex);
-        //}
+        public void Warn<T>(string message, System.Exception ex = null)
+        {
+            Log<T>(LogLevel.Warning, message, ex);
+        }
 
-        //public void Error<T>(string message, Exception ex = null)
-        //{
-        //    Log<T>(LogLevel.Error, message, ex);
-        //}
+        public void Error<T>(string message, System.Exception ex = null)
+        {
+            Log<T>(LogLevel.Error, message, ex);
+        }
 
-        //public void Fatal<T>(string message, Exception ex = null)
-        //{
-        //    Log<T>(LogLevel.Fatal, message, ex);
-        //}
+        public void Fatal<T>(string message, System.Exception ex = null)
+        {
+            Log<T>(LogLevel.Fatal, message, ex);
+        }
 
-        //public void Log<T>(LogLevel logLevel, string message, Exception ex)
-        //{
-        //    ILogger log = _manager.GetLogger<T>();
+        public void Log<T>(LogLevel logLevel, string message, System.Exception ex)
+        {
+            Log log = GetLog();
+            if (ex != null)
+            {
+                log.Events.Exception = Exception.CreateFromSystemException(ex);
+                log.Events.ExceptionWrapper = ExceptionWrapper.CreateFromSystemException(ex);
+            }
+            
+            log.Events.Logger = typeof(T).FullName;
+            log.Events.Message = message;
+            log.Events.Level = logLevel.ToString();
 
-        //    if (log.IsEnabled(logLevel))
-        //    {
-        //        if (ex != null)
-        //        {
-        //            log.Log(logLevel, message,
-        //                new Exception(ex.Message + "@" + ex.Source + "@" + ex.StackTrace + "@" + ex.HelpLink));
-        //        }
-        //        else
-        //        {
-        //            log.Trace(message);
-        //        }
-        //    }
-        //}
 
-        //public bool IsTraceEnabled => _logger.IsTraceEnabled;
-        //public bool IsDebugEnabled => _logger.IsDebugEnabled;
-        //public bool IsInfoEnabled => _logger.IsInfoEnabled;
-        //public bool IsWarnEnabled => _logger.IsWarnEnabled;
-        //public bool IsErrorEnabled => _logger.IsErrorEnabled;
-        //public bool IsFatalEnabled => _logger.IsFatalEnabled;
+            var request = new RestRequest("/logs/addLog", Method.POST);
+            request.AddJsonBody(log);
+
+            Task.Run(() => _client.Execute(request));
+        }
+
+        public bool IsTraceEnabled => true;
+        public bool IsDebugEnabled => true;
+        public bool IsInfoEnabled => true;
+        public bool IsWarningEnabled => true;
+        public bool IsErrorEnabled => true;
+        public bool IsFatalEnabled => true;
     }
 }

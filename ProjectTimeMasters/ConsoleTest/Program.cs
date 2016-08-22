@@ -54,15 +54,6 @@ namespace ConsoleTest
 
                 //};
 
-                try
-                {
-                    log.TestRestSharp();
-                }
-                catch (System.Exception ex)
-                {
-                    Console.WriteLine("Post error");
-                }
-
                 //log.Info<Program>("Test", soex);
 
                 Console.WriteLine("logged");
