@@ -21,7 +21,7 @@ namespace TimeMasters.Bot.Dialogs
             context.Wait(MessageReceived);
         }
 
-        [LuisIntent("addCalenderEntry")]
+        [LuisIntent("addCalendarEntry")]
         public async Task AddEntry(IDialogContext context, LuisResult result)
         {
             string message = $"I've added ";
@@ -53,6 +53,40 @@ namespace TimeMasters.Bot.Dialogs
             await context.PostAsync(message);
 
             context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("removeCalendarEntry")]
+        public async Task RemoveEntry(IDialogContext context, LuisResult result)
+        {
+            PromptDialog.Confirm(
+                context,
+                ConfirmRemoveAsync,
+                "Du wolltest etwas löschen?",
+                "Keine Ahnung was du vorhatest.",
+                promptStyle: PromptStyle.None);
+        }
+
+        [LuisIntent("updateCalendarEntry")]
+        public async Task UpdateEntry(IDialogContext context, LuisResult result)
+        {
+            PromptDialog.Confirm(
+                context,
+                ConfirmUpdateAsync,
+                "Du wolltest etwas updaten?",
+                "Keine Ahnung was du vorhatest.",
+                promptStyle: PromptStyle.None);
+        }
+
+        public async Task ConfirmRemoveAsync(IDialogContext context, IAwaitable<bool> argument)
+        {
+            await context.PostAsync("Danke das du das bestätigt hast");
+            //context.Wait<bool>(TestDialog.RemoveEntry);
+        }
+
+        public async Task ConfirmUpdateAsync(IDialogContext context, IAwaitable<bool> argument)
+        {
+            await context.PostAsync("Danke das du das bestätigt hast");
+            //context.Wait(UpdateEntry);
         }
     }
 }
