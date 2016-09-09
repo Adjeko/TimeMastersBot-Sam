@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Connector;
 
 
 namespace TimeMasters.Bot.Dialogs
@@ -58,35 +59,41 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("removeCalendarEntry")]
         public async Task RemoveEntry(IDialogContext context, LuisResult result)
         {
+            await context.PostAsync("luis remove");
             PromptDialog.Confirm(
-                context,
-                ConfirmRemoveAsync,
-                "Du wolltest etwas löschen?",
-                "Keine Ahnung was du vorhatest.",
-                promptStyle: PromptStyle.None);
+                    context,
+                    ConfirmAsync,
+                    "Du wolltest etwas löschen?",
+                    "Keine Ahnung was du vorhatest.",
+                    promptStyle: PromptStyle.None);
+            //context.Call(new RemoveDialog(), Done);
         }
 
         [LuisIntent("updateCalendarEntry")]
         public async Task UpdateEntry(IDialogContext context, LuisResult result)
         {
-            PromptDialog.Confirm(
-                context,
-                ConfirmUpdateAsync,
-                "Du wolltest etwas updaten?",
-                "Keine Ahnung was du vorhatest.",
-                promptStyle: PromptStyle.None);
+            await context.PostAsync("luis update");
+            context.Call(new UpdateDialog(), Done);
         }
 
-        public async Task ConfirmRemoveAsync(IDialogContext context, IAwaitable<bool> argument)
+        public async Task Done(IDialogContext context, IAwaitable<object> input)
         {
-            await context.PostAsync("Danke das du das bestätigt hast");
-            //context.Wait<bool>(TestDialog.RemoveEntry);
+            await context.PostAsync("Fertig mit alles und so");
+            context.Done<IMessageActivity>(null);
         }
 
-        public async Task ConfirmUpdateAsync(IDialogContext context, IAwaitable<bool> argument)
+        public async Task ConfirmAsync(IDialogContext context, IAwaitable<bool> argument)
         {
-            await context.PostAsync("Danke das du das bestätigt hast");
-            //context.Wait(UpdateEntry);
+            var confirm = await argument;
+            if (confirm)
+            {
+                await context.PostAsync("danke für das bestätigen");
+            }
+            else
+            {
+                await context.PostAsync("You just went full retard. Never go full retard.");
+            }
+            context.Done<IMessageActivity>(null);
         }
     }
 }
