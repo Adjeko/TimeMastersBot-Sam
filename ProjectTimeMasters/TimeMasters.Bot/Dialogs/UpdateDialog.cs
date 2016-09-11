@@ -9,12 +9,13 @@ using Microsoft.Bot.Connector;
 
 namespace TimeMasters.Bot.Dialogs
 {
+    [Serializable]
     public class UpdateDialog : IDialog<object>
     {
-        public Task StartAsync(IDialogContext context)
+        public async Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
-            return Task.CompletedTask;
+            
         }
 
         public virtual Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)

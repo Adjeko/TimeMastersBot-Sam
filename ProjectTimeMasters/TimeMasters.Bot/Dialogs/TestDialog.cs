@@ -60,13 +60,13 @@ namespace TimeMasters.Bot.Dialogs
         public async Task RemoveEntry(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("luis remove");
-            PromptDialog.Confirm(
-                    context,
-                    ConfirmAsync,
-                    "Du wolltest etwas löschen?",
-                    "Keine Ahnung was du vorhatest.",
-                    promptStyle: PromptStyle.None);
-            //context.Call(new RemoveDialog(), Done);
+            //PromptDialog.Confirm(
+            //        context,
+            //        ConfirmAsync,
+            //        "Du wolltest etwas löschen?",
+            //        "Keine Ahnung was du vorhatest.",
+            //        promptStyle: PromptStyle.None);
+            context.Call(new RemoveDialog(), Done);
         }
 
         [LuisIntent("updateCalendarEntry")]
@@ -78,8 +78,10 @@ namespace TimeMasters.Bot.Dialogs
 
         public async Task Done(IDialogContext context, IAwaitable<object> input)
         {
-            await context.PostAsync("Fertig mit alles und so");
-            context.Done<IMessageActivity>(null);
+
+            string temp = (await input) as string;
+            await context.PostAsync($"Fertig mit alles und so {temp}");
+            context.Wait(MessageReceived);
         }
 
         public async Task ConfirmAsync(IDialogContext context, IAwaitable<bool> argument)
@@ -93,7 +95,7 @@ namespace TimeMasters.Bot.Dialogs
             {
                 await context.PostAsync("You just went full retard. Never go full retard.");
             }
-            context.Done<IMessageActivity>(null);
+            //context.Done<IMessageActivity>(null);
         }
     }
 }

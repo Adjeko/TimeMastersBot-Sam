@@ -3,39 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Services.Description;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using TimeMasters.PortableClassLibrary.Logging;
 
 namespace TimeMasters.Bot.Dialogs
 {
-    public class RemoveDialog : IDialog<object>
+    [Serializable]
+    public class RemoveDialog : IDialog<IMessageActivity>
     {
         public async Task StartAsync(IDialogContext context)
         {
             await context.PostAsync("RemoveDialog StartAsync");
             context.Wait(MessageReceivedAsync);
-
         }
 
-        public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
+            var message = await argument;
 
-            await context.PostAsync("RemoveDialog StartAsync");
-            try
-            {
-                PromptDialog.Confirm(
+            await context.PostAsync($"RemoveDialog MessageReceivedAsync {message.Text}");
+            PromptDialog.Confirm(
                     context,
                     ConfirmAsync,
                     "Du wolltest etwas löschen?",
                     "Keine Ahnung was du vorhatest.",
                     promptStyle: PromptStyle.None);
-            }
-            catch (System.Exception ex)
-            {
-                Logger.GetInstance().Error<RemoveDialog>("WAS IS DO LOS?", ex);
-            }
+            
             await context.PostAsync("RemoveDialog StartAsync fertig");
+            //context.Wait(MessageReceivedAsync);
         }
 
         public async Task ConfirmAsync(IDialogContext context, IAwaitable<bool> argument)
