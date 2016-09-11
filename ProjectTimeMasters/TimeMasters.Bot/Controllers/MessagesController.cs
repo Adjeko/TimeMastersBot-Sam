@@ -30,20 +30,27 @@ namespace TimeMasters.Bot
             logger = Logger.GetInstance();
             if (activity.Type == ActivityTypes.Message)
             {
-                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                // calculate something for us to return
-                //int length = (activity.Text ?? string.Empty).Length;
+                try
+                {
+                    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    // calculate something for us to return
+                    //int length = (activity.Text ?? string.Empty).Length;
 
-                ////return our reply to the user
-                //Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                //await connector.Conversations.ReplyToActivityAsync(reply);
-                logger.Info<MessagesController>($"User said: {activity.Text}");
+                    ////return our reply to the user
+                    //Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+                    //await connector.Conversations.ReplyToActivityAsync(reply);
+                    logger.Info<MessagesController>($"User said: {activity.Text}");
 
-                activity.Text = Translator.Translate(activity.Text, Languages.English);
-                
-                logger.Info<MessagesController>($"User said (translated): {activity.Text}");
+                    activity.Text = Translator.Translate(activity.Text, Languages.English);
 
-                await Conversation.SendAsync(activity, () => new TestDialog());
+                    logger.Info<MessagesController>($"User said (translated): {activity.Text}");
+
+                    await Conversation.SendAsync(activity, () => new TestDialog());
+                }
+                catch (System.Exception ex)
+                {
+                    Logger.GetInstance().Error<MessagesController>("HOLY MOLY", ex);
+                }
             }
             else
             {
