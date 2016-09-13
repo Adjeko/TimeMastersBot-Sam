@@ -5,34 +5,46 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Services.Description;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using TimeMasters.PortableClassLibrary.Logging;
 
 namespace TimeMasters.Bot.Dialogs
 {
+    [LuisModel("8ee9bc34-b3fa-4029-a6d5-08b50b22aa18", "3b397c65c2114c759f2bf67c6d473df2")]
     [Serializable]
-    public class RemoveDialog : IDialog<IMessageActivity>
+    public class RemoveDialog : LuisDialog<object>
     {
-        public async Task StartAsync(IDialogContext context)
+        [NonSerialized]
+        private LuisResult _luisResult;
+
+        private string _updateEntity;
+
+        public RemoveDialog(LuisResult lr)
         {
-            await context.PostAsync("RemoveDialog StartAsync");
-            context.Wait(MessageReceivedAsync);
+            _luisResult = lr;
+            _updateEntity = lr.Entities[0].Entity;
         }
 
-        public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        public override async Task StartAsync(IDialogContext context)
         {
-            var message = await argument;
+            //await base.StartAsync(context);
 
-            await context.PostAsync($"RemoveDialog MessageReceivedAsync {message.Text}");
-            PromptDialog.Confirm(
-                    context,
-                    ConfirmAsync,
-                    "Du wolltest etwas löschen?",
-                    "Keine Ahnung was du vorhatest.",
-                    promptStyle: PromptStyle.None);
-            
-            await context.PostAsync("RemoveDialog StartAsync fertig");
-            //context.Wait(MessageReceivedAsync);
+            if (_luisResult.Entities.Count == 0)
+            {
+                await context.PostAsync("Mir fehlen noch Informationen!");
+            }
+            else
+            {
+                PromptDialog.Confirm(context,
+                                    ConfirmAsync,
+                                    $"Soll ich {_luisResult.Entities[0].Entity} für dich löschen ?",
+                                    "Das habe ich nicht verstanden.",
+                                    promptStyle: PromptStyle.None);
+            }
+
+            //context.Wait(MessageReceived);
         }
 
         public async Task ConfirmAsync(IDialogContext context, IAwaitable<bool> argument)
@@ -40,13 +52,13 @@ namespace TimeMasters.Bot.Dialogs
             var confirm = await argument;
             if (confirm)
             {
-                await context.PostAsync("danke für das bestätigen");
+                await context.PostAsync($"Ich habe {_updateEntity} für dich gelöscht");
             }
             else
             {
                 await context.PostAsync("You just went full retard. Never go full retard.");
             }
-            context.Done<IMessageActivity>(null);
+            context.Done<string>("Remove ist fertig jetzt amk");
         }
     }
 }

@@ -18,8 +18,10 @@ namespace TimeMasters.Bot.Dialogs
             
         }
 
-        public virtual Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
+            var temp = await argument;
+
             PromptDialog.Confirm(
                 context,
                 ConfirmAsync,
@@ -27,7 +29,6 @@ namespace TimeMasters.Bot.Dialogs
                 "Keine Ahnung was du vorhatest.",
                 promptStyle: PromptStyle.None);
 
-            return Task.CompletedTask;
         }
 
         public async Task ConfirmAsync(IDialogContext context, IAwaitable<bool> argument)
