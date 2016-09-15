@@ -25,73 +25,76 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("CreateCalendarEntry")]
         public async Task AddEntry(IDialogContext context, LuisResult result)
         {
-            string message = $"I've added ";
-            DateTime dateTime = new DateTime();
-            DateTime timeTime = new DateTime();
-            DateTime startTime;
+            //string message = $"I've added ";
+            //DateTime dateTime = new DateTime();
+            //DateTime timeTime = new DateTime();
+            //DateTime startTime;
 
-            EntityRecommendation recommendation;
-            if (!result.TryFindEntity("Calendar::Title", out recommendation))
-            {
-                message += "NO NAME ";
-            }
-            else
-            {
-                message += recommendation.Entity + " ";
-            }
+            //EntityRecommendation recommendation;
+            //if (!result.TryFindEntity("Calendar::Title", out recommendation))
+            //{
+            //    message += "NO NAME ";
+            //}
+            //else
+            //{
+            //    message += recommendation.Entity + " ";
+            //}
 
-            message += "on ";
+            //message += "on ";
 
-            if (!result.TryFindEntity("Calendar::StartDate", out recommendation))
-            {
-                message += "NO DATETIME ";
-            }
-            else
-            {
-                EntityRecommendation date;
-                if(!result.TryFindEntity("builtin.datetime.date", out date))
-                {
-                    message += recommendation.Entity + " ";
-                }
-                else
-                {
-                    var parser = new Chronic.Parser();
-                    var datetime = parser.Parse(date.Entity);
-                    dateTime = datetime.ToTime();
-                    //message += datetime.ToTime().ToString() + " ";
-                }
-            }
+            //if (!result.TryFindEntity("Calendar::StartDate", out recommendation))
+            //{
+            //    message += "NO DATETIME ";
+            //}
+            //else
+            //{
+            //    EntityRecommendation date;
+            //    if(!result.TryFindEntity("builtin.datetime.date", out date))
+            //    {
+            //        message += recommendation.Entity + " ";
+            //    }
+            //    else
+            //    {
+            //        var parser = new Chronic.Parser();
+            //        var datetime = parser.Parse(date.Entity);
+            //        dateTime = datetime.ToTime();
+            //        //message += datetime.ToTime().ToString() + " ";
+            //    }
+            //}
 
-            message += "at ";
+            //message += "at ";
 
-            if (!result.TryFindEntity("Calendar::StartTime", out recommendation))
-            {
-                message += "NO DATETIME ";
-            }
-            else
-            {
-                EntityRecommendation time;
-                if (!result.TryFindEntity("builtin.datetime.time", out time))
-                {
-                    message += recommendation.Entity + " ";
-                }
-                else
-                {
-                    var parser = new Chronic.Parser();
-                    var datetime = parser.Parse(time.Entity);
-                    timeTime = datetime.ToTime();
-                    //message += datetime.ToTime().ToString() + " ";
-                }
-            }
+            //if (!result.TryFindEntity("Calendar::StartTime", out recommendation))
+            //{
+            //    message += "NO DATETIME ";
+            //}
+            //else
+            //{
+            //    EntityRecommendation time;
+            //    if (!result.TryFindEntity("builtin.datetime.time", out time))
+            //    {
+            //        message += recommendation.Entity + " ";
+            //    }
+            //    else
+            //    {
+            //        var parser = new Chronic.Parser();
+            //        var datetime = parser.Parse(time.Entity);
+            //        timeTime = datetime.ToTime();
+            //        //message += datetime.ToTime().ToString() + " ";
+            //    }
+            //}
 
-            startTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, timeTime.Hour, timeTime.Minute,
-               timeTime.Second);
-            message += startTime.ToString();
+            //startTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, timeTime.Hour, timeTime.Minute,
+            //   timeTime.Second);
+            //message += startTime.ToString();
            
 
-            await context.PostAsync(message);
+            //await context.PostAsync(message);
 
-            context.Wait(MessageReceived);
+            //context.Wait(MessageReceived);
+
+            await context.PostAsync("luis create");
+            context.Call(new CreateDialog(result), Done);
         }
 
         [LuisIntent("DeleteCalendarEntry")]
@@ -105,7 +108,7 @@ namespace TimeMasters.Bot.Dialogs
         public async Task UpdateEntry(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("luis update");
-            context.Call(new UpdateDialog(), Done);
+            context.Call(new UpdateDialog(result), Done);
         }
 
         public async Task Done(IDialogContext context, IAwaitable<object> input)
