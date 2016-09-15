@@ -3,38 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Services.Description;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
-using Microsoft.Bot.Connector;
-using TimeMasters.PortableClassLibrary.Logging;
 
 namespace TimeMasters.Bot.Dialogs
 {
     [LuisModel("8ee9bc34-b3fa-4029-a6d5-08b50b22aa18", "3b397c65c2114c759f2bf67c6d473df2")]
     [Serializable]
-    public class RemoveDialog : LuisDialog<object>
+    public class CreateDialog : LuisDialog<object>
     {
         [NonSerialized]
         private LuisResult _luisResult;
 
-        private string _removeEntity;
+        private string _createEntity;
 
-        public RemoveDialog(LuisResult lr)
+        public CreateDialog(LuisResult lr)
         {
             _luisResult = lr;
             EntityRecommendation updateEntry;
             if (lr.TryFindEntity("Calendar::Title", out updateEntry))
             {
-                _removeEntity = updateEntry.Entity;
+                _createEntity = updateEntry.Entity;
             }
         }
 
         public override async Task StartAsync(IDialogContext context)
         {
-            //await base.StartAsync(context);
-
             if (_luisResult.Entities.Count == 0)
             {
                 GatherMissingInformation(context);
@@ -42,39 +37,34 @@ namespace TimeMasters.Bot.Dialogs
             }
             else
             {
-                SearchEntryAndRemove(context);
+                CreateEntry(context);
             }
-
-            //context.Wait(MessageReceived);
-            //context.Done("Es haben Informationen gefehlt");
         }
 
-
-        [LuisIntent("DeleteCalendarEntry")]
-        public async Task RemoveEntry(IDialogContext context, LuisResult result)
+        [LuisIntent("CreateCalendarEntry")]
+        public async Task CreateEntry(IDialogContext context, LuisResult result)
         {
             EntityRecommendation updateEntry;
             if (result.TryFindEntity("Calendar::Title", out updateEntry))
             {
-                _removeEntity = updateEntry.Entity;
+                _createEntity = updateEntry.Entity;
             }
-            SearchEntryAndRemove(context);
+            CreateEntry(context);
         }
 
         public async void GatherMissingInformation(IDialogContext context)
         {
             await context.PostAsync("Mir fehlen noch Informationen!");
-            await context.PostAsync("Was möchtest du löschen?");
-
+            await context.PostAsync("Was möchtest du erstellen?");
         }
 
-        private void SearchEntryAndRemove(IDialogContext context)
+        public async void CreateEntry(IDialogContext context)
         {
-            //TODO: search for calendar entry and handling if nothing found
+            //TODO: create calendar entry
 
             PromptDialog.Confirm(context,
                                 ConfirmAsync,
-                                $"Soll ich {_removeEntity} für dich löschen ?",
+                                $"Soll ich {_createEntity} für dich erstellen ?",
                                 "Das habe ich nicht verstanden.",
                                 promptStyle: PromptStyle.None);
         }
@@ -84,13 +74,13 @@ namespace TimeMasters.Bot.Dialogs
             var confirm = await argument;
             if (confirm)
             {
-                await context.PostAsync($"Ich habe {_removeEntity} für dich gelöscht");
+                await context.PostAsync($"Ich habe {_createEntity} für dich erstellt");
             }
             else
             {
                 await context.PostAsync("You just went full retard. Never go full retard.");
             }
-            context.Done<string>("REMOVE");
+            context.Done<string>("CREATE");
         }
     }
 }

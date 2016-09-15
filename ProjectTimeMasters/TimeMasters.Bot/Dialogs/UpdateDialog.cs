@@ -12,6 +12,14 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class UpdateDialog : IDialog<object>
     {
+        [NonSerialized]
+        private LuisResult _luisResult;
+
+        public UpdateDialog(LuisResult lr)
+        {
+            _luisResult = lr;
+        }
+
         public async Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
