@@ -22,48 +22,86 @@ namespace TimeMasters.Bot.Dialogs
             context.Wait(MessageReceived);
         }
 
-        [LuisIntent("addCalendarEntry")]
+        [LuisIntent("CreateCalendarEntry")]
         public async Task AddEntry(IDialogContext context, LuisResult result)
         {
             string message = $"I've added ";
+            DateTime dateTime = new DateTime();
+            DateTime timeTime = new DateTime();
+            DateTime startTime;
 
-            EntityRecommendation activityName;
-            if (!result.TryFindEntity("ActivityName", out activityName))
+            EntityRecommendation recommendation;
+            if (!result.TryFindEntity("Calendar::Title", out recommendation))
             {
                 message += "NO NAME ";
             }
             else
             {
-                message += activityName.Entity + " ";
+                message += recommendation.Entity + " ";
             }
 
             message += "on ";
 
-            EntityRecommendation datetime;
-            if (!result.TryFindEntity("builtin.datetime.date", out datetime))
+            if (!result.TryFindEntity("Calendar::StartDate", out recommendation))
             {
                 message += "NO DATETIME ";
             }
             else
             {
-                var parser = new Chronic.Parser();
-                var date = parser.Parse(datetime.Entity);
-                message += date.ToString() + " ";
+                EntityRecommendation date;
+                if(!result.TryFindEntity("builtin.datetime.date", out date))
+                {
+                    message += recommendation.Entity + " ";
+                }
+                else
+                {
+                    var parser = new Chronic.Parser();
+                    var datetime = parser.Parse(date.Entity);
+                    dateTime = datetime.ToTime();
+                    //message += datetime.ToTime().ToString() + " ";
+                }
             }
+
+            message += "at ";
+
+            if (!result.TryFindEntity("Calendar::StartTime", out recommendation))
+            {
+                message += "NO DATETIME ";
+            }
+            else
+            {
+                EntityRecommendation time;
+                if (!result.TryFindEntity("builtin.datetime.time", out time))
+                {
+                    message += recommendation.Entity + " ";
+                }
+                else
+                {
+                    var parser = new Chronic.Parser();
+                    var datetime = parser.Parse(time.Entity);
+                    timeTime = datetime.ToTime();
+                    //message += datetime.ToTime().ToString() + " ";
+                }
+            }
+
+            startTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, timeTime.Hour, timeTime.Minute,
+               timeTime.Second);
+            message += startTime.ToString();
+           
 
             await context.PostAsync(message);
 
             context.Wait(MessageReceived);
         }
 
-        [LuisIntent("removeCalendarEntry")]
+        [LuisIntent("DeleteCalendarEntry")]
         public async Task RemoveEntry(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("luis remove");
             context.Call(new RemoveDialog(result), Done);
         }
 
-        [LuisIntent("updateCalendarEntry")]
+        [LuisIntent("UpdateCalendarEntry")]
         public async Task UpdateEntry(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("luis update");
@@ -74,22 +112,8 @@ namespace TimeMasters.Bot.Dialogs
         {
 
             string temp = (await input) as string;
-            await context.PostAsync($"Fertig mit alles und so {temp}");
+            await context.PostAsync($"Fertig mit {temp} ... AMK");
             context.Wait(MessageReceived);
-        }
-
-        public async Task ConfirmAsync(IDialogContext context, IAwaitable<bool> argument)
-        {
-            var confirm = await argument;
-            if (confirm)
-            {
-                await context.PostAsync("danke für das bestätigen");
-            }
-            else
-            {
-                await context.PostAsync("You just went full retard. Never go full retard.");
-            }
-            //context.Done<IMessageActivity>(null);
         }
     }
 }

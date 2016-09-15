@@ -39,7 +39,7 @@ namespace TimeMasters.Bot
                     ////return our reply to the user
                     //Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
                     //await connector.Conversations.ReplyToActivityAsync(reply);
-                    logger.Info<MessagesController>($"User said: {activity.Text}");
+                    //logger.Info<MessagesController>($"User said: {activity.Text}");
 
                     activity.Text = Translator.Translate(activity.Text, Languages.English);
 
