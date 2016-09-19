@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Bot.Builder.Dialogs;
@@ -17,15 +19,42 @@ namespace TimeMasters.Bot.Dialogs
         private LuisResult _luisResult;
 
         private string _createEntity;
+        private DateTime _inputDateTime;
 
         public CreateDialog(LuisResult lr)
         {
             _luisResult = lr;
-            EntityRecommendation updateEntry;
-            if (lr.TryFindEntity("Calendar::Title", out updateEntry))
+            EntityRecommendation createEntry;
+            if (lr.TryFindEntity("Calendar::Title", out createEntry))
             {
-                _createEntity = updateEntry.Entity;
+                _createEntity = createEntry.Entity;
             }
+
+            DateTime Date = new DateTime();
+            DateTime Time = new DateTime();
+            if (lr.TryFindEntity("Calendar::StartDate", out createEntry))
+            {
+                EntityRecommendation date;
+                if (lr.TryFindEntity("builtin.datetime.date", out date))
+                {
+                    var parser = new Chronic.Parser();
+                    var datetime = parser.Parse(date.Entity);
+                    Date = datetime.ToTime();
+                }
+            }
+
+            if (lr.TryFindEntity("Calendar::StartTime", out createEntry))
+            {
+                EntityRecommendation date;
+                if (lr.TryFindEntity("builtin.datetime.Time", out date))
+                {
+                    var parser = new Chronic.Parser();
+                    var datetime = parser.Parse(date.Entity);
+                    Time = datetime.ToTime();
+                }
+            }
+
+            _inputDateTime = new DateTime(Date.Year, Date.Month, Date.Day, Time.Hour, Time.Minute, Time.Second);
         }
 
         public override async Task StartAsync(IDialogContext context)
@@ -44,10 +73,10 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("CreateCalendarEntry")]
         public async Task CreateEntry(IDialogContext context, LuisResult result)
         {
-            EntityRecommendation updateEntry;
-            if (result.TryFindEntity("Calendar::Title", out updateEntry))
+            EntityRecommendation createEntry;
+            if (result.TryFindEntity("Calendar::Title", out createEntry))
             {
-                _createEntity = updateEntry.Entity;
+                _createEntity = createEntry.Entity;
             }
             CreateEntry(context);
         }
