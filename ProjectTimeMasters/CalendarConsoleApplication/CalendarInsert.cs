@@ -15,24 +15,24 @@ namespace CalendarQuickstart
 {
     class CalendarInsert
     {
-        public void insert()
+        public void insert(CalendarService service)
         {
             Event newEvent = new Event()
             {
                 Summary = "Test Eintrag",
-                Location = "Test Straße",
+                //Location = "Test Straße",
                 Description = "Testen",
 
                 Start = new EventDateTime()
                 {
                     DateTime = DateTime.Parse("2016-09-21"),
-                    TimeZone = "Germany",
+                    TimeZone = "Europe/Zurich",
 
                 },
                 End = new EventDateTime()
                 {
                     DateTime = DateTime.Parse("2016-09-22"),
-                    TimeZone = "Germany",
+                    TimeZone = "Europe/Zurich",
                 },
                 Recurrence = new String[] { "RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=8;WKST=SU;BYDAY=TU,TH" },
                 Attendees = new EventAttendee[]

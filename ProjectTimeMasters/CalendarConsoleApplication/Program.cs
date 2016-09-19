@@ -48,6 +48,9 @@ namespace CalendarQuickstart
                 ApplicationName = ApplicationName,
             });
 
+            CalendarInsert test = new CalendarInsert();
+            test.insert(service);
+
             // Define parameters of request.
             EventsResource.ListRequest request = service.Events.List("primary");
             request.TimeMin = DateTime.Now;
@@ -76,9 +79,6 @@ namespace CalendarQuickstart
                 Console.WriteLine("No upcoming events found.");
             }
             Console.Read();
-
-            CalendarInsert test = new CalendarInsert();
-            test.insert();
         }
     }
 }
