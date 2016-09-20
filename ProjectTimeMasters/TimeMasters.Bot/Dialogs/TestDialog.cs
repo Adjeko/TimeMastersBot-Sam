@@ -94,7 +94,7 @@ namespace TimeMasters.Bot.Dialogs
             //context.Wait(MessageReceived);
 
             await context.PostAsync("luis create");
-            context.Call(new CreateDialog(result), Done);
+            context.Call(new CreateDialog(context, result), Done);
         }
 
         [LuisIntent("DeleteCalendarEntry")]

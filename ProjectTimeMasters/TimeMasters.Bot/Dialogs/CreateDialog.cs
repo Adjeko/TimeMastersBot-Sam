@@ -21,7 +21,7 @@ namespace TimeMasters.Bot.Dialogs
         private string _createEntity;
         private DateTime _inputDateTime;
 
-        public CreateDialog(LuisResult lr)
+        public CreateDialog(IDialogContext context, LuisResult lr)
         {
             _luisResult = lr;
             EntityRecommendation createEntry;
@@ -29,7 +29,6 @@ namespace TimeMasters.Bot.Dialogs
             {
                 _createEntity = createEntry.Entity;
             }
-
             DateTime Date = new DateTime();
             DateTime Time = new DateTime();
             if (lr.TryFindEntity("Calendar::StartDate", out createEntry))
@@ -42,18 +41,16 @@ namespace TimeMasters.Bot.Dialogs
                     Date = datetime.ToTime();
                 }
             }
-
             if (lr.TryFindEntity("Calendar::StartTime", out createEntry))
             {
                 EntityRecommendation date;
-                if (lr.TryFindEntity("builtin.datetime.Time", out date))
+                if (lr.TryFindEntity("builtin.datetime.time", out date))
                 {
                     var parser = new Chronic.Parser();
                     var datetime = parser.Parse(date.Entity);
                     Time = datetime.ToTime();
                 }
             }
-
             _inputDateTime = new DateTime(Date.Year, Date.Month, Date.Day, Time.Hour, Time.Minute, Time.Second);
         }
 
@@ -70,6 +67,11 @@ namespace TimeMasters.Bot.Dialogs
             }
         }
 
+        private void Say(IDialogContext context, string text)
+        {
+            var result = Task.Run(() => context.PostAsync(text));
+        }
+
         [LuisIntent("CreateCalendarEntry")]
         public async Task CreateEntry(IDialogContext context, LuisResult result)
         {
@@ -78,6 +80,31 @@ namespace TimeMasters.Bot.Dialogs
             {
                 _createEntity = createEntry.Entity;
             }
+            await context.PostAsync($"Title: {_createEntity}");
+            DateTime Date = new DateTime();
+            DateTime Time = new DateTime();
+            if (result.TryFindEntity("Calendar::StartDate", out createEntry))
+            {
+                EntityRecommendation date;
+                if (result.TryFindEntity("builtin.datetime.date", out date))
+                {
+                    var parser = new Chronic.Parser();
+                    var datetime = parser.Parse(date.Entity);
+                    Date = datetime.ToTime();
+                }
+            }
+            await context.PostAsync($"Date: {Date}");
+            if (result.TryFindEntity("Calendar::StartTime", out createEntry))
+            {
+                EntityRecommendation date;
+                if (result.TryFindEntity("builtin.datetime.Time", out date))
+                {
+                    var parser = new Chronic.Parser();
+                    var datetime = parser.Parse(date.Entity);
+                    Time = datetime.ToTime();
+                }
+            }
+            await context.PostAsync($"Time: {Time}");
             CreateEntry(context);
         }
 
@@ -93,7 +120,7 @@ namespace TimeMasters.Bot.Dialogs
 
             PromptDialog.Confirm(context,
                                 ConfirmAsync,
-                                $"Soll ich {_createEntity} für dich erstellen ?",
+                                $"Soll ich {_createEntity} um {_inputDateTime} für dich erstellen ?",
                                 "Das habe ich nicht verstanden.",
                                 promptStyle: PromptStyle.None);
         }
@@ -103,7 +130,7 @@ namespace TimeMasters.Bot.Dialogs
             var confirm = await argument;
             if (confirm)
             {
-                await context.PostAsync($"Ich habe {_createEntity} für dich erstellt");
+                await context.PostAsync($"Ich habe {_createEntity} um {_inputDateTime} für dich erstellt");
             }
             else
             {
