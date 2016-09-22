@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Android.App;
 using Android.Content;
 using Android.Runtime;
@@ -9,18 +10,18 @@ using Android.Net;
 
 namespace TimeMasters.Android
 {
-    [Activity(Label = "Phone Word", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "Phoneword", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
-        int count = 1;
-
         protected override void OnCreate(Bundle bundle)
         {
+            static readonly List<string> phoneNumbers = new List<string>();
+
             base.OnCreate(bundle);
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
-
+            
             // Get our UI controls from the loaded layout:
             EditText phoneNumberText = FindViewById<EditText>(Resource.Id.PhoneNumberText);
             Button translateButton = FindViewById<Button>(Resource.Id.TranslateButton);
