@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("TimeMasters.Android.Resource", IsApplication=true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("Timemasters.Droid.Resource", IsApplication=true)]
 
-namespace TimeMasters.Android
+namespace Timemasters.Droid
 {
 	
 	
