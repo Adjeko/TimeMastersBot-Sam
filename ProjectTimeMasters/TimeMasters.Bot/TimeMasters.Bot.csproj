@@ -147,7 +147,7 @@
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Dialogs\CalendarDialog.cs" />
     <Compile Include="Dialogs\CreateDialog.cs" />
-    <Compile Include="Dialogs\RemoveDialog.cs" />
+    <Compile Include="Dialogs\DeleteDialog.cs" />
     <Compile Include="Dialogs\TestDialog.cs" />
     <Compile Include="Dialogs\UpdateDialog.cs" />
     <Compile Include="Global.asax.cs">

@@ -14,14 +14,14 @@ namespace TimeMasters.Bot.Dialogs
 {
     [LuisModel("8ee9bc34-b3fa-4029-a6d5-08b50b22aa18", "3b397c65c2114c759f2bf67c6d473df2")]
     [Serializable]
-    public class RemoveDialog : LuisDialog<object>
+    public class DeleteDialog : LuisDialog<object>
     {
         [NonSerialized]
         private LuisResult _luisResult;
 
         private string _removeEntity;
 
-        public RemoveDialog(LuisResult lr)
+        public DeleteDialog(LuisResult lr)
         {
             _luisResult = lr;
             EntityRecommendation updateEntry;

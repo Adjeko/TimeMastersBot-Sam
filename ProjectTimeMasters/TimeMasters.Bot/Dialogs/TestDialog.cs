@@ -101,7 +101,7 @@ namespace TimeMasters.Bot.Dialogs
         public async Task RemoveEntry(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("luis remove");
-            context.Call(new RemoveDialog(result), Done);
+            context.Call(new DeleteDialog(result), Done);
         }
 
         [LuisIntent("UpdateCalendarEntry")]
