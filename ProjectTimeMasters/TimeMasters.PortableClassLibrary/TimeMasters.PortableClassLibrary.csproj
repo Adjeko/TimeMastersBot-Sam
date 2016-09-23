@@ -36,6 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Calendar\CalendarEntry.cs" />
+    <Compile Include="Calendar\ICalendar.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\StringValueAttribute.cs" />
     <Compile Include="Helpers\Timer.cs" />
@@ -107,7 +109,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Google\" />
+    <Folder Include="Calendar\Google\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
