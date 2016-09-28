@@ -153,6 +153,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Luis\Information.cs" />
+    <Compile Include="Helpers\Luis\InformationManager.cs" />
+    <Compile Include="Helpers\Luis\LuisInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
