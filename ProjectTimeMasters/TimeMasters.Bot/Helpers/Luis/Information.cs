@@ -10,5 +10,10 @@ namespace TimeMasters.Bot.Helpers.Luis
         public bool IsRequired { get; set; }
 
         public abstract bool IsSet();
+
+        public abstract Type Is();
+
+        public abstract void SetEntitiy(object value);
+
     }
 }

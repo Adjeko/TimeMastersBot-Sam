@@ -36,9 +36,17 @@ namespace TimeMasters.Bot.Dialogs
                 EntityRecommendation date;
                 if (lr.TryFindEntity("builtin.datetime.date", out date))
                 {
+                    Say(context, "Recommendation: " + date.Entity + "\n" + date.Resolution["date"]);
                     var parser = new Chronic.Parser();
-                    var datetime = parser.Parse(date.Entity);
-                    Date = datetime.ToTime();
+                    var datetime = parser.Parse(date.Resolution["date"]);
+                    //Date = datetime.ToTime();
+                }
+                if (lr.TryFindEntity("builtin.datetime.date", out date))
+                {
+                    Say(context, "Recommendation: " + date.Entity + "\n" + date.Resolution["date"]);
+                    var parser = new Chronic.Parser();
+                    var datetime = parser.Parse(date.Resolution["date"]);
+                    //Date = datetime.ToTime();
                 }
             }
             if (lr.TryFindEntity("Calendar::StartTime", out createEntry))

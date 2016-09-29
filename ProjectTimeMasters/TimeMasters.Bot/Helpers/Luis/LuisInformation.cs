@@ -10,15 +10,35 @@ namespace TimeMasters.Bot.Helpers.Luis
     {
         public string LuisIdentifier { get; set; }
 
-        public string LuisBuildtinIdentifier { get; set; }
+        public string LuisBuiltinIdentifier { get; set; }
 
         public T Entity { get; set; }
 
-        //public bool isRequired { get; set; }
+
+        public LuisInformation()
+        {
+            
+        }
+
+        public override void SetEntitiy(object value)
+        {
+            if(value != null)
+            Entity = (T) value;
+        }
 
         public override bool IsSet()
         {
             return Entity != null;
+        }
+
+        public override Type Is()
+        {
+            return typeof(T);
+        }
+
+        public override string ToString()
+        {
+            return LuisIdentifier;
         }
     }
 }
