@@ -70,6 +70,9 @@ namespace TimeMasters.PortableClassLibrary.Calendar
 
         public CalendarEntry GetCalendarEntry(string name, DateTime startTime, DateTime endTime)
         {
+
+            Event item = service.Events.get("primary",eventId);
+            return CalendarEntry.ConvertFromGoogleEvent(item);
         }
 
         public CalendarEntry UpdateCalendarEntry(string name, DateTime startDate, DateTime endDate, CalendarEntry entry)
