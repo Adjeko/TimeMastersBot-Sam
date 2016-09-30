@@ -36,9 +36,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DirectLine\BotConnector.cs" />
+    <Compile Include="DirectLine\MessageEntity.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\StringValueAttribute.cs" />
     <Compile Include="Helpers\Timer.cs" />
+    <Compile Include="DirectLine\JsonKlasse.cs" />
     <Compile Include="Logging\Environment.cs" />
     <Compile Include="Logging\Events.cs" />
     <Compile Include="Logging\Exception.cs" />
@@ -55,7 +58,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Google.Apis, Version=1.14.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
