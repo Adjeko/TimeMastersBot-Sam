@@ -40,6 +40,7 @@
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\StringValueAttribute.cs" />
     <Compile Include="Helpers\Timer.cs" />
+    <Compile Include="DirectLine\JsonKlasse.cs" />
     <Compile Include="Logging\Environment.cs" />
     <Compile Include="Logging\Events.cs" />
     <Compile Include="Logging\Exception.cs" />
