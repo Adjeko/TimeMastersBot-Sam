@@ -20,28 +20,15 @@ namespace Timemasters.Droid
             SetContentView (Resource.Layout.Main);
 
             //handle send event
+            EditText editText = FindViewById<EditText>(Resource.Id.EditText);
             Button sendButton = FindViewById<Button>(Resource.Id.SendButton);
             sendButton.Click += (sender, e) =>
             {
+                messages.Add(editText.Text);
                 var intent = new Intent(this, typeof(MessageHistoryActivity));
                 intent.PutStringArrayListExtra("messages", messages);
                 StartActivity(intent);
             };
-
-            EditText editText = FindViewById<EditText>(Resource.Id.EditText);
-
-            /*
-            editText.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    public void onClick(View view)
-                {
-                    messages.add ....
-                }
-            });
-            */
-
-
         }
     }
 }

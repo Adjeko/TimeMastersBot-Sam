@@ -12,7 +12,7 @@ using Android.Widget;
 
 namespace Timemasters.Droid
 {
-    [Activity(Label = "MessageHistoryActivity")]
+    [Activity(Label = "History")]
     public class MessageHistoryActivity : ListActivity
     {
         protected override void OnCreate(Bundle bundle)
