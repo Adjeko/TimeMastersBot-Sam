@@ -9,6 +9,7 @@ using Microsoft.Bot.Connector;
 
 namespace TimeMasters.Bot.Dialogs
 {
+    //AMK
     [LuisModel("8ee9bc34-b3fa-4029-a6d5-08b50b22aa18", "3b397c65c2114c759f2bf67c6d473df2")]
     [Serializable]
     public class TestDialog : LuisDialog<object>
