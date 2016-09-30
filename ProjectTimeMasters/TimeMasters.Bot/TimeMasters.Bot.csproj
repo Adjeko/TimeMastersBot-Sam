@@ -140,10 +140,17 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Dialogs\CalendarDialog.cs" />
+    <Compile Include="Dialogs\CreateDialog.cs" />
+    <Compile Include="Dialogs\DeleteDialog.cs" />
     <Compile Include="Dialogs\TestDialog.cs" />
+    <Compile Include="Dialogs\UpdateDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Luis\Information.cs" />
+    <Compile Include="Helpers\Luis\InformationManager.cs" />
+    <Compile Include="Helpers\Luis\LuisInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
