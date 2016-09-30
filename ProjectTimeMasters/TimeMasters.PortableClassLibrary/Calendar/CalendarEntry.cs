@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Google.Apis.Calendar.v3;
+using Google.Apis.Calendar.v3.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,6 +49,18 @@ namespace TimeMasters.PortableClassLibrary.Calendar
         public CalendarEntry()
         {
             
+        }
+        public static CalendarEntry ConvertFromGoogleEvent(Event gEvent)
+        {
+            CalendarEntry resultEntry = new CalendarEntry()
+            {
+                Name = gEvent.Summary,
+                Description = gEvent.Description,
+                StartTime = (DateTime)gEvent.Start.DateTime,
+                EndTime = (DateTime)gEvent.End.DateTime,
+                Id = gEvent.Id,
+            };
+            return resultEntry;
         }
     }
 }
