@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DirectLine\BotConnector.cs" />
+    <Compile Include="DirectLine\MessageEntity.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\StringValueAttribute.cs" />
     <Compile Include="Helpers\Timer.cs" />

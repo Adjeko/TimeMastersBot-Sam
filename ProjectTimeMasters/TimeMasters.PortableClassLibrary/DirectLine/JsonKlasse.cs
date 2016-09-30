@@ -35,4 +35,12 @@ namespace TimeMasters.PortableClassLibrary
         public string conversationId { get; set; }
         public string token { get; set; }
     }
+
+
+    public class Conversation
+    {
+        public BotMessage[] messages { get; set; }
+        public string watermark { get; set; }
+        public string eTag { get; set; }
+    }
 }
