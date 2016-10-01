@@ -53,6 +53,10 @@ namespace TimeMasters.PortableClassLibrary.Calendar
 
         public bool DeleteCalendarEntry(string name, DateTime minTime, DateTime maxTime)
         {
+            Event evt = GetEvent(name, minTime, maxTime);
+            EventsResource.InsertRequest request = service.Events.delete("primary", evt.Id);
+            request.Execute();
+            return (true);
         }
         public List<CalendarEntry> GetCalendarEntries(DateTime startDate, DateTime endDate)
         {
@@ -70,9 +74,20 @@ namespace TimeMasters.PortableClassLibrary.Calendar
 
         public CalendarEntry GetCalendarEntry(string name, DateTime startTime, DateTime endTime)
         {
+            
+            return CalendarEntry.ConvertFromGoogleEvent(GetEvent(name, startTime, endTime));
+        }
 
-            Event item = service.Events.get("primary",eventId);
-            return CalendarEntry.ConvertFromGoogleEvent(item);
+        private Event GetEvent(string name, DateTime startTime, DateTime endTime)
+        {
+
+            EventsResource.ListRequest request = service.Events.List("primary");
+            request.TimeMax = startTime;
+            request.TimeMin = endTime;
+            Events events = request.Execute();
+            IEnumerable<Event> evt = events.Items.Where(E => E.Summary == name);
+
+            return evt.ElementAt(0);
         }
 
         public CalendarEntry UpdateCalendarEntry(string name, DateTime startDate, DateTime endDate, CalendarEntry entry)
