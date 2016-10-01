@@ -5,6 +5,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
+using TimeMasters.PortableClassLibrary;
 
 
 namespace TimeMasters.Bot.Dialogs
@@ -21,6 +22,17 @@ namespace TimeMasters.Bot.Dialogs
             string message = $"Sorry I did not understand: " + string.Join(", ", result.Intents.Select(i => i.Intent));
             await context.PostAsync(message);
             context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("Test")]
+        public async Task Test(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("Start Test Programm");
+            TestGoogle tmp = new TestGoogle();
+
+            string res = tmp.Test().Result;
+            await context.PostAsync(res);
+            await context.PostAsync("End Test Programm");
         }
 
         [LuisIntent("CreateCalendarEntry")]

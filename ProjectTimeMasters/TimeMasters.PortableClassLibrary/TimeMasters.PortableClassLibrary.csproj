@@ -51,6 +51,7 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\MetroLogVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestGoogle.cs" />
     <Compile Include="Translator\AdmAccessToken.cs" />
     <Compile Include="Translator\AdmAuthentication.cs" />
     <Compile Include="Translator\Languages.cs" />
