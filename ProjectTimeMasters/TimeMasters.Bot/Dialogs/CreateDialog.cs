@@ -23,6 +23,7 @@ namespace TimeMasters.Bot.Dialogs
 
         public CreateDialog(IDialogContext context, LuisResult lr)
         {
+            
             _luisResult = lr;
             EntityRecommendation createEntry;
             if (lr.TryFindEntity("Calendar::Title", out createEntry))
