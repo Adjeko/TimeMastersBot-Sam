@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="client_secret.json" />
     <None Include="Properties\PublishProfiles\TimeMastersBot - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -164,6 +165,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TestClassLibrary\TestClassLibrary.csproj">
+      <Project>{760c1386-96d8-43c2-8c9d-a9fd12d55bb2}</Project>
+      <Name>TestClassLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TimeMasters.PortableClassLibrary\TimeMasters.PortableClassLibrary.csproj">
       <Project>{0cd96cf0-d6aa-4acb-b87d-f8d1d9607728}</Project>
       <Name>TimeMasters.PortableClassLibrary</Name>

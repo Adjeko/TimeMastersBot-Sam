@@ -28,11 +28,34 @@ namespace TimeMasters.Bot.Dialogs
         public async Task Test(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("Start Test Programm");
-            TestGoogle tmp = new TestGoogle();
+            TestClassLibrary.TestGoogle tmp = new TestClassLibrary.TestGoogle();
 
-            string res = tmp.Test().Result;
-            await context.PostAsync(res);
+            //string res = tmp.TestAuthorizationCodeFlow().Result;
+            //await context.PostAsync(res);
+            //tmp.TestWebBroker();
+            string uri = "";
+            tmp.TestCodeFlow(out uri);
+            await context.PostAsync(uri);
+
+            PromptDialog.Text(context, GoogleCode, "Gib mir deinen CODE");
+
+
             await context.PostAsync("End Test Programm");
+
+            //context.Wait(MessageReceived);
+        }
+
+        public async Task GoogleCode(IDialogContext context, IAwaitable<string> input)
+        {
+            string code = await input;
+            await context.PostAsync("Habe Code: " + code + " erhalten");
+
+            TestClassLibrary.TestGoogle tmp = new TestClassLibrary.TestGoogle();
+
+            await context.PostAsync(tmp.TestGrant(code));
+
+            await context.PostAsync("End Test Code Programm");
+            context.Wait(MessageReceived);
         }
 
         [LuisIntent("CreateCalendarEntry")]

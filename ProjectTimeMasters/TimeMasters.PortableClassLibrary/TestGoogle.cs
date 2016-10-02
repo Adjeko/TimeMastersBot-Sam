@@ -20,7 +20,19 @@ namespace TimeMasters.PortableClassLibrary
     public class TestGoogle
     {
 
-        public async Task<string> Test()
+        public void Test()
+        {
+            try
+            {
+                
+            }
+            catch (System.Exception ex)
+            {
+                Logger.GetInstance().Error<TestGoogle>("Google fucked up", ex);
+            }
+        }
+
+        public async Task<string> TestAuthorizationCodeFlow()
         {
 
             Logger logger = Logger.GetInstance();
