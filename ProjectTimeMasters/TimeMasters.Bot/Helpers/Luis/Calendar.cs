@@ -7,57 +7,41 @@ namespace TimeMasters.Bot.Helpers.Luis
 {
     public class Calendar
     {
+        [LuisIdentifier("Calendar::Title")]
+        [IsRequired(true)]
         public string Title { get; set; }
+
+        [LuisIdentifier("Calendar::StartDate")]
+        [LuisIdentifier("Calendar::StartTime")]
+        [LuisBuiltInIdentifier("builtin.datetime.date")]
+        [LuisBuiltInIdentifier("builtin.datetime.time")]
+        [IsRequired(true)]
         public DateTime Start { get; set; }
+
+        [LuisIdentifier("Calendar::OrigStartDate")]
+        [LuisIdentifier("Calendar::OrigStartTime")]
+        [LuisBuiltInIdentifier("builtin.datetime.date")]
+        [LuisBuiltInIdentifier("builtin.datetime.time")]
+        [IsRequired(false)]
         public DateTime OrigStart { get; set; }
+
         //TODO define MoveLaterTime and MoveForwardTime
+
+        [LuisIdentifier("Calendar::EndDate")]
+        [LuisIdentifier("Calendar::EndTime")]
+        [LuisBuiltInIdentifier("builtin.datetime.date")]
+        [LuisBuiltInIdentifier("builtin.datetime.time")]
+        [IsRequired(true)]
         public DateTime End { get; set; }
+
+        [LuisIdentifier("Calendar::Duration")]
+        [LuisBuiltInIdentifier("builtin.datetime.duration")]
+        [IsRequired(false)]
         public DateTime Duration { get; set; }
 
         public Calendar()
         {
             
         }
-
-        public void SetStartDate(DateTime date)
-        {
-            Start = new DateTime(date.Year, date.Month, date.Day, Start.Hour, Start.Minute, Start.Second);
-        }
-
-        public void SetStartTime(DateTime time)
-        {
-            Start = new DateTime(Start.Year, Start.Month, Start.Day, time.Hour, time.Minute, time.Second);
-        }
-
-        public void SetOrigStartDate(DateTime date)
-        {
-            OrigStart = new DateTime(date.Year, date.Month, date.Day, OrigStart.Hour, OrigStart.Minute, OrigStart.Second);
-        }
-
-        public void SetOrigStartTime(DateTime time)
-        {
-            OrigStart = new DateTime(OrigStart.Year, OrigStart.Month, OrigStart.Day, time.Hour, time.Minute, time.Second);
-        }
-
-        public void SetEndDate(DateTime date)
-        {
-            End = new DateTime(date.Year, date.Month, date.Day, End.Hour, End.Minute, End.Second);
-        }
-
-        public void SetEndTime(DateTime time)
-        {
-            End = new DateTime(End.Year, End.Month, End.Day, time.Hour, time.Minute, time.Second);
-        }
-
-        public void SetDurationDate(DateTime date)
-        {
-            Duration = new DateTime(date.Year, date.Month, date.Day, Duration.Hour, Duration.Minute, Duration.Second);
-        }
-
-        public void SetDurationTime(DateTime time)
-        {
-            Duration = new DateTime(Duration.Year, Duration.Month, Duration.Day, time.Hour, time.Minute, time.Second);
-        }
-
     }
 }

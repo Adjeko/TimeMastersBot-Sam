@@ -61,6 +61,10 @@
       <Project>{a8ba1066-5695-4d71-abb4-65e5a5e0c3d4}</Project>
       <Name>TimeMasters.Bot</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TimeMasters.PortableClassLibrary\TimeMasters.PortableClassLibrary.csproj">
+      <Project>{0cd96cf0-d6aa-4acb-b87d-f8d1d9607728}</Project>
+      <Name>TimeMasters.PortableClassLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

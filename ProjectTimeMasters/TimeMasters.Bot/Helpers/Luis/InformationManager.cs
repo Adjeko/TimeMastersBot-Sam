@@ -10,27 +10,30 @@ namespace TimeMasters.Bot.Helpers.Luis
 {
     public class InformationManager
     {
-        public List<Information> Entities { get; set; }
+
+        private CalendarForm _referenceForm;
+        public List<CalendarForm> Forms { get; set; }
 
         public InformationManager()
         {
-            Entities = new List<Information>();
+            _referenceForm = new CalendarForm();
+            Forms = new List<CalendarForm>();
         }
 
         public void AddEntity(Information info)
         {
-            Entities.Add(info);
+            _referenceForm.Add(info);
         }
 
         public void ProcessResult(LuisResult result)
         {
-            foreach(Information i in Entities)
+            foreach(Information i in _referenceForm.Entries)
             {
-                i.SetEntitiy(SearchInLuisResult((dynamic)i, result));
+                SearchInLuisResult((dynamic)i, result);
             }
         }
 
-        private object SearchInLuisResult<T>(T inf, LuisResult result)
+        private void SearchInLuisResult<T>(T inf, LuisResult result)
         {
             //first search for normal recommendation
             //then search for matching build in recommendations
@@ -38,11 +41,19 @@ namespace TimeMasters.Bot.Helpers.Luis
             EntityRecommendation buildRec;
             if (typeof(T) == typeof(LuisInformation<string>))
             {
-                var temp = inf as LuisInformation<string>;
-                if (!result.TryFindEntity(temp.LuisIdentifier, out rec))
-                    return null;
+                var input = inf as LuisInformation<string>;
+                //if (!result.TryFindEntity(input.LuisIdentifier, out rec))
+                //    return null;
 
-                return rec.Entity;
+                //return rec.Entity;
+
+                var list = result.Entities.Where(e => e.Type == input.LuisIdentifier);
+                
+                if (input.LuisIdentifier == "Calendar::Title")
+                {
+                    CalendarForm tmp = _referenceForm;
+                    
+                }
 
             }
             if (typeof(T) == typeof(LuisInformation<DateTime>))
@@ -51,7 +62,7 @@ namespace TimeMasters.Bot.Helpers.Luis
                 DateTime datetime = new DateTime();
 
                 if (!result.TryFindEntity(temp.LuisIdentifier, out rec))
-                    return null;
+                    return;
 
                 if (result.TryFindEntity(temp.LuisBuiltinIdentifier, out buildRec))
                 {
@@ -60,43 +71,32 @@ namespace TimeMasters.Bot.Helpers.Luis
                     datetime = chronic.ToTime();
                 }
 
-                return datetime;
+                return;
             }
             if (typeof(T) == typeof(LuisInformation<LuisResult>))
             {
-                return null;
+                return;
             }
             throw new Exception("This LuisInformation Type is not supported");
         }
 
-        public bool IsRequiredAvailable()
+        public bool IsOneRequiredAvailable()
         {
-            IEnumerable<Information> tmp = Entities.Where(info => (info.IsRequired && info.IsSet()));
+            IEnumerable<CalendarForm> tmp = Forms.Where(form => form.IsRequiredAvailable());
             
-            return tmp.Count() == Entities.Count(e => e.IsRequired);
+            return tmp.Any();
         }
 
-        public bool IsAllAvailable()
+        public bool IsOneAllAvailable()
         {
-            return Entities.Count(info => info.IsSet()) == Entities.Count;
+            IEnumerable<CalendarForm> tmp = Forms.Where(form => form.IsAllAvailable());
+
+            return tmp.Any();
         }
 
         public string GetMissingInformation()
         {
-            if (IsRequiredAvailable())
-            {
-                return null;
-            }
-
-            string returnString = "I still need: \n";
-
-            foreach (Information i in Entities)
-            {
-                if(i.IsRequired && !i.IsSet())
-                    returnString += i.ToString() + "\n";
-            }
-            returnString += "Please provide the missing information";
-            return returnString;
+            return "";
         }
     }
 }

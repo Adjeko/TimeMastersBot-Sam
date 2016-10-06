@@ -14,6 +14,8 @@ namespace TimeMasters.Bot.Helpers.Luis
 
         public T Entity { get; set; }
 
+        public int StartIndex { get; set; }
+        public int EndIndex { get; set; }
 
         public LuisInformation()
         {
