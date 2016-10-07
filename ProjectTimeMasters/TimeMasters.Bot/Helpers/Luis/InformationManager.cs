@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Management;
 using Microsoft.Bot.Builder.Luis;
@@ -8,90 +9,50 @@ using Microsoft.Bot.Builder.Luis.Models;
 
 namespace TimeMasters.Bot.Helpers.Luis
 {
-    public class InformationManager
+    public class InformationManager<T>
     {
-
-        private CalendarForm _referenceForm;
-        public List<CalendarForm> Forms { get; set; }
+        public List<T> Forms { get; set; }
 
         public InformationManager()
         {
-            _referenceForm = new CalendarForm();
-            Forms = new List<CalendarForm>();
-        }
-
-        public void AddEntity(Information info)
-        {
-            _referenceForm.Add(info);
+            Forms = new List<T>();
+            Forms.Add((T) Activator.CreateInstance(typeof(T)));
         }
 
         public void ProcessResult(LuisResult result)
         {
-            foreach(Information i in _referenceForm.Entries)
+            foreach (EntityRecommendation er in result.Entities)
             {
-                SearchInLuisResult((dynamic)i, result);
+                ProcessEntity(er);
             }
         }
 
-        private void SearchInLuisResult<T>(T inf, LuisResult result)
+        private void ProcessEntity(EntityRecommendation entity)
         {
-            //first search for normal recommendation
-            //then search for matching build in recommendations
-            EntityRecommendation rec;
-            EntityRecommendation buildRec;
-            if (typeof(T) == typeof(LuisInformation<string>))
+            Type t = typeof(Calendar);
+            PropertyInfo[] props = t.GetProperties();
+            foreach (PropertyInfo p in props)
             {
-                var input = inf as LuisInformation<string>;
-                //if (!result.TryFindEntity(input.LuisIdentifier, out rec))
-                //    return null;
-
-                //return rec.Entity;
-
-                var list = result.Entities.Where(e => e.Type == input.LuisIdentifier);
-                
-                if (input.LuisIdentifier == "Calendar::Title")
+                object[] attrs = p.GetCustomAttributes(false);
+                foreach (object o in attrs)
                 {
-                    CalendarForm tmp = _referenceForm;
                     
+
+
+                    LuisIdentifierAttribute tmp = o as LuisIdentifierAttribute;
+                    if (tmp?.Value != entity.Type) continue;
+                    if (p.PropertyType == typeof(DateTime))
+                    {
+                        DateTime time = new DateTime();
+                        time = new Chronic.Parser().Parse(entity.Entity).ToTime();
+                        p.SetValue(Forms[0], Convert.ChangeType(time, p.PropertyType), null);
+                    }
+                    else
+                    {
+                        p.SetValue(Forms[0], Convert.ChangeType(entity.Entity, p.PropertyType), null);
+                    }
                 }
-
             }
-            if (typeof(T) == typeof(LuisInformation<DateTime>))
-            {
-                var temp = inf as LuisInformation<DateTime>;
-                DateTime datetime = new DateTime();
-
-                if (!result.TryFindEntity(temp.LuisIdentifier, out rec))
-                    return;
-
-                if (result.TryFindEntity(temp.LuisBuiltinIdentifier, out buildRec))
-                {
-                    var parser = new Chronic.Parser();
-                    var chronic = parser.Parse(buildRec.Entity); //TODO parse buildRec.Resolution["date"]
-                    datetime = chronic.ToTime();
-                }
-
-                return;
-            }
-            if (typeof(T) == typeof(LuisInformation<LuisResult>))
-            {
-                return;
-            }
-            throw new Exception("This LuisInformation Type is not supported");
-        }
-
-        public bool IsOneRequiredAvailable()
-        {
-            IEnumerable<CalendarForm> tmp = Forms.Where(form => form.IsRequiredAvailable());
-            
-            return tmp.Any();
-        }
-
-        public bool IsOneAllAvailable()
-        {
-            IEnumerable<CalendarForm> tmp = Forms.Where(form => form.IsAllAvailable());
-
-            return tmp.Any();
         }
 
         public string GetMissingInformation()

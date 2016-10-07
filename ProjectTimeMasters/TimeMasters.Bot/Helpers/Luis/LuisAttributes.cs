@@ -37,4 +37,14 @@ namespace TimeMasters.Bot.Helpers.Luis
             this.Value = value;
         }
     }
+
+    public class IsPrimaryAttribute : Attribute
+    {
+        public bool Value { get; }
+
+        public IsPrimaryAttribute(bool value)
+        {
+            this.Value = value;
+        }
+    }
 }
