@@ -36,12 +36,15 @@ namespace ConsoleBotTest
 
             List<EntityRecommendation> entityList = new List<EntityRecommendation>();
             entityList.Add(new EntityRecommendation() { Entity = "friday", Type = "Calendar::StartDate", StartIndex = 11, EndIndex = 16, Score = 0.9830753 });
+            entityList.Add(new EntityRecommendation() { Entity = "sunday", Type = "Calendar::StartDate", StartIndex = 22, EndIndex = 27, Score = 0.9144727 });
             entityList.Add(new EntityRecommendation() { Entity = "gym", Type = "Calendar::Title", StartIndex = 4, EndIndex = 6, Score = 0.998410761 });
-            //Dictionary<string, string> dic = new Dictionary<string, string>();
-            //dic.Add("date", "XXXX-WXX-5");
-            //entityList.Add(new EntityRecommendation() { Entity = "friday", Type = "builtin.datetime.date", StartIndex = 11, EndIndex = 16, Resolution = dic });
+            entityList.Add(new EntityRecommendation() { Entity = "17:00", Type = "Calendar::StartTime", StartIndex = 32, EndIndex = 45, Score = 0.9840954 });
+            entityList.Add(new EntityRecommendation() { Entity = "19:00", Type = "Calendar::EndTime", StartIndex = 41, EndIndex = 36, Score = 0.853437364 });
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            dic.Add("date", "XXXX-WXX-5");
+            entityList.Add(new EntityRecommendation() { Entity = "friday", Type = "builtin.datetime.date", StartIndex = 11, EndIndex = 16, Resolution = dic });
 
-            infoManager.ProcessResult(new LuisResult("add gym on friday", intentList, entityList));
+            infoManager.ProcessResult(new LuisResult("add gym on friday and sunday at 17:00 to 19:00", intentList, entityList));
             //Console.WriteLine($"Required: {infoManager.IsOneRequiredAvailable()} + All: {infoManager.IsOneAllAvailable()}");
             //Console.WriteLine(infoManager.GetMissingInformation());
             Console.Read();
