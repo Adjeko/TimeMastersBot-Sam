@@ -47,7 +47,7 @@ namespace TimeMasters.Bot.Helpers.Luis
 
         [LuisIdentifier("Calendar::EndDate")]
         [LuisBuiltInIdentifier("builtin.datetime.date")]
-        [IsRequired(true)]
+        [IsRequired(false)]
         [IsPrimary(false)]
         public DateTime EndDate { get; set; }
 

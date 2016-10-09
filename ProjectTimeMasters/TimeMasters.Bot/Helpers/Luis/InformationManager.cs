@@ -15,8 +15,7 @@ namespace TimeMasters.Bot.Helpers.Luis
 
         public InformationManager()
         {
-            Forms = new List<T>();
-            Forms.Add((T) Activator.CreateInstance(typeof(T)));
+            Forms = new List<T> {(T) Activator.CreateInstance(typeof(T))};
         }
 
         public void ProcessResult(LuisResult result)
@@ -32,6 +31,11 @@ namespace TimeMasters.Bot.Helpers.Luis
             else
             {
                 //make a output, because primary value was not found in this qeue.
+                EntityRecommendation dummy = new EntityRecommendation() {Entity = "DUMMY"};
+                foreach (EntityRecommendation er in result.Entities)
+                {
+                    ProcessEntity(dummy, er);
+                }
             }
             
         }
@@ -136,7 +140,15 @@ namespace TimeMasters.Bot.Helpers.Luis
                         LuisIdentifierAttribute luis = attrs as LuisIdentifierAttribute;
                         if (luis != null)
                         {
-                            return entities.Where(e => e.Type == luis.Value).ElementAt(0);
+                            var list = entities.Where(e => e.Type == luis.Value);
+                            if (list.Any())
+                            {
+                                return list.ElementAt(0);
+                            }
+                            else
+                            {
+                                return null;
+                            }
                         }
                     }
                 }
@@ -181,9 +193,72 @@ namespace TimeMasters.Bot.Helpers.Luis
             return false;
         }
 
-        public string GetMissingInformation()
+        private PropertyInfo[] FormHasMissingRequiredProperties(T form)
         {
-            return "";
+            Type t = form.GetType();
+            PropertyInfo[] props = t.GetProperties();
+
+            //get all properties where IsRequiredAttribute is true
+            var result = props.Where((e) =>
+            {
+                object[] attr = e.GetCustomAttributes(false);
+                var required = attr.Where(a => (a as IsRequiredAttribute) != null);
+
+                if (e.PropertyType == typeof(DateTime))
+                {
+                    return (required.ElementAt(0) as IsRequiredAttribute).Value && ((DateTime)e.GetValue(form)).Equals(new DateTime());
+                }
+                return (required.ElementAt(0) as IsRequiredAttribute).Value && (string)e.GetValue(form) == null;
+            });
+
+            return result.ToArray();
+        }
+
+        private PropertyInfo[] GetAllSetRequiredProperties(T form)
+        {
+            Type t = form.GetType();
+            PropertyInfo[] props = t.GetProperties();
+
+            var result = props.Where((e) =>
+            {
+                object[] attr = e.GetCustomAttributes(false);
+                var required = attr.Where(a => (a as IsRequiredAttribute) != null);
+
+                if (e.PropertyType == typeof(DateTime))
+                {
+                    return (required.ElementAt(0) as IsRequiredAttribute).Value && !((DateTime)e.GetValue(form)).Equals(new DateTime());
+                }
+                return (required.ElementAt(0) as IsRequiredAttribute).Value && (string)e.GetValue(form) != null;
+            });
+
+            return result.ToArray();
+        }
+
+        public string GetNextMissingInformation()
+        {
+            string result = "I need ";
+            foreach (T t in Forms)
+            {
+                var tmp = FormHasMissingRequiredProperties(t);
+                if (tmp == null || tmp.Length == 0) continue;
+
+                foreach (PropertyInfo p in tmp)
+                {
+                    result += $" {p.Name} ";
+                }
+                result += "to finish ";
+
+                var fin = GetAllSetRequiredProperties(t);
+                foreach (PropertyInfo p in fin)
+                {
+                    result += $" {p.Name}:{p.GetValue(t)}  ";
+                }
+
+                break;
+
+            }
+
+            return result;
         }
     }
 }

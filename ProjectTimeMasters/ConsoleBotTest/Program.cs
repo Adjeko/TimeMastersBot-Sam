@@ -16,9 +16,10 @@ namespace ConsoleBotTest
     {
         static void Main(string[] args)
         {
+            Console.SetWindowSize(Console.WindowWidth * 2, Console.WindowHeight * 2);
+            //ReflectionsTest();
             LuisInformationTester();
-            Console.Read();
-
+            
         }
 
         public static void LuisInformationTester()
@@ -47,10 +48,17 @@ namespace ConsoleBotTest
             infoManager.ProcessResult(new LuisResult("add gym on friday and sunday at 17:00 to 19:00", intentList, entityList));
             //Console.WriteLine($"Required: {infoManager.IsOneRequiredAvailable()} + All: {infoManager.IsOneAllAvailable()}");
             //Console.WriteLine(infoManager.GetMissingInformation());
-            Console.Read();
+            Console.WriteLine(infoManager.GetNextMissingInformation());
+            Console.ReadLine();
 
+            Console.WriteLine("You wrote:  the end date is friday and sunday");
+            List<EntityRecommendation> entity2List = new List<EntityRecommendation>();
+            entity2List.Add(new EntityRecommendation() { Entity = "friday", Type = "Calendar::EndDate", StartIndex = 11, EndIndex = 16, Score = 0.9830753 });
+            entity2List.Add(new EntityRecommendation() { Entity = "sunday", Type = "Calendar::EndDate", StartIndex = 22, EndIndex = 27, Score = 0.9144727 });
+            infoManager.ProcessResult(new LuisResult("the end date is friday and sunday", intentList, entity2List));
+            Console.WriteLine(infoManager.GetNextMissingInformation());
 
-            
+            Console.ReadLine();
         }
 
         public static void ReflectionsTest()
