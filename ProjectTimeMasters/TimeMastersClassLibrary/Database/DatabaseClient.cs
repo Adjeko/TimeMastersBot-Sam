@@ -73,7 +73,7 @@ namespace TimeMastersClassLibrary.Database
                 {
                     conn.Close();
                 }
-                    
+
                 //Log exception
                 //Display Error message
             }
