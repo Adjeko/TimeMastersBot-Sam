@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -25,7 +26,7 @@ namespace TimeMasters.Bot.Helpers.Luis
             {
                 foreach (EntityRecommendation er in result.Entities)
                 {
-                    ProcessEntity(primary, er);
+                    ProcessEntityWithPrimary(primary, er);
                 }
             }
             else
@@ -34,13 +35,12 @@ namespace TimeMasters.Bot.Helpers.Luis
                 EntityRecommendation dummy = new EntityRecommendation() {Entity = "DUMMY"};
                 foreach (EntityRecommendation er in result.Entities)
                 {
-                    ProcessEntity(dummy, er);
+                    ProcessEntityWithPrimary(dummy, er);
                 }
             }
-            
         }
 
-        private void ProcessEntity(EntityRecommendation primary, EntityRecommendation entity)
+        private void ProcessEntityWithPrimary(EntityRecommendation primary, EntityRecommendation entity)
         {
             Type t = typeof(T);
             PropertyInfo[] props = t.GetProperties();
@@ -55,7 +55,7 @@ namespace TimeMasters.Bot.Helpers.Luis
                 if (!PropertyContainsLuisIdentifier(attrs, entity.Type)) continue;
 
                 DateTime entityDateTime = new DateTime();
-               
+
                 if (p.PropertyType == typeof(DateTime))
                 {
                     entityDateTime = new Chronic.Parser().Parse(entity.Entity).ToTime();
@@ -65,8 +65,8 @@ namespace TimeMasters.Bot.Helpers.Luis
                 bool shouldBreak = false;
                 foreach (T c in Forms)
                 {
-
-                    bool primBool = (string)primaryProperty.GetValue(c) == primary.Entity || primaryProperty.GetValue(c) == null;
+                    bool primBool = (string) primaryProperty.GetValue(c) == primary.Entity ||
+                                    primaryProperty.GetValue(c) == null;
 
                     //check if value has already been set in the current Form
                     if (p.GetValue(c) == null && primBool)
@@ -75,7 +75,8 @@ namespace TimeMasters.Bot.Helpers.Luis
                         p.SetValue(c, Convert.ChangeType(entity.Entity, p.PropertyType), null);
                         shouldBreak = true;
                     }
-                    if (p.PropertyType == typeof(DateTime) && ((DateTime)p.GetValue(c)).Equals(new DateTime()) && primBool)
+                    if (p.PropertyType == typeof(DateTime) && ((DateTime) p.GetValue(c)).Equals(new DateTime()) &&
+                        primBool)
                     {
                         //set the value
                         p.SetValue(c, Convert.ChangeType(entityDateTime, p.PropertyType), null);
@@ -88,9 +89,10 @@ namespace TimeMasters.Bot.Helpers.Luis
 
                 //no form with an unset property was found
                 //create new form
-                Forms.Add((T)Activator.CreateInstance(typeof(T)));
+                Forms.Add((T) Activator.CreateInstance(typeof(T)));
                 //set primary value of newly created form with the entity found in result
-                primaryProperty.SetValue(Forms.Last(), Convert.ChangeType(primary.Entity, primaryProperty.PropertyType), null);
+                primaryProperty.SetValue(Forms.Last(), Convert.ChangeType(primary.Entity, primaryProperty.PropertyType),
+                    null);
                 //and set itself in the new form
                 if (p.PropertyType == typeof(DateTime))
                 {
@@ -100,11 +102,12 @@ namespace TimeMasters.Bot.Helpers.Luis
                 {
                     p.SetValue(Forms.Last(), Convert.ChangeType(entity.Entity, p.PropertyType), null);
                 }
-                
 
 
-
-                /*foreach (object o in attrs)
+                /* Just left here for lookup purposes
+                 * 
+                 * 
+                 * foreach (object o in attrs)
                 {
                     
 
@@ -206,9 +209,10 @@ namespace TimeMasters.Bot.Helpers.Luis
 
                 if (e.PropertyType == typeof(DateTime))
                 {
-                    return (required.ElementAt(0) as IsRequiredAttribute).Value && ((DateTime)e.GetValue(form)).Equals(new DateTime());
+                    return (required.ElementAt(0) as IsRequiredAttribute).Value &&
+                           ((DateTime) e.GetValue(form)).Equals(new DateTime());
                 }
-                return (required.ElementAt(0) as IsRequiredAttribute).Value && (string)e.GetValue(form) == null;
+                return (required.ElementAt(0) as IsRequiredAttribute).Value && (string) e.GetValue(form) == null;
             });
 
             return result.ToArray();
@@ -226,12 +230,18 @@ namespace TimeMasters.Bot.Helpers.Luis
 
                 if (e.PropertyType == typeof(DateTime))
                 {
-                    return (required.ElementAt(0) as IsRequiredAttribute).Value && !((DateTime)e.GetValue(form)).Equals(new DateTime());
+                    return (required.ElementAt(0) as IsRequiredAttribute).Value &&
+                           !((DateTime) e.GetValue(form)).Equals(new DateTime());
                 }
-                return (required.ElementAt(0) as IsRequiredAttribute).Value && (string)e.GetValue(form) != null;
+                return (required.ElementAt(0) as IsRequiredAttribute).Value && (string) e.GetValue(form) != null;
             });
 
             return result.ToArray();
+        }
+
+        private bool IsFormFilledWithRequiredProperties(T form)
+        {
+            return FormHasMissingRequiredProperties(form).Length == 0;
         }
 
         public string GetNextMissingInformation()
@@ -255,10 +265,32 @@ namespace TimeMasters.Bot.Helpers.Luis
                 }
 
                 break;
-
             }
 
             return result;
+        }
+
+        public List<T> GetFinishedEntries()
+        {
+            List<T> finishedEntries = new List<T>();
+
+            //find finished entries in Forms
+            for (int i = 0; i < Forms.Count; i++)
+            {
+                T tmp = Forms.ElementAt(i);
+                if (IsFormFilledWithRequiredProperties(tmp))
+                {
+                    finishedEntries.Add(tmp);
+                }
+            }
+
+            //delete finished entries from Forms
+            foreach (T t in finishedEntries)
+            {
+                Forms.Remove(t);
+            }
+
+            return finishedEntries;
         }
     }
 }

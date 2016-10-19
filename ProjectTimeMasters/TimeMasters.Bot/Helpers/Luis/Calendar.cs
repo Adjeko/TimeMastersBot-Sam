@@ -61,5 +61,26 @@ namespace TimeMasters.Bot.Helpers.Luis
         {
             
         }
+        
+        protected bool Equals(Calendar other)
+        {
+            return string.Equals(Title, other.Title) && StartTime.Equals(other.StartTime) && StartDate.Equals(other.StartDate) && OrigStartTime.Equals(other.OrigStartTime) && OrigStartDate.Equals(other.OrigStartDate) && EndTime.Equals(other.EndTime) && EndDate.Equals(other.EndDate) && Duration.Equals(other.Duration);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Title?.GetHashCode() ?? 0;
+                hashCode = (hashCode*397) ^ StartTime.GetHashCode();
+                hashCode = (hashCode*397) ^ StartDate.GetHashCode();
+                hashCode = (hashCode*397) ^ OrigStartTime.GetHashCode();
+                hashCode = (hashCode*397) ^ OrigStartDate.GetHashCode();
+                hashCode = (hashCode*397) ^ EndTime.GetHashCode();
+                hashCode = (hashCode*397) ^ EndDate.GetHashCode();
+                hashCode = (hashCode*397) ^ Duration.GetHashCode();
+                return hashCode;
+            }
+        }
     }
 }

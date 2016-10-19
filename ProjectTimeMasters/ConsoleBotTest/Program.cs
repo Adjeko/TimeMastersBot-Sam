@@ -51,12 +51,7 @@ namespace ConsoleBotTest
             Console.WriteLine(infoManager.GetNextMissingInformation());
             Console.ReadLine();
 
-            Console.WriteLine("You wrote:  the end date is friday and sunday");
-            List<EntityRecommendation> entity2List = new List<EntityRecommendation>();
-            entity2List.Add(new EntityRecommendation() { Entity = "friday", Type = "Calendar::EndDate", StartIndex = 11, EndIndex = 16, Score = 0.9830753 });
-            entity2List.Add(new EntityRecommendation() { Entity = "sunday", Type = "Calendar::EndDate", StartIndex = 22, EndIndex = 27, Score = 0.9144727 });
-            infoManager.ProcessResult(new LuisResult("the end date is friday and sunday", intentList, entity2List));
-            Console.WriteLine(infoManager.GetNextMissingInformation());
+            var result = infoManager.GetFinishedEntries();
 
             Console.ReadLine();
         }
