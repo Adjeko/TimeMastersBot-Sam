@@ -408,5 +408,17 @@ namespace TimeMasters.Bot.Helpers.Luis
 
             return finishedEntries;
         }
+
+        public bool IsInformationRequired()
+        {
+            foreach (T t in Forms)
+            {
+                if (!IsFormFilledWithRequiredProperties(t))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

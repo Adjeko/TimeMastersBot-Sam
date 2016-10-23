@@ -22,11 +22,11 @@ namespace TimeMasters.Bot.Helpers.Luis
             get
             {
                 DateTime tmp = new DateTime();
-                return new DateTime(tmp.Year, tmp.Month, tmp.Day, _startDateTime.Hour, _startDateTime.Minute, _startDateTime.Second);
+                return new DateTime(tmp.Year, tmp.Month, tmp.Day, StartDateTime.Hour, StartDateTime.Minute, StartDateTime.Second);
             }
             set
             {
-                _startDateTime = new DateTime(_startDateTime.Year, _startDateTime.Month, _startDateTime.Day, value.Hour, value.Minute, value.Second);
+                StartDateTime = new DateTime(StartDateTime.Year, StartDateTime.Month, StartDateTime.Day, value.Hour, value.Minute, value.Second);
             }
         }
 
@@ -39,15 +39,15 @@ namespace TimeMasters.Bot.Helpers.Luis
             get
             {
                 DateTime tmp = new DateTime();
-                return new DateTime(_startDateTime.Year, _startDateTime.Month, _startDateTime.Day, tmp.Hour, tmp.Minute, tmp.Second);
+                return new DateTime(StartDateTime.Year, StartDateTime.Month, StartDateTime.Day, tmp.Hour, tmp.Minute, tmp.Second);
             }
             set
             {
-                _startDateTime = new DateTime(value.Year, value.Month, value.Day, _startDateTime.Hour, _startDateTime.Minute, _startDateTime.Second);
+                StartDateTime = new DateTime(value.Year, value.Month, value.Day, StartDateTime.Hour, StartDateTime.Minute, StartDateTime.Second);
             }
         }
 
-        private DateTime _startDateTime;
+        public DateTime StartDateTime;
 
         [LuisIdentifier("Calendar::OrigStartTime")]
         [LuisBuiltInIdentifier("builtin.datetime.time")]
@@ -72,11 +72,11 @@ namespace TimeMasters.Bot.Helpers.Luis
             get
             {
                 DateTime tmp = new DateTime();
-                return new DateTime(tmp.Year, tmp.Month, tmp.Day, _endDateTime.Hour, _endDateTime.Minute, _endDateTime.Second);
+                return new DateTime(tmp.Year, tmp.Month, tmp.Day, EndDateTime.Hour, EndDateTime.Minute, EndDateTime.Second);
             }
             set
             {
-                _endDateTime = new DateTime(_endDateTime.Year, _endDateTime.Month, _endDateTime.Day, value.Hour, value.Minute, value.Second);
+                EndDateTime = new DateTime(EndDateTime.Year, EndDateTime.Month, EndDateTime.Day, value.Hour, value.Minute, value.Second);
             }
         }
 
@@ -89,15 +89,15 @@ namespace TimeMasters.Bot.Helpers.Luis
             get
             {
                 DateTime tmp = new DateTime();
-                return new DateTime(_endDateTime.Year, _endDateTime.Month, _endDateTime.Day, tmp.Hour, tmp.Minute, tmp.Second);
+                return new DateTime(EndDateTime.Year, EndDateTime.Month, EndDateTime.Day, tmp.Hour, tmp.Minute, tmp.Second);
             }
             set
             {
-                _endDateTime = new DateTime(value.Year, value.Month, value.Day, _endDateTime.Hour, _endDateTime.Minute, _endDateTime.Second);
+                EndDateTime = new DateTime(value.Year, value.Month, value.Day, EndDateTime.Hour, EndDateTime.Minute, EndDateTime.Second);
             }
         }
 
-        private DateTime _endDateTime;
+        public DateTime EndDateTime;
 
         [LuisIdentifier("Calendar::Duration")]
         [LuisBuiltInIdentifier("builtin.datetime.duration")]
@@ -112,7 +112,7 @@ namespace TimeMasters.Bot.Helpers.Luis
 
         public override string ToString()
         {
-            return $"{Title} from {_startDateTime} to {_endDateTime}. Duration: {Duration}";
+            return $"{Title} from {StartDateTime} to {EndDateTime}. Duration: {Duration}";
         }
 
         protected bool Equals(Calendar other)
@@ -120,10 +120,12 @@ namespace TimeMasters.Bot.Helpers.Luis
             return string.Equals(Title, other.Title)
                 && StartTime.Equals(other.StartTime)
                 && StartDate.Equals(other.StartDate)
+                && StartDateTime.Equals(other.StartDateTime)
                 && OrigStartTime.Equals(other.OrigStartTime) 
                 && OrigStartDate.Equals(other.OrigStartDate)
                 && EndTime.Equals(other.EndTime)
                 && EndDate.Equals(other.EndDate)
+                && EndDateTime.Equals(other.EndDateTime)
                 && Duration.Equals(other.Duration);
         }
 

@@ -8,6 +8,8 @@ using System.Web;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
+using TimeMasters.Bot.Helpers.Luis;
+using Calendar = TimeMasters.Bot.Helpers.Luis.Calendar;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -21,58 +23,24 @@ namespace TimeMasters.Bot.Dialogs
         private string _createEntity;
         private DateTime _inputDateTime;
 
+        private InformationManager<Calendar> calendarManager;
+        private string _ask;
+
         public CreateDialog(IDialogContext context, LuisResult lr)
         {
-            _luisResult = lr;
-            EntityRecommendation createEntry;
-            if (lr.TryFindEntity("Calendar::Title", out createEntry))
+            _ask = "";
+            calendarManager = new InformationManager<Calendar>();
+
+            calendarManager.ProcessResult(lr);
+            if (calendarManager.IsInformationRequired())
             {
-                _createEntity = createEntry.Entity;
+                Say(context, calendarManager.GetNextMissingInformation());
             }
-            DateTime Date = new DateTime();
-            DateTime Time = new DateTime();
-            if (lr.TryFindEntity("Calendar::StartDate", out createEntry))
-            {
-                EntityRecommendation date;
-                if (lr.TryFindEntity("builtin.datetime.date", out date))
-                {
-                    Say(context, "Recommendation: " + date.Entity + "\n" + date.Resolution["date"]);
-                    var parser = new Chronic.Parser();
-                    var datetime = parser.Parse(date.Resolution["date"]);
-                    //Date = datetime.ToTime();
-                }
-                if (lr.TryFindEntity("builtin.datetime.date", out date))
-                {
-                    Say(context, "Recommendation: " + date.Entity + "\n" + date.Resolution["date"]);
-                    var parser = new Chronic.Parser();
-                    var datetime = parser.Parse(date.Resolution["date"]);
-                    //Date = datetime.ToTime();
-                }
-            }
-            if (lr.TryFindEntity("Calendar::StartTime", out createEntry))
-            {
-                EntityRecommendation date;
-                if (lr.TryFindEntity("builtin.datetime.time", out date))
-                {
-                    var parser = new Chronic.Parser();
-                    var datetime = parser.Parse(date.Entity);
-                    Time = datetime.ToTime();
-                }
-            }
-            _inputDateTime = new DateTime(Date.Year, Date.Month, Date.Day, Time.Hour, Time.Minute, Time.Second);
         }
 
         public override async Task StartAsync(IDialogContext context)
         {
-            if (_luisResult.Entities.Count == 0)
-            {
-                GatherMissingInformation(context);
-                context.Wait(MessageReceived);
-            }
-            else
-            {
-                CreateEntry(context);
-            }
+            context.Wait(MessageReceived);
         }
 
         private void Say(IDialogContext context, string text)
@@ -83,52 +51,49 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("CreateCalendarEntry")]
         public async Task CreateEntry(IDialogContext context, LuisResult result)
         {
-            EntityRecommendation createEntry;
-            if (result.TryFindEntity("Calendar::Title", out createEntry))
+            calendarManager.ProcessResult(result);
+            if (calendarManager.IsInformationRequired())
             {
-                _createEntity = createEntry.Entity;
+                Say(context, calendarManager.GetNextMissingInformation());
+                context.Wait(MessageReceived);
             }
-            await context.PostAsync($"Title: {_createEntity}");
-            DateTime Date = new DateTime();
-            DateTime Time = new DateTime();
-            if (result.TryFindEntity("Calendar::StartDate", out createEntry))
+            else
             {
-                EntityRecommendation date;
-                if (result.TryFindEntity("builtin.datetime.date", out date))
-                {
-                    var parser = new Chronic.Parser();
-                    var datetime = parser.Parse(date.Entity);
-                    Date = datetime.ToTime();
-                }
+                AskForUserPermission(context);
             }
-            await context.PostAsync($"Date: {Date}");
-            if (result.TryFindEntity("Calendar::StartTime", out createEntry))
-            {
-                EntityRecommendation date;
-                if (result.TryFindEntity("builtin.datetime.Time", out date))
-                {
-                    var parser = new Chronic.Parser();
-                    var datetime = parser.Parse(date.Entity);
-                    Time = datetime.ToTime();
-                }
-            }
-            await context.PostAsync($"Time: {Time}");
-            CreateEntry(context);
         }
-
-        public async void GatherMissingInformation(IDialogContext context)
+        
+        [LuisIntent("AdditionalInformation")]
+        public async Task AdditionalInformation(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Mir fehlen noch Informationen!");
-            await context.PostAsync("Was möchtest du erstellen?");
+            calendarManager.ProcessResult(result);
+            if (calendarManager.IsInformationRequired())
+            {
+                Say(context, calendarManager.GetNextMissingInformation());
+                context.Wait(MessageReceived);
+            }
+            else
+            {
+                AskForUserPermission(context);
+            }
         }
-
-        public async void CreateEntry(IDialogContext context)
+        
+        public async void AskForUserPermission(IDialogContext context)
         {
-            //TODO: create calendar entry
+            //TODO: create calendar entry in Google or Microsoft Calendar
+
+            var list = calendarManager.GetFinishedEntries();
+            string ask = "Soll ich ";
+            foreach (var item in list)
+            {
+                _ask += $"{item}\n";
+            }
+            ask += _ask;
+            ask += " für dich erstellen ?";
 
             PromptDialog.Confirm(context,
                                 ConfirmAsync,
-                                $"Soll ich {_createEntity} um {_inputDateTime} für dich erstellen ?",
+                                ask,
                                 "Das habe ich nicht verstanden.",
                                 promptStyle: PromptStyle.None);
         }
@@ -138,7 +103,7 @@ namespace TimeMasters.Bot.Dialogs
             var confirm = await argument;
             if (confirm)
             {
-                await context.PostAsync($"Ich habe {_createEntity} um {_inputDateTime} für dich erstellt");
+                await context.PostAsync($"Ich habe {_ask} für dich erstellt");
             }
             else
             {
