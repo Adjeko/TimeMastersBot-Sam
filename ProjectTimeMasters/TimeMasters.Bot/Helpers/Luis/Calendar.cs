@@ -99,7 +99,7 @@ namespace TimeMasters.Bot.Helpers.Luis
         {
 
             //if StartDate and StartTime are set, then assume that EndDate = StartDate
-            if (!StartDate.Equals(new DateTime()) && !StartTime.Equals(new DateTime()) && EndDate.Equals(new DateTime()))
+            if (!StartDate.Equals(new DateTime()) && !StartTime.Equals(new DateTime()) && !EndTime.Equals(new DateTime()) && EndDate.Equals(new DateTime()))
             {
                 EndDate = StartDate;
             }

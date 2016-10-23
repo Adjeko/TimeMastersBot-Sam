@@ -108,7 +108,7 @@ namespace ConsoleBotTest
             Console.ReadLine();
 
             //CLASS IV Test Case
-            Console.WriteLine("Test Case CLASS III");
+            Console.WriteLine("Test Case CLASS IV");
             intentList = new List<IntentRecommendation>();
             intentList.Add(new IntentRecommendation() { Intent = "CreateCalendarEntry", Score = 0.9998312 });
             intentList.Add(new IntentRecommendation() { Intent = "UpdateCalendarEntry", Score = 7.396022E-10 });
@@ -119,8 +119,23 @@ namespace ConsoleBotTest
             entityList.Add(new EntityRecommendation() { Entity = "friday", Type = "Calendar::StartDate", StartIndex = 11, EndIndex = 16, Score = 0.992603958 });
             entityList.Add(new EntityRecommendation() { Entity = "gym", Type = "Calendar::Title", StartIndex = 4, EndIndex = 6, Score = 0.9993661 });
             entityList.Add(new EntityRecommendation() { Entity = "17:00", Type = "Calendar::StartTime", StartIndex = 21, EndIndex = 25, Score = 0.9925799 });
+
+
+            infoManager.ProcessResult(new LuisResult("add gym on friday at 17:00", intentList, entityList));
+            Console.WriteLine(infoManager.GetNextMissingInformation());
+
+            //make the answer
+            intentList.Add(new IntentRecommendation() { Intent = "CreateCalendarEntry", Score = 0.0306769088 });
+            intentList.Add(new IntentRecommendation() { Intent = "UpdateCalendarEntry", Score = 0.00254854467 });
+            intentList.Add(new IntentRecommendation() { Intent = "None", Score = 0.000767548452 });
+            intentList.Add(new IntentRecommendation() { Intent = "DeleteCalendarEntry", Score = 0.0012494463 });
+            intentList.Add(new IntentRecommendation() { Intent = "AdditionalInformation", Score = 0.9887786 });
+
+            entityList = new List<EntityRecommendation>();
+            entityList.Add(new EntityRecommendation() { Entity = "18:00", Type = "Calendar::EndTime", StartIndex = 21, EndIndex = 25, Score = 0.8685397 });
+            entityList.Add(new EntityRecommendation() { Entity = "monday", Type = "Calendar::EndDate", StartIndex = 11, EndIndex = 16, Score = 0.9170408 });
             
-            infoManager.ProcessResult(new LuisResult("add gym on friday and sunday at 17:00 to 19:00", intentList, entityList));
+            infoManager.ProcessResult(new LuisResult("it ends on monday at 18:00", intentList, entityList));
             result = infoManager.GetFinishedEntries();
             foreach (var c in result)
             {

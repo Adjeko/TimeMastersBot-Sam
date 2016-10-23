@@ -22,22 +22,21 @@ namespace TimeMasters.Bot.Helpers.Luis
         public void ProcessResult(LuisResult result)
         {
             //first sort the entities list primary > required > unrequired
+            IList<EntityRecommendation> sortedEntities = SortEntityList(result.Entities);
 
-            EntityRecommendation primary = FindPrimaryEntity(result.Entities);
+            EntityRecommendation primary = FindPrimaryEntity(sortedEntities);
             if (primary != null)
             {
-                foreach (EntityRecommendation er in result.Entities)
+                foreach (EntityRecommendation er in sortedEntities)
                 {
                     ProcessEntityWithPrimary(primary, er);
                 }
             }
             else
             {
-                //make a output, because primary value was not found in this qeue.
-                EntityRecommendation dummy = new EntityRecommendation() {Entity = "DUMMY"};
-                foreach (EntityRecommendation er in result.Entities)
+                foreach (EntityRecommendation er in sortedEntities)
                 {
-                    ProcessEntityWithPrimary(dummy, er);
+                    ProcessEntityWithoutPrimary(er);
                 }
             }
 
@@ -45,6 +44,37 @@ namespace TimeMasters.Bot.Helpers.Luis
             {
                 t.TryResolveMissingInformation();
             }
+        }
+
+        private void ProcessEntityWithoutPrimary(EntityRecommendation entity)
+        {
+            //assume that this entity addresses a missing required property in the first Form
+
+
+            foreach (PropertyInfo p in typeof(T).GetProperties())
+            {
+                object[] attrs = p.GetCustomAttributes(false);
+                if (!PropertyContainsLuisIdentifier(attrs, entity.Type)) continue;
+
+                DateTime entityDateTime = new DateTime();
+
+                if (p.PropertyType == typeof(DateTime))
+                {
+                    entityDateTime = new Chronic.Parser().Parse(entity.Entity).ToTime();
+                }
+
+                //found the corresponding property
+                if (p.GetValue(Forms[0]) == null)
+                {
+                    p.SetValue(Forms[0], Convert.ChangeType(entity.Entity, p.PropertyType), null);
+                }
+                if (p.PropertyType == typeof(DateTime) && ((DateTime) p.GetValue(Forms[0])).Equals(new DateTime()))
+                {
+                    p.SetValue(Forms[0], Convert.ChangeType(entityDateTime, p.PropertyType), null);
+                }
+
+            }
+
         }
 
         private void ProcessEntityWithPrimary(EntityRecommendation primary, EntityRecommendation entity)
@@ -101,14 +131,10 @@ namespace TimeMasters.Bot.Helpers.Luis
                 primaryProperty.SetValue(Forms.Last(), Convert.ChangeType(primary.Entity, primaryProperty.PropertyType),
                     null);
                 //and set itself in the new form
-                if (p.PropertyType == typeof(DateTime))
-                {
-                    p.SetValue(Forms.Last(), Convert.ChangeType(entityDateTime, p.PropertyType), null);
-                }
-                else
-                {
-                    p.SetValue(Forms.Last(), Convert.ChangeType(entity.Entity, p.PropertyType), null);
-                }
+                p.SetValue(Forms.Last(),
+                    p.PropertyType == typeof(DateTime)
+                        ? Convert.ChangeType(entityDateTime, p.PropertyType)
+                        : Convert.ChangeType(entity.Entity, p.PropertyType), null);
 
 
                 /* Just left here for lookup purposes
@@ -136,34 +162,95 @@ namespace TimeMasters.Bot.Helpers.Luis
         }
 
 
-        private List<EntityRecommendation> SortEntityList(List<EntityRecommendation> entities)
+        private IList<EntityRecommendation> SortEntityList(IList<EntityRecommendation> entities)
         {
+            List<EntityRecommendation> tmp1 = new List<EntityRecommendation>(entities);
+            List<EntityRecommendation> tmp2 = new List<EntityRecommendation>(entities);
+
             List<EntityRecommendation> result = new List<EntityRecommendation>();
-
+            
             //first find primary
-            foreach (EntityRecommendation e in entities)
+            foreach (EntityRecommendation e in tmp1)
             {
-                
+                if (IsLuisIdentifierPrimary(e.Type))
+                {
+                    result.Add(e);
+                    tmp2.Remove(e);
+                }
             }
-
+            tmp1 = new List<EntityRecommendation>(tmp2);
             //then find all required
-
+            foreach (EntityRecommendation e in tmp1)
+            {
+                if (IsLuisIdentifierRequired(e.Type))
+                {
+                    result.Add(e);
+                    tmp2.Remove(e);
+                }
+            }
+            tmp1 = new List<EntityRecommendation>(tmp2);
             //last add all unrequired
-
-            return null;
+            foreach (EntityRecommendation e in tmp1)
+            {
+                result.Add(e);
+                tmp2.Remove(e);
+            }
+            
+            return result;
         }
 
         private bool IsLuisIdentifierPrimary(string luisIdentifier)
         {
+            PropertyInfo primProp = FindPrimaryPropery(typeof(T).GetProperties());
+
+            object[] attrs = primProp.GetCustomAttributes(false);
+
+            if (PropertyContainsLuisIdentifier(attrs, luisIdentifier))
+            {
+                //search for isPrimary Attribute
+                foreach (object o in attrs)
+                {
+                    IsPrimaryAttribute a = o as IsPrimaryAttribute;
+                    if (a != null)
+                    {
+                        return a.Value;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private bool IsLuisIdentifierRequired(string luisIdentifier)
+        {
             Type type = typeof(T);
             PropertyInfo[] props = type.GetProperties();
 
-            return true;
-        }
+            bool isRightProperty = false;
+            bool isRequiredProperty = false;
 
-        private bool IsLuisIdentifierRequired()
-        {
-            return true;
+            foreach (PropertyInfo p in props)
+            {
+                object[] attrs = p.GetCustomAttributes(false);
+                foreach (object o in attrs)
+                {
+                    LuisIdentifierAttribute lia = o as LuisIdentifierAttribute;
+                    if (lia != null && lia.Value == luisIdentifier)
+                    {
+                        isRightProperty = true;
+                    }
+                    IsRequiredAttribute ira = o as IsRequiredAttribute;
+                    if (ira != null)
+                    {
+                        isRequiredProperty = ira.Value;
+                    }
+
+                    if (isRightProperty && isRequiredProperty)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private EntityRecommendation FindPrimaryEntity(IList<EntityRecommendation> entities)
@@ -179,18 +266,9 @@ namespace TimeMasters.Bot.Helpers.Luis
                     foreach (object attrs in p.GetCustomAttributes(false))
                     {
                         LuisIdentifierAttribute luis = attrs as LuisIdentifierAttribute;
-                        if (luis != null)
-                        {
-                            var list = entities.Where(e => e.Type == luis.Value);
-                            if (list.Any())
-                            {
-                                return list.ElementAt(0);
-                            }
-                            else
-                            {
-                                return null;
-                            }
-                        }
+                        if (luis == null) continue;
+                        var list = entities.Where(e => e.Type == luis.Value);
+                        return list.Any() ? list.ElementAt(0) : null;
                     }
                 }
             }
@@ -247,10 +325,10 @@ namespace TimeMasters.Bot.Helpers.Luis
 
                 if (e.PropertyType == typeof(DateTime))
                 {
-                    return (required.ElementAt(0) as IsRequiredAttribute).Value &&
+                    return ((IsRequiredAttribute) required.ElementAt(0)).Value &&
                            ((DateTime) e.GetValue(form)).Equals(new DateTime());
                 }
-                return (required.ElementAt(0) as IsRequiredAttribute).Value && (string) e.GetValue(form) == null;
+                return ((IsRequiredAttribute) required.ElementAt(0)).Value && (string) e.GetValue(form) == null;
             });
 
             return result.ToArray();
@@ -268,10 +346,10 @@ namespace TimeMasters.Bot.Helpers.Luis
 
                 if (e.PropertyType == typeof(DateTime))
                 {
-                    return (required.ElementAt(0) as IsRequiredAttribute).Value &&
+                    return ((IsRequiredAttribute) required.ElementAt(0)).Value &&
                            !((DateTime) e.GetValue(form)).Equals(new DateTime());
                 }
-                return (required.ElementAt(0) as IsRequiredAttribute).Value && (string) e.GetValue(form) != null;
+                return ((IsRequiredAttribute) required.ElementAt(0)).Value && (string) e.GetValue(form) != null;
             });
 
             return result.ToArray();
