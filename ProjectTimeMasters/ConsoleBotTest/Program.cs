@@ -27,7 +27,7 @@ namespace ConsoleBotTest
             InformationManager<Calendar> infoManager = new InformationManager<Calendar>();
 
             //CLASS I Test Case
-            Console.WriteLine("Test Case CLASS I:");
+            Console.WriteLine("Test Case CLASS I:  add camping from friday 12:00 to monday 18:00");
 
             List<IntentRecommendation> intentList = new List<IntentRecommendation>();
             intentList.Add(new IntentRecommendation() { Intent = "CreateCalendarEntry", Score = 0.9860273 });
@@ -53,7 +53,7 @@ namespace ConsoleBotTest
 
 
             //CLASS II Test Case
-            Console.WriteLine("Test Case CLASS II");
+            Console.WriteLine("Test Case CLASS II:  add camping on friday from 17:00 to 19:00");
             intentList = new List<IntentRecommendation>();
             intentList.Add(new IntentRecommendation() { Intent = "CreateCalendarEntry", Score = 0.9908426 });
             intentList.Add(new IntentRecommendation() { Intent = "UpdateCalendarEntry", Score = 0.00581081724 });
@@ -81,7 +81,7 @@ namespace ConsoleBotTest
             Console.ReadLine();
 
             //CLASS III Test Case
-            Console.WriteLine("Test Case CLASS III");
+            Console.WriteLine("Test Case CLASS III:  add gym on friday and sunday at 17:00 to 19:00");
             intentList = new List<IntentRecommendation>();
             intentList.Add(new IntentRecommendation() { Intent = "CreateCalendarEntry", Score = 0.9971466 });
             intentList.Add(new IntentRecommendation() { Intent = "UpdateCalendarEntry", Score = 0.018504601 });
@@ -108,7 +108,7 @@ namespace ConsoleBotTest
             Console.ReadLine();
 
             //CLASS IV Test Case
-            Console.WriteLine("Test Case CLASS IV");
+            Console.WriteLine("Test Case CLASS IV: add gym on friday at 17:00");
             intentList = new List<IntentRecommendation>();
             intentList.Add(new IntentRecommendation() { Intent = "CreateCalendarEntry", Score = 0.9998312 });
             intentList.Add(new IntentRecommendation() { Intent = "UpdateCalendarEntry", Score = 7.396022E-10 });
@@ -141,7 +141,7 @@ namespace ConsoleBotTest
             {
                 Console.WriteLine(c);
             }
-            Console.WriteLine("\nPress Enter for Test Case CLASS V\n");
+            //Console.WriteLine("\nPress Enter for Test Case CLASS V\n");
             Console.ReadLine();
         }
 

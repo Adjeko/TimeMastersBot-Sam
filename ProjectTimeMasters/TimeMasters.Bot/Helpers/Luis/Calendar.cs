@@ -17,13 +17,37 @@ namespace TimeMasters.Bot.Helpers.Luis
         [LuisBuiltInIdentifier("builtin.datetime.time")]
         [IsRequired(true)]
         [IsPrimary(false)]
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime
+        {
+            get
+            {
+                DateTime tmp = new DateTime();
+                return new DateTime(tmp.Year, tmp.Month, tmp.Day, _startDateTime.Hour, _startDateTime.Minute, _startDateTime.Second);
+            }
+            set
+            {
+                _startDateTime = new DateTime(_startDateTime.Year, _startDateTime.Month, _startDateTime.Day, value.Hour, value.Minute, value.Second);
+            }
+        }
 
         [LuisIdentifier("Calendar::StartDate")]
         [LuisBuiltInIdentifier("builtin.datetime.date")]
         [IsRequired(true)]
         [IsPrimary(false)]
-        public DateTime StartDate { get; set; }
+        public DateTime StartDate
+        {
+            get
+            {
+                DateTime tmp = new DateTime();
+                return new DateTime(_startDateTime.Year, _startDateTime.Month, _startDateTime.Day, tmp.Hour, tmp.Minute, tmp.Second);
+            }
+            set
+            {
+                _startDateTime = new DateTime(value.Year, value.Month, value.Day, _startDateTime.Hour, _startDateTime.Minute, _startDateTime.Second);
+            }
+        }
+
+        private DateTime _startDateTime;
 
         [LuisIdentifier("Calendar::OrigStartTime")]
         [LuisBuiltInIdentifier("builtin.datetime.time")]
@@ -43,13 +67,37 @@ namespace TimeMasters.Bot.Helpers.Luis
         [LuisBuiltInIdentifier("builtin.datetime.time")]
         [IsRequired(true)]
         [IsPrimary(false)]
-        public DateTime EndTime { get; set; }
+        public DateTime EndTime
+        {
+            get
+            {
+                DateTime tmp = new DateTime();
+                return new DateTime(tmp.Year, tmp.Month, tmp.Day, _endDateTime.Hour, _endDateTime.Minute, _endDateTime.Second);
+            }
+            set
+            {
+                _endDateTime = new DateTime(_endDateTime.Year, _endDateTime.Month, _endDateTime.Day, value.Hour, value.Minute, value.Second);
+            }
+        }
 
         [LuisIdentifier("Calendar::EndDate")]
         [LuisBuiltInIdentifier("builtin.datetime.date")]
         [IsRequired(true)]
         [IsPrimary(false)]
-        public DateTime EndDate { get; set; }
+        public DateTime EndDate
+        {
+            get
+            {
+                DateTime tmp = new DateTime();
+                return new DateTime(_endDateTime.Year, _endDateTime.Month, _endDateTime.Day, tmp.Hour, tmp.Minute, tmp.Second);
+            }
+            set
+            {
+                _endDateTime = new DateTime(value.Year, value.Month, value.Day, _endDateTime.Hour, _endDateTime.Minute, _endDateTime.Second);
+            }
+        }
+
+        private DateTime _endDateTime;
 
         [LuisIdentifier("Calendar::Duration")]
         [LuisBuiltInIdentifier("builtin.datetime.duration")]
@@ -64,7 +112,7 @@ namespace TimeMasters.Bot.Helpers.Luis
 
         public override string ToString()
         {
-            return $"{Title} from {StartDate} + {StartTime} to {EndDate} + {EndTime}. Duration: {Duration}";
+            return $"{Title} from {_startDateTime} to {_endDateTime}. Duration: {Duration}";
         }
 
         protected bool Equals(Calendar other)
