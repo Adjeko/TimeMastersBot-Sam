@@ -6,7 +6,7 @@ using System.Web;
 
 namespace TimeMasters.Bot.Helpers.Luis
 {
-    public class Calendar
+    public class Calendar : ILuisForm
     {
         [LuisIdentifier("Calendar::Title")]
         [IsRequired(true)]
@@ -47,7 +47,7 @@ namespace TimeMasters.Bot.Helpers.Luis
 
         [LuisIdentifier("Calendar::EndDate")]
         [LuisBuiltInIdentifier("builtin.datetime.date")]
-        [IsRequired(false)]
+        [IsRequired(true)]
         [IsPrimary(false)]
         public DateTime EndDate { get; set; }
 
@@ -61,10 +61,22 @@ namespace TimeMasters.Bot.Helpers.Luis
         {
             
         }
-        
+
+        public override string ToString()
+        {
+            return $"{Title} from {StartDate} + {StartTime} to {EndDate} + {EndTime}. Duration: {Duration}";
+        }
+
         protected bool Equals(Calendar other)
         {
-            return string.Equals(Title, other.Title) && StartTime.Equals(other.StartTime) && StartDate.Equals(other.StartDate) && OrigStartTime.Equals(other.OrigStartTime) && OrigStartDate.Equals(other.OrigStartDate) && EndTime.Equals(other.EndTime) && EndDate.Equals(other.EndDate) && Duration.Equals(other.Duration);
+            return string.Equals(Title, other.Title)
+                && StartTime.Equals(other.StartTime)
+                && StartDate.Equals(other.StartDate)
+                && OrigStartTime.Equals(other.OrigStartTime) 
+                && OrigStartDate.Equals(other.OrigStartDate)
+                && EndTime.Equals(other.EndTime)
+                && EndDate.Equals(other.EndDate)
+                && Duration.Equals(other.Duration);
         }
 
         public override int GetHashCode()
@@ -80,6 +92,16 @@ namespace TimeMasters.Bot.Helpers.Luis
                 hashCode = (hashCode*397) ^ EndDate.GetHashCode();
                 hashCode = (hashCode*397) ^ Duration.GetHashCode();
                 return hashCode;
+            }
+        }
+
+        public void TryResolveMissingInformation()
+        {
+
+            //if StartDate and StartTime are set, then assume that EndDate = StartDate
+            if (!StartDate.Equals(new DateTime()) && !StartTime.Equals(new DateTime()) && EndDate.Equals(new DateTime()))
+            {
+                EndDate = StartDate;
             }
         }
     }

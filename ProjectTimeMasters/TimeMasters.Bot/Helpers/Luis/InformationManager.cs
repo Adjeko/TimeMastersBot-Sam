@@ -10,7 +10,7 @@ using Microsoft.Bot.Builder.Luis.Models;
 
 namespace TimeMasters.Bot.Helpers.Luis
 {
-    public class InformationManager<T>
+    public class InformationManager<T> where T : ILuisForm
     {
         public List<T> Forms { get; set; }
 
@@ -21,6 +21,8 @@ namespace TimeMasters.Bot.Helpers.Luis
 
         public void ProcessResult(LuisResult result)
         {
+            //first sort the entities list primary > required > unrequired
+
             EntityRecommendation primary = FindPrimaryEntity(result.Entities);
             if (primary != null)
             {
@@ -37,6 +39,11 @@ namespace TimeMasters.Bot.Helpers.Luis
                 {
                     ProcessEntityWithPrimary(dummy, er);
                 }
+            }
+
+            foreach (T t in Forms)
+            {
+                t.TryResolveMissingInformation();
             }
         }
 
@@ -126,6 +133,37 @@ namespace TimeMasters.Bot.Helpers.Luis
                     }
                 }*/
             }
+        }
+
+
+        private List<EntityRecommendation> SortEntityList(List<EntityRecommendation> entities)
+        {
+            List<EntityRecommendation> result = new List<EntityRecommendation>();
+
+            //first find primary
+            foreach (EntityRecommendation e in entities)
+            {
+                
+            }
+
+            //then find all required
+
+            //last add all unrequired
+
+            return null;
+        }
+
+        private bool IsLuisIdentifierPrimary(string luisIdentifier)
+        {
+            Type type = typeof(T);
+            PropertyInfo[] props = type.GetProperties();
+
+            return true;
+        }
+
+        private bool IsLuisIdentifierRequired()
+        {
+            return true;
         }
 
         private EntityRecommendation FindPrimaryEntity(IList<EntityRecommendation> entities)
