@@ -4,10 +4,10 @@ using System.Linq;
 using System.Web;
 
 
-namespace TimeMasters.Bot.Helpers.Luis
+namespace TimeMasters.Bot.Helpers.Luis.Calendar
 {
     [Serializable]
-    public class Calendar : ILuisForm
+    public class CreateCalendar : ILuisForm
     {
         [LuisIdentifier("Calendar::Title")]
         [IsRequired(true)]
@@ -49,20 +49,6 @@ namespace TimeMasters.Bot.Helpers.Luis
         }
 
         public DateTime StartDateTime;
-
-        [LuisIdentifier("Calendar::OrigStartTime")]
-        [LuisBuiltInIdentifier("builtin.datetime.time")]
-        [IsRequired(false)]
-        [IsPrimary(false)]
-        public DateTime OrigStartTime { get; set; }
-
-        [LuisIdentifier("Calendar::OrigStartDate")]
-        [LuisBuiltInIdentifier("builtin.datetime.date")]
-        [IsRequired(false)]
-        [IsPrimary(false)]
-        public DateTime OrigStartDate { get; set; }
-
-        //TODO define MoveLaterTime and MoveForwardTime
 
         [LuisIdentifier("Calendar::EndTime")]
         [LuisBuiltInIdentifier("builtin.datetime.time")]
@@ -106,7 +92,7 @@ namespace TimeMasters.Bot.Helpers.Luis
         [IsPrimary(false)]
         public DateTime Duration { get; set; }
 
-        public Calendar()
+        public CreateCalendar()
         {
             
         }
@@ -116,14 +102,12 @@ namespace TimeMasters.Bot.Helpers.Luis
             return $"{Title} from {StartDateTime} to {EndDateTime}. Duration: {Duration}";
         }
 
-        protected bool Equals(Calendar other)
+        protected bool Equals(CreateCalendar other)
         {
             return string.Equals(Title, other.Title)
                 && StartTime.Equals(other.StartTime)
                 && StartDate.Equals(other.StartDate)
                 && StartDateTime.Equals(other.StartDateTime)
-                && OrigStartTime.Equals(other.OrigStartTime) 
-                && OrigStartDate.Equals(other.OrigStartDate)
                 && EndTime.Equals(other.EndTime)
                 && EndDate.Equals(other.EndDate)
                 && EndDateTime.Equals(other.EndDateTime)
@@ -137,8 +121,6 @@ namespace TimeMasters.Bot.Helpers.Luis
                 var hashCode = Title?.GetHashCode() ?? 0;
                 hashCode = (hashCode*397) ^ StartTime.GetHashCode();
                 hashCode = (hashCode*397) ^ StartDate.GetHashCode();
-                hashCode = (hashCode*397) ^ OrigStartTime.GetHashCode();
-                hashCode = (hashCode*397) ^ OrigStartDate.GetHashCode();
                 hashCode = (hashCode*397) ^ EndTime.GetHashCode();
                 hashCode = (hashCode*397) ^ EndDate.GetHashCode();
                 hashCode = (hashCode*397) ^ Duration.GetHashCode();

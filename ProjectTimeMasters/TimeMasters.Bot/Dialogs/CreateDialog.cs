@@ -9,7 +9,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using TimeMasters.Bot.Helpers.Luis;
-using Calendar = TimeMasters.Bot.Helpers.Luis.Calendar;
+using CreateCalendar = TimeMasters.Bot.Helpers.Luis.Calendar.CreateCalendar;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -17,13 +17,13 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class CreateDialog : LuisDialog<object>
     {
-        private InformationManager<Calendar> calendarManager;
+        private InformationManager<CreateCalendar> calendarManager;
         private string _ask;
 
         public CreateDialog(IDialogContext context, LuisResult lr)
         {
             _ask = "";
-            calendarManager = new InformationManager<Calendar>();
+            calendarManager = new InformationManager<CreateCalendar>();
 
             calendarManager.ProcessResult(lr);
         }
@@ -55,7 +55,7 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("Test")]
         public async Task Test(IDialogContext context, LuisResult result)
         {
-            foreach (Calendar c in calendarManager.Forms)
+            foreach (CreateCalendar c in calendarManager.Forms)
             {
                 Say(context, c.ToString());
             }

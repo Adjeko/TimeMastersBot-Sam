@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Luis.Models;
 using TimeMasters.Bot.Helpers.Luis;
+using TimeMasters.Bot.Helpers.Luis.Calendar;
 using TimeMasters.PortableClassLibrary.Helpers;
 
 
@@ -31,7 +32,7 @@ namespace ConsoleBotTest
 
         public static void LuisInformationTester()
         {
-            InformationManager<Calendar> infoManager = new InformationManager<Calendar>();
+            InformationManager<CreateCalendar> infoManager = new InformationManager<CreateCalendar>();
 
             //CLASS I Test Case
             Console.WriteLine("Test Case CLASS I:  add camping from friday 12:00 to monday 18:00");
@@ -154,7 +155,7 @@ namespace ConsoleBotTest
 
         public static void ReflectionsTest()
         {
-            Calendar calend = new Calendar() { Title = "Test" };
+            CreateCalendar calend = new CreateCalendar() { Title = "Test" };
             Type c = calend.GetType();
 
             PropertyInfo[] prop = calend.GetType().GetProperties();
