@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Management;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 
@@ -89,6 +91,7 @@ namespace TimeMasters.Bot.Helpers.Luis
 
             PropertyInfo primaryProperty = FindPrimaryPropery(props);
 
+            
             foreach (PropertyInfo p in props)
             {
                 object[] attrs = p.GetCustomAttributes(false);
@@ -129,40 +132,28 @@ namespace TimeMasters.Bot.Helpers.Luis
 
                 if (shouldBreak) continue;
 
+                //build new object by copying an existing one
+                T newT = (T) Activator.CreateInstance(typeof(T));
+                PropertyInfo[] newProps = typeof(T).GetProperties();
+                foreach (PropertyInfo info in newProps)
+                {
+                    //make a copy of the first element in Forms
+                    var value = info.GetValue(Forms.ElementAt(0));
+                    info.SetValue(newT, value);
+                }
+
                 //no form with an unset property was found
                 //create new form
-                Forms.Add((T) Activator.CreateInstance(typeof(T)));
+                Forms.Add(newT);
                 //set primary value of newly created form with the entity found in result
-                primaryProperty.SetValue(Forms.Last(), Convert.ChangeType(primary.Entity, primaryProperty.PropertyType),
-                    null);
+                //primaryProperty.SetValue(Forms.Last(), Convert.ChangeType(primary.Entity, primaryProperty.PropertyType),
+                //    null);
                 //and set itself in the new form
                 p.SetValue(Forms.Last(),
                     p.PropertyType == typeof(DateTime)
                         ? Convert.ChangeType(entityDateTime, p.PropertyType)
                         : Convert.ChangeType(entity.Entity, p.PropertyType), null);
-
-
-                /* Just left here for lookup purposes
-                 * 
-                 * 
-                 * foreach (object o in attrs)
-                {
-                    
-
-                    LuisIdentifierAttribute tmp = o as LuisIdentifierAttribute;
-                    if (tmp?.Value != entity.Type) continue;
-                   
-                    if (p.PropertyType == typeof(DateTime))
-                    {
-                        DateTime time = new DateTime();
-                        time = new Chronic.Parser().Parse(entity.Entity).ToTime();
-                        p.SetValue(Forms[0], Convert.ChangeType(time, p.PropertyType), null);
-                    }
-                    else
-                    {
-                        p.SetValue(Forms[0], Convert.ChangeType(entity.Entity, p.PropertyType), null);
-                    }
-                }*/
+                
             }
         }
 

@@ -17,12 +17,6 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class CreateDialog : LuisDialog<object>
     {
-        [NonSerialized]
-        private LuisResult _luisResult;
-
-        private string _createEntity;
-        private DateTime _inputDateTime;
-
         private InformationManager<Calendar> calendarManager;
         private string _ask;
 
@@ -30,14 +24,6 @@ namespace TimeMasters.Bot.Dialogs
         {
             _ask = "";
             calendarManager = new InformationManager<Calendar>();
-
-            Say(context, lr.Query + " " + lr.Entities.Count);
-            string entitiesTest = "";
-            foreach (EntityRecommendation e in lr.Entities)
-            {
-                entitiesTest += $"Type: {e.Type} Entity: {e.Entity}\n";
-            }
-            Say(context, entitiesTest);
 
             calendarManager.ProcessResult(lr);
             if (calendarManager.IsInformationRequired())
