@@ -26,22 +26,11 @@ namespace TimeMasters.Bot.Dialogs
             calendarManager = new InformationManager<Calendar>();
 
             calendarManager.ProcessResult(lr);
-            if (calendarManager.IsInformationRequired())
-            {
-                Say(context, calendarManager.GetNextMissingInformation());
-            }
         }
 
         public override async Task StartAsync(IDialogContext context)
         {
-            if (calendarManager.IsInformationRequired())
-            {
-                context.Wait(MessageReceived);
-            }
-            else
-            {
-                AskForUserPermission(context);
-            }
+            ProcessManagerResult(context);
         }
 
         private void Say(IDialogContext context, string text)
@@ -53,30 +42,14 @@ namespace TimeMasters.Bot.Dialogs
         public async Task CreateEntry(IDialogContext context, LuisResult result)
         {
             calendarManager.ProcessResult(result);
-            if (calendarManager.IsInformationRequired())
-            {
-                Say(context, calendarManager.GetNextMissingInformation());
-                context.Wait(MessageReceived);
-            }
-            else
-            {
-                AskForUserPermission(context);
-            }
+            ProcessManagerResult(context);
         }
         
         [LuisIntent("AdditionalInformation")]
         public async Task AdditionalInformation(IDialogContext context, LuisResult result)
         {
             calendarManager.ProcessResult(result);
-            if (calendarManager.IsInformationRequired())
-            {
-                Say(context, calendarManager.GetNextMissingInformation());
-                context.Wait(MessageReceived);
-            }
-            else
-            {
-                AskForUserPermission(context);
-            }
+            ProcessManagerResult(context);
         }
 
         [LuisIntent("Test")]
@@ -88,11 +61,22 @@ namespace TimeMasters.Bot.Dialogs
             }
             //context.Wait(MessageReceived);
         }
+
+        private void ProcessManagerResult(IDialogContext context)
+        {
+            if (calendarManager.IsInformationRequired())
+            {
+                Say(context, calendarManager.GetNextMissingInformation());
+                context.Wait(MessageReceived);
+            }
+            else
+            {
+                AskForUserPermission(context);
+            }
+        }
         
         public async void AskForUserPermission(IDialogContext context)
         {
-            //TODO: create calendar entry in Google or Microsoft Calendar
-
             var list = calendarManager.GetFinishedEntries();
             string ask = "Soll ich ";
             foreach (var item in list)
@@ -114,6 +98,7 @@ namespace TimeMasters.Bot.Dialogs
             var confirm = await argument;
             if (confirm)
             {
+                //TODO: create calendar entry in Google or Microsoft Calendar
                 await context.PostAsync($"Ich habe {_ask} für dich erstellt");
             }
             else
