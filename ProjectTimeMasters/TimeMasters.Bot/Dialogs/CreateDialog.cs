@@ -31,6 +31,14 @@ namespace TimeMasters.Bot.Dialogs
             _ask = "";
             calendarManager = new InformationManager<Calendar>();
 
+            Say(context, lr.Query + " " + lr.Entities.Count);
+            string entitiesTest = "";
+            foreach (EntityRecommendation e in lr.Entities)
+            {
+                entitiesTest += $"Type: {e.Type} Entity: {e.Entity}\n";
+            }
+            Say(context, entitiesTest);
+
             calendarManager.ProcessResult(lr);
             if (calendarManager.IsInformationRequired())
             {
@@ -40,7 +48,14 @@ namespace TimeMasters.Bot.Dialogs
 
         public override async Task StartAsync(IDialogContext context)
         {
-            context.Wait(MessageReceived);
+            if (calendarManager.IsInformationRequired())
+            {
+                context.Wait(MessageReceived);
+            }
+            else
+            {
+                AskForUserPermission(context);
+            }
         }
 
         private void Say(IDialogContext context, string text)
@@ -76,6 +91,16 @@ namespace TimeMasters.Bot.Dialogs
             {
                 AskForUserPermission(context);
             }
+        }
+
+        [LuisIntent("Test")]
+        public async Task Test(IDialogContext context, LuisResult result)
+        {
+            foreach (Calendar c in calendarManager.Forms)
+            {
+                Say(context, c.ToString());
+            }
+            //context.Wait(MessageReceived);
         }
         
         public async void AskForUserPermission(IDialogContext context)

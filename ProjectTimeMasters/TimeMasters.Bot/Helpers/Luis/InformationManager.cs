@@ -10,6 +10,7 @@ using Microsoft.Bot.Builder.Luis.Models;
 
 namespace TimeMasters.Bot.Helpers.Luis
 {
+    [Serializable]
     public class InformationManager<T> where T : ILuisForm
     {
         public List<T> Forms { get; set; }
@@ -23,6 +24,10 @@ namespace TimeMasters.Bot.Helpers.Luis
         {
             //first sort the entities list primary > required > unrequired
             IList<EntityRecommendation> sortedEntities = SortEntityList(result.Entities);
+            foreach (EntityRecommendation e in sortedEntities)
+            {
+                e.Entity = new string(e.Entity.Where(c => !char.IsWhiteSpace(c)).ToArray());
+            }
 
             EntityRecommendation primary = FindPrimaryEntity(sortedEntities);
             if (primary != null)

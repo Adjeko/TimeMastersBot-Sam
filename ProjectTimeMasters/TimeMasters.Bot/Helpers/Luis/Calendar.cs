@@ -6,6 +6,7 @@ using System.Web;
 
 namespace TimeMasters.Bot.Helpers.Luis
 {
+    [Serializable]
     public class Calendar : ILuisForm
     {
         [LuisIdentifier("Calendar::Title")]

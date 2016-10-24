@@ -41,7 +41,7 @@ namespace TimeMasters.Bot
                     //await connector.Conversations.ReplyToActivityAsync(reply);
                     //logger.Info<MessagesController>($"User said: {activity.Text}");
 
-                    activity.Text = Translator.Translate(activity.Text, Languages.English);
+                    //activity.Text = Translator.Translate(activity.Text, Languages.English);
 
                     logger.Info<MessagesController>($"User said (translated): {activity.Text}");
 
