@@ -78,17 +78,14 @@ namespace TimeMasters.Bot.Dialogs
         public async void ConfirmWithUserPermission(IDialogContext context)
         {
             var list = calendarManager.GetFinishedEntries();
-            string ask = "Soll ich ";
             foreach (var item in list)
             {
                 _ask += $"{item}\n";
             }
-            ask += _ask;
-            ask += " für dich erstellen ?";
-
+            
             PromptDialog.Confirm(context,
                                 ConfirmAsync,
-                                ask,
+                                $"Soll ich {_ask} für dich erstellen ?",
                                 "Das habe ich nicht verstanden.",
                                 promptStyle: PromptStyle.None);
         }

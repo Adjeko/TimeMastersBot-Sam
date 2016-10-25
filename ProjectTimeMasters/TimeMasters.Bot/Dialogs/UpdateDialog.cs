@@ -6,37 +6,87 @@ using System.Web;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
+using TimeMasters.Bot.Helpers.Luis;
+using TimeMasters.Bot.Helpers.Luis.Calendar;
+using Microsoft.Bot.Builder.Luis;
 
 namespace TimeMasters.Bot.Dialogs
 {
+    [LuisModel("8ee9bc34-b3fa-4029-a6d5-08b50b22aa18", "3b397c65c2114c759f2bf67c6d473df2")]
     [Serializable]
-    public class UpdateDialog : IDialog<object>
+    public class UpdateDialog : LuisDialog<object>
     {
-        [NonSerialized]
-        private LuisResult _luisResult;
+        private InformationManager<UpdateCalendar> calendarManager;
+        private string _ask;
 
-        public UpdateDialog(LuisResult lr)
+        public UpdateDialog(IDialogContext context, LuisResult lr)
         {
-            _luisResult = lr;
+            _ask = "";
+            calendarManager = new InformationManager<UpdateCalendar>();
+
+            calendarManager.ProcessResult(lr);
         }
 
-        public async Task StartAsync(IDialogContext context)
+        public override async Task StartAsync(IDialogContext context)
         {
-            context.Wait(MessageReceivedAsync);
-            
+            ProcessManagerResult(context);
         }
 
-        public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        private void Say(IDialogContext context, string text)
         {
-            var temp = await argument;
+            var result = Task.Run(() => context.PostAsync(text));
+        }
 
-            PromptDialog.Confirm(
-                context,
-                ConfirmAsync,
-                "Du wolltest etwas updaten?",
-                "Keine Ahnung was du vorhatest.",
-                promptStyle: PromptStyle.None);
+        [LuisIntent("UpdateCalendarEntry")]
+        public async Task CreateEntry(IDialogContext context, LuisResult result)
+        {
+            calendarManager.ProcessResult(result);
+            ProcessManagerResult(context);
+        }
 
+        [LuisIntent("AdditionalInformation")]
+        public async Task AdditionalInformation(IDialogContext context, LuisResult result)
+        {
+            calendarManager.ProcessResult(result);
+            ProcessManagerResult(context);
+        }
+
+        [LuisIntent("Test")]
+        public async Task Test(IDialogContext context, LuisResult result)
+        {
+            foreach (UpdateCalendar c in calendarManager.Forms)
+            {
+                Say(context, c.ToString());
+            }
+            //context.Wait(MessageReceived);
+        }
+
+        private void ProcessManagerResult(IDialogContext context)
+        {
+            if (calendarManager.IsInformationRequired())
+            {
+                Say(context, calendarManager.GetNextMissingInformation());
+                context.Wait(MessageReceived);
+            }
+            else
+            {
+                ConfirmWithUserPermission(context);
+            }
+        }
+
+        public async void ConfirmWithUserPermission(IDialogContext context)
+        {
+            var list = calendarManager.GetFinishedEntries();
+            foreach (var item in list)
+            {
+                _ask += $"{item}\n";
+            }
+
+            PromptDialog.Confirm(context,
+                                ConfirmAsync,
+                                $"Soll ich {_ask} für dich ändern ?",
+                                "Das habe ich nicht verstanden.",
+                                promptStyle: PromptStyle.None);
         }
 
         public async Task ConfirmAsync(IDialogContext context, IAwaitable<bool> argument)
@@ -44,13 +94,13 @@ namespace TimeMasters.Bot.Dialogs
             var confirm = await argument;
             if (confirm)
             {
-                await context.PostAsync("danke für das bestätigen");
+                await context.PostAsync($"Ich habe {_ask} für dich geändert");
             }
             else
             {
                 await context.PostAsync("You just went full retard. Never go full retard.");
             }
-            context.Done<IMessageActivity>(null);
+            context.Done<string>("CREATE");
         }
     }
 }
