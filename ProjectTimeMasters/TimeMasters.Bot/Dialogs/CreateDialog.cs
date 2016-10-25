@@ -9,7 +9,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using TimeMasters.Bot.Helpers.Luis;
-using CreateCalendar = TimeMasters.Bot.Helpers.Luis.Calendar.CreateCalendar;
+using TimeMasters.Bot.Helpers.Luis.Calendar;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -71,11 +71,11 @@ namespace TimeMasters.Bot.Dialogs
             }
             else
             {
-                AskForUserPermission(context);
+                ConfirmWithUserPermission(context);
             }
         }
         
-        public async void AskForUserPermission(IDialogContext context)
+        public async void ConfirmWithUserPermission(IDialogContext context)
         {
             var list = calendarManager.GetFinishedEntries();
             string ask = "Soll ich ";

@@ -9,6 +9,8 @@ using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using TimeMasters.PortableClassLibrary.Logging;
+using TimeMasters.Bot.Helpers.Luis;
+using TimeMasters.Bot.Helpers.Luis.Calendar;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -16,65 +18,80 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class DeleteDialog : LuisDialog<object>
     {
-        [NonSerialized]
-        private LuisResult _luisResult;
+        private InformationManager<DeleteCalendar> calendarManager;
+        private string _ask;
 
-        private string _removeEntity;
-
-        public DeleteDialog(LuisResult lr)
+        public DeleteDialog(IDialogContext context, LuisResult lr)
         {
-            _luisResult = lr;
-            EntityRecommendation updateEntry;
-            if (lr.TryFindEntity("Calendar::Title", out updateEntry))
-            {
-                _removeEntity = updateEntry.Entity;
-            }
+            _ask = "";
+            calendarManager = new InformationManager<DeleteCalendar>();
+
+            calendarManager.ProcessResult(lr);
+        }
+
+        private void Say(IDialogContext context, string text)
+        {
+            var result = Task.Run(() => context.PostAsync(text));
         }
 
         public override async Task StartAsync(IDialogContext context)
         {
-            //await base.StartAsync(context);
-
-            if (_luisResult.Entities.Count == 0)
-            {
-                GatherMissingInformation(context);
-                context.Wait(MessageReceived);
-            }
-            else
-            {
-                SearchEntryAndRemove(context);
-            }
-
-            //context.Wait(MessageReceived);
-            //context.Done("Es haben Informationen gefehlt");
+            ProcessManagerResult(context);
         }
 
 
         [LuisIntent("DeleteCalendarEntry")]
         public async Task RemoveEntry(IDialogContext context, LuisResult result)
         {
-            EntityRecommendation updateEntry;
-            if (result.TryFindEntity("Calendar::Title", out updateEntry))
+            calendarManager.ProcessResult(result);
+            ProcessManagerResult(context);
+        }
+
+        [LuisIntent("AdditionalInformation")]
+        public async Task AdditionalInformation(IDialogContext context, LuisResult result)
+        {
+            calendarManager.ProcessResult(result);
+            ProcessManagerResult(context);
+        }
+
+        [LuisIntent("Test")]
+        public async Task Test(IDialogContext context, LuisResult result)
+        {
+            foreach (DeleteCalendar c in calendarManager.Forms)
             {
-                _removeEntity = updateEntry.Entity;
+                Say(context, c.ToString());
             }
-            SearchEntryAndRemove(context);
+            //context.Wait(MessageReceived);
         }
 
-        public async void GatherMissingInformation(IDialogContext context)
+        private void ProcessManagerResult(IDialogContext context)
         {
-            await context.PostAsync("Mir fehlen noch Informationen!");
-            await context.PostAsync("Was möchtest du löschen?");
-
+            if (calendarManager.IsInformationRequired())
+            {
+                Say(context, calendarManager.GetNextMissingInformation());
+                context.Wait(MessageReceived);
+            }
+            else
+            {
+                ConfirmWithUserPermission(context);
+            }
         }
 
-        private void SearchEntryAndRemove(IDialogContext context)
+        private void ConfirmWithUserPermission(IDialogContext context)
         {
-            //TODO: search for calendar entry and handling if nothing found
+            var list = calendarManager.GetFinishedEntries();
+            string ask = "Soll ich ";
+            foreach (var item in list)
+            {
+                _ask += $"{item}\n";
+            }
+            ask += _ask;
+            ask += " für dich erstellen ?";
+
 
             PromptDialog.Confirm(context,
                                 ConfirmAsync,
-                                $"Soll ich {_removeEntity} für dich löschen ?",
+                                $"Soll ich {_ask} für dich löschen ?",
                                 "Das habe ich nicht verstanden.",
                                 promptStyle: PromptStyle.None);
         }
@@ -84,7 +101,7 @@ namespace TimeMasters.Bot.Dialogs
             var confirm = await argument;
             if (confirm)
             {
-                await context.PostAsync($"Ich habe {_removeEntity} für dich gelöscht");
+                await context.PostAsync($"Ich habe {_ask} für dich gelöscht");
             }
             else
             {
