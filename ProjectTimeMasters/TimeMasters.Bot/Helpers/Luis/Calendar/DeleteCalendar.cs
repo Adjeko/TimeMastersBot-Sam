@@ -121,7 +121,7 @@ namespace TimeMasters.Bot.Helpers.Luis.Calendar
 
         public void TryResolveMissingInformation()
         {
-            throw new NotImplementedException();
+            return;
         }
     }
 }

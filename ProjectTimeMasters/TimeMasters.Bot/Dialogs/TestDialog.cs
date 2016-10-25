@@ -144,7 +144,7 @@ namespace TimeMasters.Bot.Dialogs
         public async Task UpdateEntry(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("luis update");
-            context.Call(new UpdateDialog(result), Done);
+            context.Call(new UpdateDialog(context, result), Done);
         }
 
         public async Task Done(IDialogContext context, IAwaitable<object> input)
