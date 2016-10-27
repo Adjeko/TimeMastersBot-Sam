@@ -11,32 +11,46 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using Newtonsoft.Json;
 using TimeMasters.Bot.Dialogs;
+using TimeMasters.PortableClassLibrary.Helpers;
 using TimeMasters.PortableClassLibrary.Translator;
-
+using TimeMasters.PortableClassLibrary.Logging;
 
 namespace TimeMasters.Bot
 {
     [BotAuthentication]
     public class MessagesController : ApiController
     {
+        private Logger logger;
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
+            logger = Logger.GetInstance();
             if (activity.Type == ActivityTypes.Message)
             {
-               /* ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
+                try
+                { 
+                    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    // calculate something for us to return
+                    //int length = (activity.Text ?? string.Empty).Length;
 
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                await connector.Conversations.ReplyToActivityAsync(reply);*/
-                activity.Text = Translator.Translate(activity.Text, Languages.English);
+                    ////return our reply to the user
+                    //Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+                    //await connector.Conversations.ReplyToActivityAsync(reply);
+                    //logger.Info<MessagesController>($"User said: {activity.Text}");
 
-                await Conversation.SendAsync(activity, () => new TestDialog());
+                    activity.Text = Translator.Translate(activity.Text, Languages.English);
+
+                    logger.Info<MessagesController>($"User said (translated): {activity.Text}");
+
+                    await Conversation.SendAsync(activity, () => new TestDialog());
+                }
+                catch (System.Exception ex)
+                {
+                    Logger.GetInstance().Error<MessagesController>("HOLY MOLY", ex);
+                }
             }
             else
             {
