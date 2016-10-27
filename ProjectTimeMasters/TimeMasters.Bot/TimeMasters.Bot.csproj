@@ -143,6 +143,8 @@
     <Compile Include="Dialogs\CalendarDialog.cs" />
     <Compile Include="Dialogs\CreateDialog.cs" />
     <Compile Include="Dialogs\DeleteDialog.cs" />
+    <Compile Include="Dialogs\HelpDialog.cs" />
+    <Compile Include="Dialogs\RegisterDialog.cs" />
     <Compile Include="Dialogs\TestDialog.cs" />
     <Compile Include="Dialogs\UpdateDialog.cs" />
     <Compile Include="Global.asax.cs">
