@@ -13,6 +13,8 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
 {
     class GoogleCalendar : ICalendar
     {
+        private CalendarService _service;
+
         public CalendarEntry CreateCalendarEntry(CalendarEntry entry)
         {
             Event newEvent = new Event()
@@ -33,7 +35,7 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
             };
 
             String calendarId = "primary";
-            EventsResource.InsertRequest request = service.Events.Insert(newEvent, calendarId);
+            EventsResource.InsertRequest request = _service.Events.Insert(newEvent, calendarId);
             Event createdEvent = request.Execute();
             return CalendarEntry.ConvertFromGoogleEvent(createdEvent);
         }
@@ -54,14 +56,14 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
         public bool DeleteCalendarEntry(string name, DateTime minTime, DateTime maxTime)
         {
             Event evt = GetEvent(name, minTime, maxTime);
-            EventsResource.InsertRequest request = service.Events.delete("primary", evt.Id);
+            EventsResource.DeleteRequest request = _service.Events.Delete("primary", evt.Id);
             request.Execute();
             return (true);
         }
         public List<CalendarEntry> GetCalendarEntries(DateTime startDate, DateTime endDate)
         {
             List<CalendarEntry> items = new List<CalendarEntry>();
-            EventsResource.ListRequest request = service.Events.List("primary");
+            EventsResource.ListRequest request = _service.Events.List("primary");
             request.TimeMax = endDate;
             request.TimeMin = startDate;
             Events events = request.Execute();
@@ -81,7 +83,7 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
         private Event GetEvent(string name, DateTime startTime, DateTime endTime)
         {
 
-            EventsResource.ListRequest request = service.Events.List("primary");
+            EventsResource.ListRequest request = _service.Events.List("primary");
             request.TimeMax = startTime;
             request.TimeMin = endTime;
             Events events = request.Execute();
