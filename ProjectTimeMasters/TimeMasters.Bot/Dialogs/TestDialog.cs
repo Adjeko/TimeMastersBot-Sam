@@ -15,6 +15,12 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class TestDialog : LuisDialog<object>
     {
+        private ChannelAccount _acc;
+
+        public TestDialog(ChannelAccount acc)
+        {
+            _acc = acc;
+        }
 
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
@@ -27,7 +33,7 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("Test")]
         public async Task Test(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Start Test Programm");
+            /*await context.PostAsync("Start Test Programm");
             TestClassLibrary.TestGoogle tmp = new TestClassLibrary.TestGoogle();
 
             //string res = tmp.TestAuthorizationCodeFlow().Result;
@@ -40,14 +46,21 @@ namespace TimeMasters.Bot.Dialogs
             PromptDialog.Text(context, GoogleCode, "Gib mir deinen CODE");
 
 
-            await context.PostAsync("End Test Programm");
+            await context.PostAsync("End Test Programm");*/
 
             //context.Wait(MessageReceived);
         }
 
+        [LuisIntent("Register")]
+        public async Task Register(IDialogContext context, LuisResult result )
+        {
+            await context.PostAsync("luis register");
+            context.Call(new RegisterDialog(), Done);
+        }
+
         public async Task GoogleCode(IDialogContext context, IAwaitable<string> input)
         {
-            string code = await input;
+            /*string code = await input;
             await context.PostAsync("Habe Code: " + code + " erhalten");
 
             TestClassLibrary.TestGoogle tmp = new TestClassLibrary.TestGoogle();
@@ -55,80 +68,12 @@ namespace TimeMasters.Bot.Dialogs
             await context.PostAsync(tmp.TestGrant(code));
 
             await context.PostAsync("End Test Code Programm");
-            context.Wait(MessageReceived);
+            context.Wait(MessageReceived);*/
         }
 
         [LuisIntent("CreateCalendarEntry")]
         public async Task AddEntry(IDialogContext context, LuisResult result)
         {
-            //string message = $"I've added ";
-            //DateTime dateTime = new DateTime();
-            //DateTime timeTime = new DateTime();
-            //DateTime startTime;
-
-            //EntityRecommendation recommendation;
-            //if (!result.TryFindEntity("Calendar::Title", out recommendation))
-            //{
-            //    message += "NO NAME ";
-            //}
-            //else
-            //{
-            //    message += recommendation.Entity + " ";
-            //}
-
-            //message += "on ";
-
-            //if (!result.TryFindEntity("Calendar::StartDate", out recommendation))
-            //{
-            //    message += "NO DATETIME ";
-            //}
-            //else
-            //{
-            //    EntityRecommendation date;
-            //    if(!result.TryFindEntity("builtin.datetime.date", out date))
-            //    {
-            //        message += recommendation.Entity + " ";
-            //    }
-            //    else
-            //    {
-            //        var parser = new Chronic.Parser();
-            //        var datetime = parser.Parse(date.Entity);
-            //        dateTime = datetime.ToTime();
-            //        //message += datetime.ToTime().ToString() + " ";
-            //    }
-            //}
-
-            //message += "at ";
-
-            //if (!result.TryFindEntity("Calendar::StartTime", out recommendation))
-            //{
-            //    message += "NO DATETIME ";
-            //}
-            //else
-            //{
-            //    EntityRecommendation time;
-            //    if (!result.TryFindEntity("builtin.datetime.time", out time))
-            //    {
-            //        message += recommendation.Entity + " ";
-            //    }
-            //    else
-            //    {
-            //        var parser = new Chronic.Parser();
-            //        var datetime = parser.Parse(time.Entity);
-            //        timeTime = datetime.ToTime();
-            //        //message += datetime.ToTime().ToString() + " ";
-            //    }
-            //}
-
-            //startTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, timeTime.Hour, timeTime.Minute,
-            //   timeTime.Second);
-            //message += startTime.ToString();
-           
-
-            //await context.PostAsync(message);
-
-            //context.Wait(MessageReceived);
-
             await context.PostAsync("luis create");
             context.Call(new CreateDialog(context, result), Done);
         }
@@ -149,7 +94,6 @@ namespace TimeMasters.Bot.Dialogs
 
         public async Task Done(IDialogContext context, IAwaitable<object> input)
         {
-
             string temp = (await input) as string;
             await context.PostAsync($"Fertig mit {temp} ... AMK");
             context.Wait(MessageReceived);

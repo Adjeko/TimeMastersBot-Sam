@@ -27,7 +27,7 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
         private const string ClientSecret = "JrpjK2xRj2UDNRGGSM1lKjX7";
         private const string AuthUri = "https://accounts.google.com/o/oauth2/auth";
         private const string TokenUri = "https://accounts.google.com/o/oauth2/token";
-        private const string RedirectUri = "http://timemastersweb.azurewebsites.net/Home";
+        private const string RedirectUri = "http://timemastersbot.azurewebsites.net/api/Register";
         private const string OriginUri = "http://timemastersbot.azurewebsites.net";
 
 
