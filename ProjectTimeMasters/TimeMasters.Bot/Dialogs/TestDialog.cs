@@ -15,11 +15,13 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class TestDialog : LuisDialog<object>
     {
-        private ChannelAccount _acc;
+        private string _userId;
+        private string _userName;
 
-        public TestDialog(ChannelAccount acc)
+        public TestDialog(string id, string name)
         {
-            _acc = acc;
+            _userId = id;
+            _userName = name;
         }
 
         [LuisIntent("None")]
@@ -55,7 +57,7 @@ namespace TimeMasters.Bot.Dialogs
         public async Task Register(IDialogContext context, LuisResult result )
         {
             await context.PostAsync("luis register");
-            context.Call(new RegisterDialog(), Done);
+            context.Call(new RegisterDialog(_userId, _userName), Done);
         }
 
         public async Task GoogleCode(IDialogContext context, IAwaitable<string> input)

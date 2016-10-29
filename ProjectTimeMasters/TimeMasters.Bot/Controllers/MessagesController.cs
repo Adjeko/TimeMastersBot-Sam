@@ -45,7 +45,7 @@ namespace TimeMasters.Bot
 
                     logger.Info<MessagesController>($"User said (translated): {activity.Text}");
                     
-                    await Conversation.SendAsync(activity, () => new TestDialog(activity.From));
+                    await Conversation.SendAsync(activity, () => new TestDialog(activity.From.Id, activity.From.Name));
                 }
                 catch (System.Exception ex)
                 {

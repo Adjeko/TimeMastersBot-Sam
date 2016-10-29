@@ -23,6 +23,9 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
     /// </summary>
     public class GoogleTokkenHandler
     {
+        public static Dictionary<string, string> UserCodeDictionary = new Dictionary<string, string>();
+
+
         private const string ClientId = "505197371577-pu20ckhu9efr09kst8f5rmob4rssa9vr.apps.googleusercontent.com";
         private const string ClientSecret = "JrpjK2xRj2UDNRGGSM1lKjX7";
         private const string AuthUri = "https://accounts.google.com/o/oauth2/auth";
@@ -31,7 +34,7 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
         private const string OriginUri = "http://timemastersbot.azurewebsites.net";
 
 
-        public string GetAuthenticationRedirectUri()
+        public string GetAuthenticationRedirectUri(string state)
         {
             Task<AuthorizationCodeWebApp.AuthResult> resultTask = null;
             AuthorizationCodeWebApp.AuthResult result = null;
@@ -51,7 +54,7 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
 
 
                 resultTask =
-                    new AuthorizationCodeWebApp(flow, RedirectUri, "Bot")
+                    new AuthorizationCodeWebApp(flow, RedirectUri, state)
                         .AuthorizeAsync
                         ("Adjeko88@gmail.com", CancellationToken.None);
 

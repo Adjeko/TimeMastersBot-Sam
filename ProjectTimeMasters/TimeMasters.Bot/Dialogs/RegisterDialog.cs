@@ -14,21 +14,30 @@ namespace TimeMasters.Bot.Dialogs
     public class RegisterDialog : LuisDialog<object>
     {
         private GoogleTokkenHandler _google;
+        private string _userId;
+        private string _userName;
 
-        public RegisterDialog()
+        public RegisterDialog(string id, string name)
         {
             _google = new GoogleTokkenHandler();
+            _userId = id;
+            _userName = name;
         }
 
         public override async Task StartAsync(IDialogContext context)
         {
-            await context.PostAsync("Du willst den Google Calendar registrieren.\n" +
+            await context.PostAsync("Du willst den Google Calendar registrieren.\n " +
                                     "Ich werde dir als nächstes den Link zur Bestätigungsseite von Google schicken.\n" +
                                     "Nachdem du zugesagt hast, wirst du auf unsere Website weitergeleitet.\n" +
-                                    "Danach hast du dich erfolgreich registriert.");
-            await context.PostAsync(_google.GetAuthenticationRedirectUri());
+                                    "Danach hast du dich erfolgreich registriert.\n\n" +
+                                    $"UserID: {_userId}");
+            await context.PostAsync(_google.GetAuthenticationRedirectUri(_userId));
 
+            while (!GoogleTokkenHandler.UserCodeDictionary.ContainsKey(_userId))
+            {}
 
+            await context.PostAsync($"Danke ! {GoogleTokkenHandler.UserCodeDictionary[_userId]}");
+            //_google.GetAuthorizationTokens(GoogleTokkenHandler.UserCodeDictionary[_userId]);
         }
     }
 }
