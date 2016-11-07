@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeMasters.PortableClassLibrary", "TimeMasters.PortableClassLibrary\TimeMasters.PortableClassLibrary.csproj", "{0CD96CF0-D6AA-4ACB-B87D-F8D1D9607728}"
 EndProject
@@ -13,7 +13,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TimeMasters.Web", "TimeMast
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timemasters.Droid", "Timemasters.Droid\Timemasters.Droid.csproj", "{25063F8D-0356-4ECB-A4D8-B8E99E83FE14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{1994DA81-3EE7-415E-B24D-80F4CD94DB5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotChatConsoleApplication", "ConsoleApplication1\BotChatConsoleApplication.csproj", "{1994DA81-3EE7-415E-B24D-80F4CD94DB5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
