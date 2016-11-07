@@ -32,7 +32,7 @@ namespace TimeMasters.Web.Controllers
                 l.Events.Exception = await _context.Exception.SingleOrDefaultAsync(m => m.EventsID == l.Events.ID);
                 l.Events.ExceptionWrapper = await _context.ExceptionWrapper.SingleOrDefaultAsync(m => m.EventsID == l.Events.ID);
             }
-
+            tmp = tmp.Reverse();
             return View(tmp);
         }
 
