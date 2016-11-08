@@ -23,8 +23,9 @@ namespace TimeMasters.Web.Controllers
         public async Task<IActionResult> Index()
         {
             IEnumerable<Log> tmp = await _context.Log.ToListAsync();
-            foreach (Log l in tmp)
+            for(int i = tmp.Count() - 6; i < tmp.Count(); i++)
             {
+                Log l = tmp.ElementAt(i);
                 l.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == l.ID);
                 l.Environment.MetroLogVersion = await _context.MetroLogVersion.SingleOrDefaultAsync(m => m.EnvironmentID == l.Environment.ID);
 
