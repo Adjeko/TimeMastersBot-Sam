@@ -55,10 +55,11 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("Test")]
         public async Task Test(IDialogContext context, LuisResult result)
         {
-            foreach (CreateCalendar c in calendarManager.Forms)
-            {
-                Say(context, c.ToString());
-            }
+            Say(context, calendarManager.GetDebugMessage());
+            //foreach (CreateCalendar c in calendarManager.Forms)
+            //{
+            //    Say(context, c.ToString());
+            //}
             //context.Wait(MessageReceived);
         }
 
@@ -80,7 +81,7 @@ namespace TimeMasters.Bot.Dialogs
             var list = calendarManager.GetFinishedEntries();
             foreach (var item in list)
             {
-                _ask += $"{item}\n";
+                _ask += $"{item}\n\n";
             }
             
             PromptDialog.Confirm(context,

@@ -24,6 +24,12 @@ namespace TimeMasters.Bot.Dialogs
             _userName = name;
         }
 
+        public override Task StartAsync(IDialogContext context)
+        {
+            context.PostAsync($"You are: Id:{_userId} Name:{_userName}\n\n");
+            return base.StartAsync(context);
+        }
+
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {

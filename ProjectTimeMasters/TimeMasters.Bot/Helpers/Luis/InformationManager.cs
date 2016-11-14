@@ -15,6 +15,8 @@ namespace TimeMasters.Bot.Helpers.Luis
     [Serializable]
     public class InformationManager<T> where T : ILuisForm
     {
+        private string _debugMessage;
+
         public List<T> Forms { get; set; }
 
         public InformationManager()
@@ -31,7 +33,14 @@ namespace TimeMasters.Bot.Helpers.Luis
                 e.Entity = new string(e.Entity.Where(c => !char.IsWhiteSpace(c)).ToArray());
             }
 
+            _debugMessage += "Input sorted EntityList: \n\n\n\n";
+            foreach(var e in sortedEntities)
+            {
+                _debugMessage += $"{e.Type} -> {e.Entity}\n\n";
+            }
+
             EntityRecommendation primary = FindPrimaryEntity(sortedEntities);
+            _debugMessage += $"\n\nPrimary Entity is : {primary.Entity}\n\n\n\n";
             if (primary != null)
             {
                 foreach (EntityRecommendation er in sortedEntities)
@@ -47,9 +56,21 @@ namespace TimeMasters.Bot.Helpers.Luis
                 }
             }
 
+            _debugMessage += "Result of Processing Input is: \n\n";
+            foreach(T t in Forms)
+            {
+                _debugMessage += t.ToString() + "\n\n";
+            }
+
             foreach (T t in Forms)
             {
                 t.TryResolveMissingInformation();
+            }
+
+            _debugMessage += "Result of Resolving Missing Information is: \n\n";
+            foreach (T t in Forms)
+            {
+                _debugMessage += t.ToString() + "\n\n";
             }
         }
 
@@ -415,6 +436,11 @@ namespace TimeMasters.Bot.Helpers.Luis
                 }
             }
             return false;
+        }
+
+        public string GetDebugMessage()
+        {
+            return _debugMessage;
         }
     }
 }
