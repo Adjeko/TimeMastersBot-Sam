@@ -26,16 +26,16 @@ namespace TimeMasters.Bot.Dialogs
 
         public override Task StartAsync(IDialogContext context)
         {
-            context.PostAsync($"You are: Id:{_userId} Name:{_userName}\n\n");
             return base.StartAsync(context);
         }
 
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            string message = $"Sorry I did not understand: " + string.Join(", ", result.Intents.Select(i => i.Intent));
+            string message = $"Sorry I did not understand you (Id:{_userId} Name: {_userName}: " + string.Join(", ", result.Intents.Select(i => i.Intent));
             await context.PostAsync(message);
             context.Wait(MessageReceived);
+
         }
 
         [LuisIntent("Test")]
