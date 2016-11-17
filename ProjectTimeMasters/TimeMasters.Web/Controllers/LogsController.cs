@@ -20,10 +20,10 @@ namespace TimeMasters.Web.Controllers
         }
 
         // GET: Logs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? amount)
         {
             IEnumerable<Log> tmp = await _context.Log.ToListAsync();
-            for(int i = tmp.Count() - 11; i < tmp.Count(); i++)
+            for(int i = tmp.Count() - (int)amount; i < tmp.Count(); i++)
             {
                 Log l = tmp.ElementAt(i);
                 l.Environment = await _context.Environment.SingleOrDefaultAsync(m => m.LogID == l.ID);

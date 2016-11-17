@@ -38,6 +38,12 @@ namespace TimeMasters.Bot.Dialogs
             var result = Task.Run(() => context.PostAsync(text));
         }
 
+        [LuisIntent("None")]
+        public async Task NoneAsync(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("I didn't understand");
+        }
+
         [LuisIntent("CreateCalendarEntry")]
         public async Task CreateEntry(IDialogContext context, LuisResult result)
         {

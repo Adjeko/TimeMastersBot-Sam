@@ -40,9 +40,9 @@ namespace TimeMasters.Bot.Helpers.Luis
             }
 
             EntityRecommendation primary = FindPrimaryEntity(sortedEntities);
-            _debugMessage += $"\n\nPrimary Entity is : {primary.Entity}\n\n\n\n";
             if (primary != null)
             {
+                _debugMessage += $"\n\nPrimary Entity is : {primary.Entity}\n\n\n\n";
                 foreach (EntityRecommendation er in sortedEntities)
                 {
                     ProcessEntityWithPrimary(primary, er);
@@ -77,8 +77,6 @@ namespace TimeMasters.Bot.Helpers.Luis
         private void ProcessEntityWithoutPrimary(EntityRecommendation entity)
         {
             //assume that this entity addresses a missing required property in the first Form
-
-
             foreach (PropertyInfo p in typeof(T).GetProperties())
             {
                 object[] attrs = p.GetCustomAttributes(false);
@@ -89,6 +87,11 @@ namespace TimeMasters.Bot.Helpers.Luis
                 if (p.PropertyType == typeof(DateTime))
                 {
                     entityDateTime = new Chronic.Parser().Parse(entity.Entity).ToTime();
+                    if(entityDateTime == new DateTime())
+                    {
+                        _debugMessage += $"{entity.Entity} could not be parsed by Chronic properly\n\n";
+                        return;
+                    }
                 }
 
                 //found the corresponding property
