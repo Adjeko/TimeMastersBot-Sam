@@ -12,7 +12,7 @@ using Microsoft.Bot.Builder.Luis;
 
 namespace TimeMasters.Bot.Dialogs
 {
-    [LuisModel("8ee9bc34-b3fa-4029-a6d5-08b50b22aa18", "3b397c65c2114c759f2bf67c6d473df2")]
+    [LuisModel("e0547aea-007f-46ef-9134-00e0a5d3b6e1", "c53f28052cb343efac7ea618a3b666db")]
     [Serializable]
     public class UpdateDialog : LuisDialog<object>
     {
