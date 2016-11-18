@@ -121,6 +121,23 @@ namespace TimeMasters.Bot.Helpers.Luis.Calendar
 
         public void TryResolveMissingInformation()
         {
+            //if times and startdate are defined the enddate is probably is the same as the startdate
+            if (!StartDate.Equals(new DateTime())
+                && !StartTime.Equals(new DateTime())
+                && !EndTime.Equals(new DateTime())
+                && EndDate.Equals(new DateTime()))
+            {
+                EndDate = StartDate;
+            }
+
+            //if Start and End are defined the user probably wants to delete everything in this range
+            if (Title == null &&
+               !(StartDateTime == new DateTime()) &&
+               !(EndDateTime == new DateTime()))
+            {
+                Title = "Everything";
+            }
+            
             return;
         }
     }

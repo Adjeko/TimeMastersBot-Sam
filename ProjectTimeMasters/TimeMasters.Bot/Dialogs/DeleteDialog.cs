@@ -39,6 +39,12 @@ namespace TimeMasters.Bot.Dialogs
             ProcessManagerResult(context);
         }
 
+        [LuisIntent("None")]
+        public async Task NoneAsync(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("I didn't understand");
+            context.Wait(MessageReceived);
+        }
 
         [LuisIntent("DeleteCalendarEntry")]
         public async Task RemoveEntry(IDialogContext context, LuisResult result)
@@ -57,11 +63,12 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("Test")]
         public async Task Test(IDialogContext context, LuisResult result)
         {
-            foreach (DeleteCalendar c in calendarManager.Forms)
+            Say(context, calendarManager.GetDebugMessage());
+            if (result.Query.Contains("exit"))
             {
-                Say(context, c.ToString());
+                await context.PostAsync("leaving CreateDialog\n\n");
             }
-            //context.Wait(MessageReceived);
+            context.Wait(MessageReceived);
         }
 
         private void ProcessManagerResult(IDialogContext context)

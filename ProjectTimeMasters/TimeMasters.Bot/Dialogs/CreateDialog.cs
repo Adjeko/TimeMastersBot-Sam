@@ -42,17 +42,18 @@ namespace TimeMasters.Bot.Dialogs
         public async Task NoneAsync(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("I didn't understand");
+            context.Wait(MessageReceived);
         }
 
         [LuisIntent("CreateCalendarEntry")]
-        public async Task CreateEntry(IDialogContext context, LuisResult result)
+        public async Task CreateEntryAsync(IDialogContext context, LuisResult result)
         {
             calendarManager.ProcessResult(result);
             ProcessManagerResult(context);
         }
         
         [LuisIntent("AdditionalInformation")]
-        public async Task AdditionalInformation(IDialogContext context, LuisResult result)
+        public async Task AdditionalInformationAsync(IDialogContext context, LuisResult result)
         {
             calendarManager.ProcessResult(result);
             ProcessManagerResult(context);
@@ -66,7 +67,11 @@ namespace TimeMasters.Bot.Dialogs
             //{
             //    Say(context, c.ToString());
             //}
-            //context.Wait(MessageReceived);
+            if(result.Query.Contains("exit"))
+            {
+                await context.PostAsync("leaving CreateDialog\n\n");
+            }
+            context.Wait(MessageReceived);
         }
 
         private void ProcessManagerResult(IDialogContext context)
@@ -78,37 +83,42 @@ namespace TimeMasters.Bot.Dialogs
             }
             else
             {
-                ConfirmWithUserPermission(context);
+                ConfirmWithUserPermissionAsync(context);
             }
         }
         
-        public async void ConfirmWithUserPermission(IDialogContext context)
+        public async void ConfirmWithUserPermissionAsync(IDialogContext context)
         {
             var list = calendarManager.GetFinishedEntries();
             foreach (var item in list)
             {
                 _ask += $"{item}\n\n";
             }
-            
-            PromptDialog.Confirm(context,
-                                ConfirmAsync,
-                                $"Soll ich {_ask} für dich erstellen ?",
-                                "Das habe ich nicht verstanden.",
-                                promptStyle: PromptStyle.None);
+
+            context.Call(new ButtonDialog($"Soll ich {_ask} für dich erstellen?", new string[] {"Yes", "No", "Change Entry" }), ConfirmAsync);
         }
 
-        public async Task ConfirmAsync(IDialogContext context, IAwaitable<bool> argument)
+        public async Task ConfirmAsync(IDialogContext context, IAwaitable<string> argument)
         {
-            var confirm = await argument;
-            if (confirm)
+            string confirm = await argument;
+            switch (confirm)
             {
-                //TODO: create calendar entry in Google or Microsoft Calendar
-                await context.PostAsync($"Ich habe {_ask} für dich erstellt");
-            }
-            else
-            {
-                await context.PostAsync("You just went full retard. Never go full retard.");
-            }
+                case "Yes":
+                    //TODO: create calendar entry in Google or Microsoft Calendar
+                    await context.PostAsync($"Ich habe {_ask} für dich erstellt.");
+                    break;
+                case "No":
+                    await context.PostAsync("Dann verwerfe ich diese Informationen wieder.");
+                    break;
+                case "Change Entry":
+                    //TODO:
+                    await context.PostAsync("Ich würde dir damit gerne helfen, aber das kann ich noch nicht :(");
+                    break;
+                default:
+                    await context.PostAsync("You just went full retard. Never go full retard.");
+                    break;
+            };
+
             context.Done<string>("CREATE");
         }
     }

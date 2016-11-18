@@ -142,6 +142,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
+    <Compile Include="Dialogs\ButtonDialog.cs" />
     <Compile Include="Dialogs\CalendarDialog.cs" />
     <Compile Include="Dialogs\CreateDialog.cs" />
     <Compile Include="Dialogs\DeleteDialog.cs" />

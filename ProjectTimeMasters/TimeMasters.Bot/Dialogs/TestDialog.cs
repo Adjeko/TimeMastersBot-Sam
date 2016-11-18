@@ -41,22 +41,13 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("Test")]
         public async Task Test(IDialogContext context, LuisResult result)
         {
-            /*await context.PostAsync("Start Test Programm");
-            TestClassLibrary.TestGoogle tmp = new TestClassLibrary.TestGoogle();
+            context.Call(new ButtonDialog("TestFrage",new string[] {"Yes", "no", "maybe"}), TestDone);
+        }
 
-            //string res = tmp.TestAuthorizationCodeFlow().Result;
-            //await context.PostAsync(res);
-            //tmp.TestWebBroker();
-            string uri = "";
-            tmp.TestCodeFlow(out uri);
-            await context.PostAsync(uri);
-
-            PromptDialog.Text(context, GoogleCode, "Gib mir deinen CODE");
-
-
-            await context.PostAsync("End Test Programm");*/
-
-            //context.Wait(MessageReceived);
+        public async Task TestDone(IDialogContext context, IAwaitable<string> args)
+        {
+            string tmp = await args;
+            context.Wait(MessageReceived);
         }
 
         [LuisIntent("Register")]
