@@ -44,7 +44,12 @@ namespace TimeMasters.Bot.Dialogs
             await context.PostAsync("I didn't understand");
             context.Wait(MessageReceived);
         }
-
+        [LuisIntent("UpdateCalendarEntry")]
+        public async Task UpdateEntryAsync(IDialogContext context, LuisResult result)
+        {
+            calendarManager.ProcessResult(result);
+            ProcessManagerResult(context);
+        }
         [LuisIntent("CreateCalendarEntry")]
         public async Task CreateEntryAsync(IDialogContext context, LuisResult result)
         {

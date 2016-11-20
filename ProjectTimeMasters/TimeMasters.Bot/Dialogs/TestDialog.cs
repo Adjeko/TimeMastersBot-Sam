@@ -90,6 +90,12 @@ namespace TimeMasters.Bot.Dialogs
             context.Call(new UpdateDialog(context, result), Done);
         }
 
+        [LuisIntent("AdditionalInformation")]
+        public async Task AdditionalInformationAsync(IDialogContext context, LuisResult result)
+        {
+            context.Wait(MessageReceived);
+        }
+
         public async Task Done(IDialogContext context, IAwaitable<object> input)
         {
             string temp = (await input) as string;

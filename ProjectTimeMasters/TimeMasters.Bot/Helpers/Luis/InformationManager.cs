@@ -129,7 +129,14 @@ namespace TimeMasters.Bot.Helpers.Luis
 
                 if (p.PropertyType == typeof(DateTime))
                 {
-                    entityDateTime = new Chronic.Parser().Parse(entity.Entity).ToTime();
+                    var tmp = new Chronic.Parser().Parse(entity.Entity);
+                    if (tmp == null) continue;
+                    entityDateTime = tmp.ToTime();
+                    if (entityDateTime == new DateTime())
+                    {
+                        _debugMessage += $"{entity.Entity} could not be parsed by Chronic properly\n\n";
+                        return;
+                    }
                 }
 
 
