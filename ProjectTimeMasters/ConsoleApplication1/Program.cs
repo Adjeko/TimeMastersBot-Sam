@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-<<<<<<< HEAD
-using TimeMastersClassLibrary.Database;
-=======
 using TimeMasters.PortableClassLibrary.DirectLine;
->>>>>>> master
 
 namespace ConsoleApplication1
 {
@@ -15,12 +11,6 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-<<<<<<< HEAD
-            DatabaseClient DBC = new DatabaseClient();
-            DBC.Insert();
-            Console.WriteLine("Läuft");
-            Console.ReadLine();
-=======
 
             string user = "Eduard";
 
@@ -52,7 +42,6 @@ namespace ConsoleApplication1
                     Console.WriteLine(me.Message);
                 }
             }
->>>>>>> master
         }
     }
 }
