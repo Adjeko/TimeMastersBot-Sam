@@ -21,11 +21,15 @@ namespace TimeMasters.Bot
     public class MessagesController : ApiController
     {
         private Logger logger;
-        /// <summary>
-        /// POST: api/Messages
-        /// Receive a message from a user and reply to it
-        /// </summary>
+
+
+#pragma warning disable IDE1006 // Benennungsstile
+                               /// <summary>
+                               /// POST: api/Messages
+                               /// Receive a message from a user and reply to it
+                               /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
+#pragma warning restore IDE1006 // Benennungsstile
         {
             logger = Logger.GetInstance();
             if (activity.Type == ActivityTypes.Message)
