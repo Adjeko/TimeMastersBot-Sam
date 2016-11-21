@@ -28,6 +28,22 @@ namespace TimeMasters.Bot.Dialogs
             return base.StartAsync(context);
         }
 
+        protected override Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
+        {
+            IMessageActivity answer = item.GetAwaiter().GetResult();
+
+            switch(answer.Text)
+            {
+                case "!register":
+                    context.Call(new RegisterDialog(_userId, _userName), Done);
+                    break;
+                default:
+                    return base.MessageReceived(context, item);
+            };
+
+            return Task.CompletedTask;
+        }
+
         [LuisIntent("Greetings")]
         public async Task GreetingsAsync(IDialogContext context, LuisResult result)
         {

@@ -67,21 +67,22 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
             return result?.RedirectUri;
         }
 
-        public TokenResponse GetAuthorizationTokens(string code)
+        public bool GetAuthorizationTokens(string code, out string accessToken, out string refreshToken, out DateTime issued, out long expires)
         {
             TokenResponse tokenResponse = null;
-
+            bool success = true;
             //string resultString = "";
             try
             {
-                var tokenRequest = new AuthorizationCodeTokenRequest();
-                tokenRequest.Code = code;
-                tokenRequest.GrantType = "authorization_code";
-                tokenRequest.RedirectUri = RedirectUri;
-                tokenRequest.ClientId = ClientId;
-                tokenRequest.ClientSecret = ClientSecret;
-                tokenRequest.Scope = CalendarService.Scope.Calendar;
-
+                var tokenRequest = new AuthorizationCodeTokenRequest()
+                {
+                    Code = code,
+                    GrantType = "authorization_code",
+                    RedirectUri = RedirectUri,
+                    ClientId = ClientId,
+                    ClientSecret = ClientSecret,
+                    Scope = CalendarService.Scope.Calendar
+                };
                 Task<TokenResponse> tokenResponseTask = tokenRequest.ExecuteAsync(new HttpClient(), "https://accounts.google.com/o/oauth2/token", CancellationToken.None,
                     SystemClock.Default);
 
@@ -92,8 +93,15 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
             catch (System.Exception ex)
             {
                 //Logger.GetInstance().Error<TestGoogle>("TestGrant", ex);
+                success = false;
             }
-            return tokenResponse;
+
+            accessToken = tokenResponse.AccessToken;
+            refreshToken = tokenResponse.RefreshToken;
+            issued = tokenResponse.Issued;
+            expires = (long)tokenResponse.ExpiresInSeconds;
+
+            return success;
         }
 
         public void StoreTokens(string userId, TokenResponse tokens)
@@ -116,14 +124,14 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
 
             try
             {
-                RefreshTokenRequest refreshRequest = new RefreshTokenRequest();
-                refreshRequest.RefreshToken = refreshToken;
-                refreshRequest.ClientId = ClientId;
-                refreshRequest.ClientSecret = ClientSecret;
-                refreshRequest.GrantType = "refresh_token";
-                refreshRequest.Scope = CalendarService.Scope.Calendar;
-
-
+                RefreshTokenRequest refreshRequest = new RefreshTokenRequest()
+                {
+                    RefreshToken = refreshToken,
+                    ClientId = ClientId,
+                    ClientSecret = ClientSecret,
+                    GrantType = "refresh_token",
+                    Scope = CalendarService.Scope.Calendar
+                };
                 Task<TokenResponse> refreshTask = refreshRequest.ExecuteAsync(new HttpClient(),
                     "https://accounts.google.com/o/oauth2/token", CancellationToken.None,
                     SystemClock.Default);
