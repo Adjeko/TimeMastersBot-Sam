@@ -16,7 +16,8 @@ namespace TimeMasters.Bot.Dialogs
     public class CalendarDialog : LuisDialog<object>
     {
 
-        private InformationManager<ILuisForm> calendarManager;
+        protected dynamic calendarManager;
+        protected string _ask;
 
         public CalendarDialog(IDialogContext context, LuisResult result)
         {}
@@ -44,6 +45,14 @@ namespace TimeMasters.Bot.Dialogs
             await context.PostAsync("I didn't understand");
             context.Wait(MessageReceived);
         }
+
+        [LuisIntent("DeleteCalendarEntry")]
+        public async Task DeleteEntryAsync(IDialogContext context, LuisResult result)
+        {
+            calendarManager.ProcessResult(result);
+            ProcessManagerResult(context);
+        }
+
         [LuisIntent("UpdateCalendarEntry")]
         public async Task UpdateEntryAsync(IDialogContext context, LuisResult result)
         {
