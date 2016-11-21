@@ -19,6 +19,8 @@ namespace TimeMasters.Bot.Dialogs
     {
         public CreateDialog(IDialogContext context, LuisResult lr) : base(context, lr)
         {
+            dialogName = "Create";
+            actionString = "erstellt";
             calendarManager = new InformationManager<CreateCalendar>();
 
             calendarManager.ProcessResult(lr);

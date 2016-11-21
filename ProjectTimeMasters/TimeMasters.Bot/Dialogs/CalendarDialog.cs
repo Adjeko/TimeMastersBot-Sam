@@ -17,12 +17,14 @@ namespace TimeMasters.Bot.Dialogs
     {
 
         protected dynamic calendarManager;
+        protected string dialogName;
+        protected string actionString; //temporary solution
         protected string _ask;
 
         public CalendarDialog(IDialogContext context, LuisResult result)
         {}
 
-        private void Say(IDialogContext context, string text)
+        protected void Say(IDialogContext context, string text)
         {
             var result = Task.Run(() => context.PostAsync(text));
         }
@@ -35,14 +37,39 @@ namespace TimeMasters.Bot.Dialogs
         protected override Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
             //do some hard coded stuff
+            IMessageActivity answer = item.GetAwaiter().GetResult();
 
-            return base.MessageReceived(context, item);
+            switch(answer.Text)
+            {
+                case "!debug":
+                    DebugAsync(context);
+                    break;
+                case "!exit":
+                    calendarManager.Clear();
+                    context.Done($"Exited {dialogName}");
+                    return Task.CompletedTask;
+                    break;
+                default:
+                    //no command in Text. continue normal.
+                    return base.MessageReceived(context, item);
+                    break;
+            };
+
+            context.Wait(MessageReceived);
+            return Task.CompletedTask;
+        }
+
+        [LuisIntent("Greetings")]
+        public async Task GreetingsAsync(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("Greetings to you too :)");
+            ProcessManagerResult(context);
         }
 
         [LuisIntent("None")]
         public async Task NoneAsync(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("I didn't understand");
+            await context.PostAsync("I didn't understand the intent of your message");
             context.Wait(MessageReceived);
         }
 
@@ -73,19 +100,9 @@ namespace TimeMasters.Bot.Dialogs
             ProcessManagerResult(context);
         }
 
-        [LuisIntent("Test")]
-        public async Task Test(IDialogContext context, LuisResult result)
+        private async Task DebugAsync(IDialogContext context)
         {
             Say(context, calendarManager.GetDebugMessage());
-            //foreach (CreateCalendar c in calendarManager.Forms)
-            //{
-            //    Say(context, c.ToString());
-            //}
-            if (result.Query.Contains("exit"))
-            {
-                await context.PostAsync("leaving CreateDialog\n\n");
-            }
-            context.Wait(MessageReceived);
         }
 
         private void ProcessManagerResult(IDialogContext context)
@@ -109,7 +126,7 @@ namespace TimeMasters.Bot.Dialogs
                 _ask += $"{item}\n\n";
             }
 
-            context.Call(new ButtonDialog($"Soll ich {_ask} für dich erstellen?", new string[] { "Yes", "No", "Change Entry" }), ConfirmAsync);
+            context.Call(new ButtonDialog($"Soll ich {_ask} für dich {actionString}?", new string[] { "Yes", "No", "Change Entry" }), ConfirmAsync);
         }
 
         public async Task ConfirmAsync(IDialogContext context, IAwaitable<string> argument)
@@ -119,7 +136,7 @@ namespace TimeMasters.Bot.Dialogs
             {
                 case "Yes":
                     //TODO: create calendar entry in Google or Microsoft Calendar
-                    await context.PostAsync($"Ich habe {_ask} für dich erstellt.");
+                    await context.PostAsync($"Ich habe {_ask} für dich {actionString}.");
                     break;
                 case "No":
                     await context.PostAsync("Dann verwerfe ich diese Informationen wieder.");
@@ -133,7 +150,7 @@ namespace TimeMasters.Bot.Dialogs
                     break;
             };
 
-            context.Done<string>("CREATE");
+            context.Done(dialogName);
         }
 
     }

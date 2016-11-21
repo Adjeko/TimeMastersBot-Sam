@@ -451,6 +451,11 @@ namespace TimeMasters.Bot.Helpers.Luis
             return false;
         }
 
+        public void Clear()
+        {
+            Forms = new List<T> { (T)Activator.CreateInstance(typeof(T)) };
+        }
+
         public string GetDebugMessage()
         {
             return _debugMessage;

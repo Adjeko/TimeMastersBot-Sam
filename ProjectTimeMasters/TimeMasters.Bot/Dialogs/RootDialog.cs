@@ -12,12 +12,12 @@ namespace TimeMasters.Bot.Dialogs
 {
     [LuisModel("e0547aea-007f-46ef-9134-00e0a5d3b6e1", "c53f28052cb343efac7ea618a3b666db")]
     [Serializable]
-    public class TestDialog : LuisDialog<object>
+    public class RootDialog : LuisDialog<object>
     {
         private string _userId;
         private string _userName;
 
-        public TestDialog(string id, string name)
+        public RootDialog(string id, string name)
         {
             _userId = id;
             _userName = name;
@@ -28,10 +28,17 @@ namespace TimeMasters.Bot.Dialogs
             return base.StartAsync(context);
         }
 
+        [LuisIntent("Greetings")]
+        public async Task GreetingsAsync(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync($"Hello {_userName}! I'm your Schedule & Appointment Manager but I'm also a Super Adorable Mate. You can just call me Sam :).");
+            context.Wait(MessageReceived);
+        }
+
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            string message = $"Sorry I did not understand you (Id:{_userId} Name: {_userName}: " + string.Join(", ", result.Intents.Select(i => i.Intent));
+            string message = $"Sorry I did not understand you (Id:{_userId} Name: {_userName})";
             await context.PostAsync(message);
             context.Wait(MessageReceived);
 
@@ -99,7 +106,7 @@ namespace TimeMasters.Bot.Dialogs
         public async Task Done(IDialogContext context, IAwaitable<object> input)
         {
             string temp = (await input) as string;
-            await context.PostAsync($"Fertig mit {temp} ... AMK");
+            await context.PostAsync($"Fertig mit {temp}");
             context.Wait(MessageReceived);
         }
     }
