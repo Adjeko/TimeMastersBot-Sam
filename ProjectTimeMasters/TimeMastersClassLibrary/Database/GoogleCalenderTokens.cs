@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace TimeMastersClassLibrary.Database
 {
-    class GoogleCalenderTokens
+    public class GoogleCalenderTokens
     {
         private const string Connectionstring = "Server = tcp:databaserpserver.database.windows.net,1433; Initial Catalog = Database_RP; Persist Security Info = False; User ID = thetimemaster; Password =Thetime983214; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 30";
         private SqlConnection conn;
