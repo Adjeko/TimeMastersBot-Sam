@@ -24,6 +24,7 @@ namespace TimeMastersClassLibrary.Database
 
             using (SqlCommand cmd = new SqlCommand("Select * FROM Google WHERE id=@Id", conn))
             {
+                if (id != null) cmd.Parameters.AddWithValue("@Id", id);
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.HasRows)
                 {
@@ -49,15 +50,18 @@ namespace TimeMastersClassLibrary.Database
             conn.Open();
 
             using (SqlCommand cmd =
-                new SqlCommand("INSERT INTO Google VALUES" +
-                               "@Id, @AccesToken, @RefreshToken, @Lifetime, @CreateDate", conn))
+                new SqlCommand("INSERT INTO Google VALUES(" +
+                               "@Id, @AccesToken, @RefreshToken, @Lifetime, @CreateDate)", conn))
             {
                 if (id != null) cmd.Parameters.AddWithValue("@Id", id);
                 if (accTo != null) cmd.Parameters.AddWithValue("@AccesToken", accTo);
                 if (refTo != null) cmd.Parameters.AddWithValue("@RefreshToken", refTo);
                 cmd.Parameters.AddWithValue("@Lifetime", lifetime);
                 cmd.Parameters.AddWithValue("@CreateDate", createDate);
+
+                cmd.ExecuteNonQuery();
             }
+
             conn.Close();
         }
 
