@@ -116,6 +116,7 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("AdditionalInformation")]
         public async Task AdditionalInformationAsync(IDialogContext context, LuisResult result)
         {
+            await context.PostAsync("luis additional information");
             context.Wait(MessageReceived);
         }
 

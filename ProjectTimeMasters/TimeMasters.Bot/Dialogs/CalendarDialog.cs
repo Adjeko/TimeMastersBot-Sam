@@ -69,7 +69,7 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("None")]
         public async Task NoneAsync(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("I didn't understand the intent of your message");
+            await context.PostAsync($"I didn't understand the intent of your message : {result.Query}");
             context.Wait(MessageReceived);
         }
 

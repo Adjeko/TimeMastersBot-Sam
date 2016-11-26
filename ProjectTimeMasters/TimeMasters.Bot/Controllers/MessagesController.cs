@@ -48,7 +48,10 @@ namespace TimeMasters.Bot
 
                     if(activity.ChannelId == "skype")
                     {
-                        activity.Text = activity.Text.Remove(0, activity.Text.LastIndexOf('>') + 2);
+                        if (activity.Conversation.IsGroup.GetValueOrDefault())
+                        {
+                            activity.Text = activity.Text.Remove(0, activity.Text.LastIndexOf('>') + 2);
+                        }
                         //logger.Info<MessagesController>($"User said: {activity.Text}");
                     }
                     await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Id, activity.From.Name));
