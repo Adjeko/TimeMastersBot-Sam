@@ -43,16 +43,15 @@ namespace TimeMasters.Bot
                     ////return our reply to the user
                     //Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
                     //await connector.Conversations.ReplyToActivityAsync(reply);
-                    //logger.Info<MessagesController>($"User said: {activity.Text}");
-
+                    
                     //activity.Text = Translator.Translate(activity.Text, Languages.English);
 
-
-                    if (activity.Text[0] == '§' && (bool)activity.Conversation.IsGroup)
+                    if(activity.ChannelId == "skype")
                     {
-                        activity.Text = activity.Text.Substring(1);
-                        await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Id, activity.From.Name));
+                        activity.Text = activity.Text.Remove(0, activity.Text.LastIndexOf('>') + 2);
+                        //logger.Info<MessagesController>($"User said: {activity.Text}");
                     }
+                    await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Id, activity.From.Name));
                 }
                 catch (System.Exception ex)
                 {
