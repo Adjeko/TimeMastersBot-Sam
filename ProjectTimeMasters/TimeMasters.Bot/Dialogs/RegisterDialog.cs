@@ -65,7 +65,6 @@ namespace TimeMasters.Bot.Dialogs
             DateTime issued;
             long expires;
 
-            await context.PostAsync("attempting getting tokens");
             if(!_google.GetAuthorizationTokens(GoogleTokkenHandler.UserCodeDictionary[_userId], out accessToken, out refreshToken, out issued, out expires))
             {
                 await context.PostAsync("lost tokens");
@@ -75,17 +74,13 @@ namespace TimeMasters.Bot.Dialogs
             GoogleCalenderTokens tokenDatabase = new GoogleCalenderTokens();
             tokenDatabase.StoreCredential(_userId, accessToken, refreshToken, expires, issued);
 
-            await context.PostAsync("stored in database");
-
             string accessToken2, refreshToken2;
             DateTime issued2;
             long expires2;
 
             tokenDatabase.GetCredential(_userId, out accessToken2, out refreshToken2, out expires2, out issued2);
 
-            await context.PostAsync("read from database");
-
-            await context.PostAsync($"{accessToken} -> {accessToken2}\n\n {refreshToken} -> {refreshToken2}\n\n{expires.Equals(expires2)}\n\n{issued.Equals(issued2)}\n\n");
+            await context.PostAsync($"{accessToken} -> {accessToken2}\n\n {refreshToken} -> {refreshToken2}\n\n{expires.Equals(expires2)}\n\n{issued} -> {issued2} \n\n");
 
             context.Done("Registration OK");
         }
