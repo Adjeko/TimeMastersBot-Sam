@@ -31,13 +31,15 @@ namespace TimeMastersClassLibrary.Database
                     reader.Read();
                     accTo = (string)reader["AccesToken"];
                     refTo = (string) reader["RefreshToken"];
-                    lifetime = (long)reader["Lifetime"];
+                    lifetime = (int)reader["Lifetime"];
+                    //lifetime = 0;
+                   // var temp = reader["Lifetime"];
                     createDate = (DateTime)reader["CreateDate"];
                     conn.Close();
                     return;
                 }
             }
-            accTo = "Fehler";
+            accTo = "Fehler";  //out var need value
             refTo = "Fehler";
             lifetime = 4;
             createDate = DateTime.Now;
@@ -68,14 +70,12 @@ namespace TimeMastersClassLibrary.Database
         public void DeleteCredential(string id)
         {
             conn.Open();
+
             using (SqlCommand cmd = 
-                new SqlCommand("DELETE FROM TimeUser WHERE id=@Id" , conn)) 
+                new SqlCommand("DELETE FROM TimeUser WHERE @Id = id", conn)) 
             {
-                cmd.Parameters.AddWithValue("@Id", "NULL");
-                cmd.Parameters.AddWithValue("@AccesToken", "NULL");
-                cmd.Parameters.AddWithValue("@RefreshToken", "NULL");
-                cmd.Parameters.AddWithValue("@Lifetime", "NULL");
-                cmd.Parameters.AddWithValue("@CreateDate", "NULL");
+                if (id != null) cmd.Parameters.AddWithValue("@Id", id);
+                cmd.ExecuteNonQuery();
             }
             conn.Close();
         }
@@ -85,14 +85,15 @@ namespace TimeMastersClassLibrary.Database
             conn.Open();
 
             using (SqlCommand cmd =
-                new SqlCommand("UPDATE Google SET" +
-                               "@Id, @AccesToken, @RefreshToken, @Lifetime, @CreateDate", conn))
+                new SqlCommand("UPDATE Google SET AccesToken = @AccesToken, RefreshToken=@RefreshToken, Lifetime=@Lifetime, CreateDate=@CreateDate "+
+                               "Where @Id = id", conn))
             {
-                if (id != null) cmd.Parameters.AddWithValue("@Id", id);
-                if (accTo != null) cmd.Parameters.AddWithValue("@AccesToken", accTo);
-                if (refTo != null) cmd.Parameters.AddWithValue("@RefreshToken", refTo);
-                cmd.Parameters.AddWithValue("@Lifetime", lifetime);
-                cmd.Parameters.AddWithValue("@CreateDate", createDate);
+               if (id != null) cmd.Parameters.AddWithValue("@Id", id);
+               if (accTo != null) cmd.Parameters.AddWithValue("@AccesToken", accTo);
+               if (refTo != null) cmd.Parameters.AddWithValue("@RefreshToken", refTo);
+               cmd.Parameters.AddWithValue("@Lifetime", lifetime);
+               cmd.Parameters.AddWithValue("@CreateDate", createDate);
+               cmd.ExecuteNonQuery();
             }
             conn.Close();
         }

@@ -48,5 +48,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TimeMastersClassLibrary\TimeMastersClassLibrary.csproj">
+      <Project>{FAF8E3C5-9A49-42FB-83FE-A9389EE0538A}</Project>
+      <Name>TimeMastersClassLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
