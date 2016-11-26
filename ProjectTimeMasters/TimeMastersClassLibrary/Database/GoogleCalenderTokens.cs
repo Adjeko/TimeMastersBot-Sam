@@ -72,7 +72,7 @@ namespace TimeMastersClassLibrary.Database
             conn.Open();
 
             using (SqlCommand cmd = 
-                new SqlCommand("DELETE FROM TimeUser WHERE @Id = id", conn)) 
+                new SqlCommand("DELETE FROM Google WHERE @Id = id", conn)) 
             {
                 if (id != null) cmd.Parameters.AddWithValue("@Id", id);
                 cmd.ExecuteNonQuery();
