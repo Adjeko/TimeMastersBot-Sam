@@ -54,7 +54,7 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            string message = $"Sorry I did not understand you (Id:{_userId} Name: {_userName})";
+            string message = $"Sorry I did not understand you {result.Query} (Id:{_userId} Name: {_userName})";
             await context.PostAsync(message);
             context.Wait(MessageReceived);
 

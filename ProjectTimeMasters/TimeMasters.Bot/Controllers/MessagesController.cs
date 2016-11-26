@@ -46,9 +46,13 @@ namespace TimeMasters.Bot
                     //logger.Info<MessagesController>($"User said: {activity.Text}");
 
                     //activity.Text = Translator.Translate(activity.Text, Languages.English);
-                    logger.Info<MessagesController>($"User said (translated): {activity.Text}");
-                    
-                    await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Id, activity.From.Name));
+
+
+                    //if (activity.Text[0] == '§')
+                    //{
+                    //    activity.Text = activity.Text.Substring(1);
+                        await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Id, activity.From.Name));
+                    //}
                 }
                 catch (System.Exception ex)
                 {
