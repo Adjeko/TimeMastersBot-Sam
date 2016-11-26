@@ -48,11 +48,11 @@ namespace TimeMasters.Bot
                     //activity.Text = Translator.Translate(activity.Text, Languages.English);
 
 
-                    //if (activity.Text[0] == '§')
-                    //{
-                    //    activity.Text = activity.Text.Substring(1);
+                    if (activity.Text[0] == '§' && (bool)activity.Conversation.IsGroup)
+                    {
+                        activity.Text = activity.Text.Substring(1);
                         await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Id, activity.From.Name));
-                    //}
+                    }
                 }
                 catch (System.Exception ex)
                 {
