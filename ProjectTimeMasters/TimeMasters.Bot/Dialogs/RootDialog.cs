@@ -37,6 +37,10 @@ namespace TimeMasters.Bot.Dialogs
                 case "!register":
                     context.Call(new RegisterDialog(_userId, _userName), Done);
                     break;
+                case "!id":
+                    context.PostAsync($"{_userId}");
+                    context.Wait(MessageReceived);
+                    break;
                 default:
                     return base.MessageReceived(context, item);
             };
@@ -63,14 +67,9 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("Test")]
         public async Task Test(IDialogContext context, LuisResult result)
         {
-            context.Call(new ButtonDialog("TestFrage",new string[] {"Yes", "no", "maybe"}), TestDone);
-        }
-
-        public async Task TestDone(IDialogContext context, IAwaitable<string> args)
-        {
-            string tmp = await args;
             context.Wait(MessageReceived);
         }
+        
 
         [LuisIntent("Register")]
         public async Task Register(IDialogContext context, LuisResult result )

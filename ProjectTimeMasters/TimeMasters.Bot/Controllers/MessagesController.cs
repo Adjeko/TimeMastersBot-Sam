@@ -43,7 +43,7 @@ namespace TimeMasters.Bot
                     ////return our reply to the user
                     //Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
                     //await connector.Conversations.ReplyToActivityAsync(reply);
-                    
+
                     //activity.Text = Translator.Translate(activity.Text, Languages.English);
 
                     if(activity.ChannelId == "skype")
@@ -67,6 +67,24 @@ namespace TimeMasters.Bot
             }
             var response = Request.CreateResponse(HttpStatusCode.OK);
             return response;
+        }
+
+        [Route("OutboundMessages/Skype")]
+        [HttpPost]
+        private async void WriteToSkype()
+        {
+
+            using (var client = new ConnectorClient(new Uri("https://skype.botframework.com")))
+            {
+                var conversation = await client.Conversations.CreateDirectConversationAsync(new ChannelAccount(), new ChannelAccount("29:1QngyDg4BC9UlXB2xnyHPQecY8PQqlyQhqknZ4lqFE-g"));
+                IMessageActivity message = Activity.CreateMessageActivity();
+                message.From = new ChannelAccount();
+                message.Recipient = new ChannelAccount("29:1QngyDg4BC9UlXB2xnyHPQecY8PQqlyQhqknZ4lqFE-g");
+                message.Conversation = new ConversationAccount { Id = conversation.Id };
+                message.Text = "Skype Direct Message Test";
+                await client.Conversations.SendToConversationAsync((Activity)message);
+            }
+            
         }
 
         private Activity HandleSystemMessage(Activity message)
