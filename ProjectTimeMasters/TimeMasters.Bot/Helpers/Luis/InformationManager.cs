@@ -27,6 +27,7 @@ namespace TimeMasters.Bot.Helpers.Luis
 
         public void ProcessResult(LuisResult result)
         {
+            _debugMessage += $"\"{result.Query}\"\n\n";
             //first sort the entities list primary > required > unrequired
             IList<EntityRecommendation> sortedEntities = SortEntityList(result.Entities);
 

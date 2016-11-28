@@ -14,6 +14,9 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class RootDialog : LuisDialog<object>
     {
+        private const string VERSION = "Sam v0.0.2";
+
+
         private string _userId;
         private string _userName;
 
@@ -36,6 +39,10 @@ namespace TimeMasters.Bot.Dialogs
             {
                 case "!register":
                     context.Call(new RegisterDialog(_userId, _userName), Done);
+                    break;
+                case "!version":
+                    context.PostAsync(VERSION);
+                    context.Wait(MessageReceived);
                     break;
                 case "!id":
                     context.PostAsync($"{_userId}");

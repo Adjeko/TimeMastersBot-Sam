@@ -160,6 +160,7 @@
     <Compile Include="Helpers\Luis\ILuisForm.cs" />
     <Compile Include="Helpers\Luis\Information.cs" />
     <Compile Include="Helpers\Luis\InformationManager.cs" />
+    <Compile Include="Helpers\Luis\Logging\SkypeLogger.cs" />
     <Compile Include="Helpers\Luis\LuisAttributes.cs" />
     <Compile Include="Helpers\Luis\LuisInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
