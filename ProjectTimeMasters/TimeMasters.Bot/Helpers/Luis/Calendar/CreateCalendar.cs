@@ -130,6 +130,9 @@ namespace TimeMasters.Bot.Helpers.Luis.Calendar
 
         public void TryResolveMissingInformation()
         {
+            //if Duration and StartTime is set
+
+
             //if StartDate and StartTime are set, then assume that EndDate = StartDate
             if (!StartDate.Equals(new DateTime())
                 && !StartTime.Equals(new DateTime())

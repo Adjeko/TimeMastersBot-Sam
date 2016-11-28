@@ -29,10 +29,12 @@ namespace TimeMasters.Bot.Helpers.Luis
         {
             //first sort the entities list primary > required > unrequired
             IList<EntityRecommendation> sortedEntities = SortEntityList(result.Entities);
-            foreach (EntityRecommendation e in sortedEntities)
-            {
-                e.Entity = new string(e.Entity.Where(c => !char.IsWhiteSpace(c)).ToArray());
-            }
+
+            // ???
+            //foreach (EntityRecommendation e in sortedEntities)
+            //{
+            //    e.Entity = new string(e.Entity.Where(c => !char.IsWhiteSpace(c)).ToArray());
+            //}
 
             _debugMessage += "Input sorted EntityList: \n\n\n\n";
             foreach(var e in sortedEntities)
@@ -88,7 +90,11 @@ namespace TimeMasters.Bot.Helpers.Luis
                 if (p.PropertyType == typeof(DateTime))
                 {
                     var tmp = new Chronic.Parser().Parse(entity.Entity);
-                    if (tmp == null) continue;
+                    if (tmp == null)
+                    {
+                        _debugMessage += $"{entity.Entity} was parsed to NULL\n\n";
+                        continue;
+                    }
                     entityDateTime = tmp.ToTime();
                     if(entityDateTime == new DateTime())
                     {
@@ -131,7 +137,11 @@ namespace TimeMasters.Bot.Helpers.Luis
                 if (p.PropertyType == typeof(DateTime))
                 {
                     var tmp = new Chronic.Parser().Parse(entity.Entity);
-                    if (tmp == null) continue;
+                    if (tmp == null)
+                    {
+                        _debugMessage += $"{entity.Entity} was parsed to NULL";
+                        continue;
+                    }
                     entityDateTime = tmp.ToTime();
                     if (entityDateTime == new DateTime())
                     {
