@@ -9,11 +9,21 @@ namespace TimeMasters.Bot.Helpers.Luis.Logging
 {
     public class SkypeLogger
     {
+        public static void WriteToSkype(string level, string text, string stacktrace)
+        {
+            WriteToSkype(level);
+            WriteToSkype(text);
 
+            if (stacktrace != null)
+            {
+                var tmp = stacktrace.Remove(stacktrace.IndexOf("---"), stacktrace.Length);
+                WriteToSkype(tmp);
+            }
+        }
 
         [Route("OutboundMessages/Skype")]
         [HttpPost]
-        private async void WriteToSkype(string text)
+        public static async void WriteToSkype(string text)
         {
 
             using (var client = new ConnectorClient(new Uri("https://skype.botframework.com")))

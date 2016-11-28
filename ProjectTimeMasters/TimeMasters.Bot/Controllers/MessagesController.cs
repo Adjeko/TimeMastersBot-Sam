@@ -14,6 +14,7 @@ using TimeMasters.Bot.Dialogs;
 using TimeMasters.PortableClassLibrary.Helpers;
 using TimeMasters.PortableClassLibrary.Translator;
 using TimeMasters.PortableClassLibrary.Logging;
+using TimeMasters.Bot.Helpers.Luis.Logging;
 
 namespace TimeMasters.Bot
 {
