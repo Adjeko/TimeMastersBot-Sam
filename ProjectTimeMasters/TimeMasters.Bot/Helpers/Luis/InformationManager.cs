@@ -139,7 +139,7 @@ namespace TimeMasters.Bot.Helpers.Luis
                     var tmp = new Chronic.Parser().Parse(entity.Entity);
                     if (tmp == null)
                     {
-                        _debugMessage += $"{entity.Entity} was parsed to NULL";
+                        _debugMessage += $"{entity.Entity} was parsed to NULL\n\n";
                         continue;
                     }
                     entityDateTime = tmp.ToTime();
