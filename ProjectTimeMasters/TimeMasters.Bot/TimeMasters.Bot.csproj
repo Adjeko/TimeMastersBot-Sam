@@ -157,6 +157,7 @@
     <Compile Include="Helpers\Luis\CalendarForm.cs" />
     <Compile Include="Helpers\Luis\Calendar\DeleteCalendar.cs" />
     <Compile Include="Helpers\Luis\Calendar\UpdateCalendar.cs" />
+    <Compile Include="Helpers\Luis\DateTimeParser\DateTimeParser.cs" />
     <Compile Include="Helpers\Luis\ILuisForm.cs" />
     <Compile Include="Helpers\Luis\Information.cs" />
     <Compile Include="Helpers\Luis\InformationManager.cs" />

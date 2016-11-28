@@ -10,6 +10,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using TimeMasters.Bot.Helpers.Luis.Calendar;
+using TimeMasters.Bot.Helpers.Luis.DateTimeParser;
 
 namespace TimeMasters.Bot.Helpers.Luis
 {
@@ -28,6 +29,7 @@ namespace TimeMasters.Bot.Helpers.Luis
         public void ProcessResult(LuisResult result)
         {
             _debugMessage += $"\"{result.Query}\"\n\n";
+
             //first sort the entities list primary > required > unrequired
             IList<EntityRecommendation> sortedEntities = SortEntityList(result.Entities);
 
@@ -49,14 +51,14 @@ namespace TimeMasters.Bot.Helpers.Luis
                 _debugMessage += $"\n\nPrimary Entity is : {primary.Entity}\n\n\n\n";
                 foreach (EntityRecommendation er in sortedEntities)
                 {
-                    ProcessEntityWithPrimary(primary, er);
+                    ProcessEntityWithPrimary(result, primary, er);
                 }
             }
             else
             {
                 foreach (EntityRecommendation er in sortedEntities)
                 {
-                    ProcessEntityWithoutPrimary(er);
+                    ProcessEntityWithoutPrimary(result, er);
                 }
             }
 
@@ -78,7 +80,7 @@ namespace TimeMasters.Bot.Helpers.Luis
             }
         }
 
-        private void ProcessEntityWithoutPrimary(EntityRecommendation entity)
+        private void ProcessEntityWithoutPrimary(LuisResult result, EntityRecommendation entity)
         {
             //assume that this entity addresses a missing required property in the first Form
             foreach (PropertyInfo p in typeof(T).GetProperties())
@@ -90,18 +92,39 @@ namespace TimeMasters.Bot.Helpers.Luis
 
                 if (p.PropertyType == typeof(DateTime))
                 {
-                    var tmp = new Chronic.Parser().Parse(entity.Entity);
-                    if (tmp == null)
+                    string luisBuildtinText = "";
+                    //find BuiltinIdentifier
+                    foreach(object o in attrs)
                     {
-                        _debugMessage += $"{entity.Entity} was parsed to NULL\n\n";
-                        continue;
+                        LuisBuiltInIdentifierAttribute lb = o as LuisBuiltInIdentifierAttribute;
+                        if(lb != null)
+                        {
+                            luisBuildtinText = lb.Value;
+                        }
                     }
-                    entityDateTime = tmp.ToTime();
-                    if(entityDateTime == new DateTime())
+
+                    DateTime tmp = DateTimeParser.DateTimeParser.ParseDateTime(result, entity, luisBuildtinText, out string tmpDebug);
+                    if (!tmp.Equals(new DateTime()))
                     {
-                        _debugMessage += $"{entity.Entity} could not be parsed by Chronic properly\n\n";
+                        entityDateTime = tmp;
+                    }
+                    else
+                    {
+                        _debugMessage += tmpDebug;
                         return;
                     }
+                    //var tmp = new Chronic.Parser().Parse(entity.Entity);
+                    //if (tmp == null)
+                    //{
+                    //    _debugMessage += $"{entity.Entity} was parsed to NULL\n\n";
+                    //    continue;
+                    //}
+                    //entityDateTime = tmp.ToTime();
+                    //if(entityDateTime == new DateTime())
+                    //{
+                    //    _debugMessage += $"{entity.Entity} could not be parsed by Chronic properly\n\n";
+                    //    return;
+                    //}
                 }
 
                 //found the corresponding property
@@ -118,7 +141,7 @@ namespace TimeMasters.Bot.Helpers.Luis
 
         }
 
-        private void ProcessEntityWithPrimary(EntityRecommendation primary, EntityRecommendation entity)
+        private void ProcessEntityWithPrimary(LuisResult result, EntityRecommendation primary, EntityRecommendation entity)
         {
             Type t = typeof(T);
             PropertyInfo[] props = t.GetProperties();
@@ -137,16 +160,25 @@ namespace TimeMasters.Bot.Helpers.Luis
 
                 if (p.PropertyType == typeof(DateTime))
                 {
-                    var tmp = new Chronic.Parser().Parse(entity.Entity);
-                    if (tmp == null)
+                    string luisBuildtinText = "";
+                    //find BuiltinIdentifier
+                    foreach (object o in attrs)
                     {
-                        _debugMessage += $"{entity.Entity} was parsed to NULL\n\n";
-                        continue;
+                        LuisBuiltInIdentifierAttribute lb = o as LuisBuiltInIdentifierAttribute;
+                        if (lb != null)
+                        {
+                            luisBuildtinText = lb.Value;
+                        }
                     }
-                    entityDateTime = tmp.ToTime();
-                    if (entityDateTime == new DateTime())
+
+                    DateTime tmp = DateTimeParser.DateTimeParser.ParseDateTime(result, entity, luisBuildtinText, out string tmpDebug);
+                    if (!tmp.Equals(new DateTime()))
                     {
-                        _debugMessage += $"{entity.Entity} could not be parsed by Chronic properly\n\n";
+                        entityDateTime = tmp;
+                    }
+                    else
+                    {
+                        _debugMessage += tmpDebug;
                         return;
                     }
                 }
