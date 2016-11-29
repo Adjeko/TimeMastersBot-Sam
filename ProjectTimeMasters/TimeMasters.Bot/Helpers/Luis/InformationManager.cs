@@ -107,24 +107,14 @@ namespace TimeMasters.Bot.Helpers.Luis
                     if (!tmp.Equals(new DateTime()))
                     {
                         entityDateTime = tmp;
+                        _debugMessage += tmpDebug;
                     }
                     else
                     {
                         _debugMessage += tmpDebug;
+                        _debugMessage += $"{entity.Entity} could not be parsed\n\n";
                         return;
                     }
-                    //var tmp = new Chronic.Parser().Parse(entity.Entity);
-                    //if (tmp == null)
-                    //{
-                    //    _debugMessage += $"{entity.Entity} was parsed to NULL\n\n";
-                    //    continue;
-                    //}
-                    //entityDateTime = tmp.ToTime();
-                    //if(entityDateTime == new DateTime())
-                    //{
-                    //    _debugMessage += $"{entity.Entity} could not be parsed by Chronic properly\n\n";
-                    //    return;
-                    //}
                 }
 
                 //found the corresponding property
@@ -175,10 +165,12 @@ namespace TimeMasters.Bot.Helpers.Luis
                     if (!tmp.Equals(new DateTime()))
                     {
                         entityDateTime = tmp;
+                        _debugMessage += tmpDebug;
                     }
                     else
                     {
                         _debugMessage += tmpDebug;
+                        _debugMessage += $"{entity.Entity} could not be parsed\n\n";
                         return;
                     }
                 }

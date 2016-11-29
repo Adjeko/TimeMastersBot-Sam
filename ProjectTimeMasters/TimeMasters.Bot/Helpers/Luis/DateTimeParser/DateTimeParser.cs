@@ -25,6 +25,7 @@ namespace TimeMasters.Bot.Helpers.Luis.DateTimeParser
         public static DateTime ParseDateTime(LuisResult result, EntityRecommendation entity, string luisBuildtinIdentifier, out string debug)
         {
             string _debug = "";
+            DateTime resultDateTime = new DateTime();
             //find buildtin datetime 
             EntityRecommendation build = null;
 
@@ -45,45 +46,53 @@ namespace TimeMasters.Bot.Helpers.Luis.DateTimeParser
                 IResolutionParser parse = new ResolutionParser();
 
 
+                Dictionary<string, string> buildResolution = (Dictionary<string, string>) build.Resolution;
+                buildResolution.Add("resolution_type", luisBuildtinIdentifier);
 
                 Resolution res;
                 BuiltIn.DateTime.DateTimeResolution dtRes;
+                if (parse.TryParse(build.Resolution, out res))
+                {
+                    dtRes = res as BuiltIn.DateTime.DateTimeResolution;
+                    //BuiltIn.DateTime.DateTimeResolution.TryParse(build.Resolution["date"], out dtRes);
 
-                parse.TryParse(build.Resolution, out res);
-                dtRes = res as BuiltIn.DateTime.DateTimeResolution;
-                //BuiltIn.DateTime.DateTimeResolution.TryParse(build.Resolution["date"], out dtRes);
+                    if (dtRes != null)
+                    {
+                        resultDateTime = new DateTime(dtRes.Year.GetValueOrDefault(),
+                            dtRes.Month.GetValueOrDefault(),
+                            dtRes.Day.GetValueOrDefault(),
+                            dtRes.Hour.GetValueOrDefault(),
+                            dtRes.Minute.GetValueOrDefault(),
+                            dtRes.Second.GetValueOrDefault());
 
-                DateTime value = new DateTime(dtRes.Year.GetValueOrDefault(),
-                    dtRes.Month.GetValueOrDefault(),
-                    dtRes.Day.GetValueOrDefault(),
-                    dtRes.Hour.GetValueOrDefault(),
-                    dtRes.Minute.GetValueOrDefault(),
-                    dtRes.Second.GetValueOrDefault());
-
-                _debug += $"found buildtin type for {entity.Entity}\n\n";
+                    }
+                    _debug += $"Parsed {entity.Entity} with LUIS Parser\n\n";
+                }
+                
                 debug = _debug;
-                return value;
             }
             else
             {
-                _debug += $"No buildtin Entity found for {entity.Entity} with type {luisBuildtinIdentifier}\n\n";
+                _debug += $"No buildtin type for {entity.Entity} found \n\n";
+            }
+            
+            if(resultDateTime.Equals(new DateTime()))
+                _debug += $"{entity.Entity} with type {luisBuildtinIdentifier} could not be parsed by LUIS Parser\n\n";
 
-                //clear all whitespaces
-                string text = new string(entity.Entity.Where(c => !char.IsWhiteSpace(c)).ToArray());
-                
-                //try using Text to parse with Chronic
-                var chronic = new Chronic.Parser().Parse(text);
-                if(chronic != null)
-                {
-                    //Chronic success
-                    
-                }
+            //clear all whitespaces
+            string text = new string(entity.Entity.Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+            //try using Text to parse with Chronic
+            var chronic = new Chronic.Parser().Parse(text);
+            if (chronic != null)
+            {
+                //Chronic success
+                resultDateTime = chronic.ToTime();
+                _debug += $"{entity.Entity} parsed with chronic\n\n";
             }
 
-            //error
-            _debug += $"{entity.Entity} with type {luisBuildtinIdentifier} could not be parsed\n\n";
             debug = _debug;
-            return new DateTime();
+            return resultDateTime;
         }
 
     }

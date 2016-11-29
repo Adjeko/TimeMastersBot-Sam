@@ -42,7 +42,7 @@ namespace TimeMasters.Bot.Dialogs
             switch(answer.Text)
             {
                 case "!debug":
-                    DebugAsync(context);
+                    Task.Run(() => DebugAsync(context));
                     break;
                 case "!exit":
                     calendarManager.Clear();
