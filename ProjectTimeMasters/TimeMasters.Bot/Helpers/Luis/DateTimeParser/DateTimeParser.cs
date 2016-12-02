@@ -58,12 +58,12 @@ namespace TimeMasters.Bot.Helpers.Luis.DateTimeParser
 
                     if (dtRes != null)
                     {
-                        resultDateTime = new DateTime(dtRes.Year.GetValueOrDefault(),
-                            dtRes.Month.GetValueOrDefault(),
-                            dtRes.Day.GetValueOrDefault(),
-                            dtRes.Hour.GetValueOrDefault(),
-                            dtRes.Minute.GetValueOrDefault(),
-                            dtRes.Second.GetValueOrDefault());
+                        resultDateTime = new DateTime((dtRes.Year.HasValue && dtRes.Year.Value > 0) ? dtRes.Year.Value : resultDateTime.Year,
+                            (dtRes.Month.HasValue && dtRes.Month.Value > 0) ? dtRes.Month.Value : resultDateTime.Month,
+                            (dtRes.Day.HasValue && dtRes.Day.Value > 0) ? dtRes.Day.Value : resultDateTime.Day,
+                            (dtRes.Hour.HasValue && dtRes.Hour.Value >= 0) ? dtRes.Hour.Value : resultDateTime.Hour,
+                            (dtRes.Minute.HasValue && dtRes.Minute.Value >= 0) ? dtRes.Minute.Value : resultDateTime.Minute,
+                            (dtRes.Second.HasValue && dtRes.Second.Value >= 0) ? dtRes.Second.Value : resultDateTime.Second);
 
                     }
                     _debug += $"Parsed {entity.Entity} with LUIS Parser\n\n";
@@ -75,20 +75,24 @@ namespace TimeMasters.Bot.Helpers.Luis.DateTimeParser
             {
                 _debug += $"No buildtin type for {entity.Entity} found \n\n";
             }
-            
-            if(resultDateTime.Equals(new DateTime()))
-                _debug += $"{entity.Entity} with type {luisBuildtinIdentifier} could not be parsed by LUIS Parser\n\n";
 
-            //clear all whitespaces
-            string text = new string(entity.Entity.Where(c => !char.IsWhiteSpace(c)).ToArray());
-
-            //try using Text to parse with Chronic
-            var chronic = new Chronic.Parser().Parse(text);
-            if (chronic != null)
+            if (resultDateTime.Equals(new DateTime()))
             {
-                //Chronic success
-                resultDateTime = chronic.ToTime();
-                _debug += $"{entity.Entity} parsed with chronic\n\n";
+                _debug += $"{entity.Entity} with type {luisBuildtinIdentifier} could not be parsed by LUIS Parser\n\n";
+            }
+            else
+            {
+                //clear all whitespaces
+                string text = new string(entity.Entity.Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+                //try using Text to parse with Chronic
+                var chronic = new Chronic.Parser().Parse(text);
+                if (chronic != null)
+                {
+                    //Chronic success
+                    resultDateTime = chronic.ToTime();
+                    _debug += $"{entity.Entity} parsed with chronic\n\n";
+                }
             }
 
             debug = _debug;
