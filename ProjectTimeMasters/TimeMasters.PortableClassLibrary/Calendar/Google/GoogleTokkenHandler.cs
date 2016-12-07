@@ -59,6 +59,7 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
                         ("Adjeko88@gmail.com", CancellationToken.None);
 
                 result = resultTask.Result;
+                
             }
             catch (System.Exception ex)
             {
@@ -66,12 +67,10 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
             }
             return $"{result?.RedirectUri}";
         }
-
+        
         public bool GetAuthorizationTokens(string code, out string accessToken, out string refreshToken, out DateTime issued, out long expires)
         {
             TokenResponse tokenResponse = null;
-            bool success = true;
-            //string resultString = "";
             try
             {
                 var tokenRequest = new AuthorizationCodeTokenRequest()
@@ -88,20 +87,24 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
 
                 tokenResponse = tokenResponseTask.Result;
                 tokenResponse.Issued = DateTime.Now;
-                //resultString = $"Access: {tokenResponse.AccessToken} Refresh: {tokenResponse.RefreshToken} LifeTime: {tokenResponse.ExpiresInSeconds} Issued: {tokenResponse.Issued} Scope: {tokenResponse.Scope}";
+                accessToken = tokenResponse.AccessToken;
+                refreshToken = tokenResponse.RefreshToken;
+                issued = tokenResponse.Issued;
+                expires = (long)tokenResponse.ExpiresInSeconds;
+
+                return true;
             }
             catch (System.Exception ex)
             {
                 //Logger.GetInstance().Error<TestGoogle>("TestGrant", ex);
-                success = false;
             }
 
-            accessToken = tokenResponse.AccessToken;
-            refreshToken = tokenResponse.RefreshToken;
-            issued = tokenResponse.Issued;
-            expires = (long)tokenResponse.ExpiresInSeconds;
+            accessToken = "";
+            refreshToken = "";
+            issued = DateTime.MinValue;
+            expires = 0;
 
-            return success;
+            return false;
         }
 
         public void StoreTokens(string userId, TokenResponse tokens)

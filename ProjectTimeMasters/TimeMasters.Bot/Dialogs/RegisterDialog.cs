@@ -71,6 +71,7 @@ namespace TimeMasters.Bot.Dialogs
                 context.Done("Registration fucked up");
             }
             await context.PostAsync($"got tokens ACCESS: {accessToken} REFRESH: {refreshToken}");
+
             GoogleCalenderTokens tokenDatabase = new GoogleCalenderTokens();
             tokenDatabase.StoreCredential(_userId, accessToken, refreshToken, expires, issued);
 
