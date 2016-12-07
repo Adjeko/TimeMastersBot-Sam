@@ -1,4 +1,6 @@
 ﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 using Google.Apis.Services;
@@ -11,9 +13,28 @@ using System.Threading.Tasks;
 
 namespace TimeMasters.PortableClassLibrary.Calendar.Google
 {
-    class GoogleCalendar : ICalendar
+    public class GoogleCalendar : ICalendar
     {
         private CalendarService _service;
+
+        public void SetService(string acc, string refr, long life, DateTime create)
+        {
+            TokenResponse tk = new TokenResponse()
+            {
+                AccessToken = acc,
+                ExpiresInSeconds = life,
+                Issued = create,
+                RefreshToken = refr,
+                Scope = CalendarService.Scope.Calendar
+            };
+            UserCredential user = new UserCredential(null, "", tk);
+            _service = new CalendarService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = user,
+                ApplicationName = "TimeMasters Bot"
+            });
+        }
+
 
         public CalendarEntry CreateCalendarEntry(CalendarEntry entry)
         {

@@ -6,7 +6,8 @@ using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using TimeMasters.PortableClassLibrary;
-
+using TimeMastersClassLibrary.Database;
+using TimeMasters.PortableClassLibrary.Calendar.Google;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -14,7 +15,7 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class RootDialog : LuisDialog<object>
     {
-        private const string VERSION = "Sam v0.0.2";
+        private const string VERSION = "Sam v0.0.3T";
 
 
         private string _userId;
@@ -42,6 +43,35 @@ namespace TimeMasters.Bot.Dialogs
                     break;
                 case "!version":
                     context.PostAsync(VERSION);
+                    context.Wait(MessageReceived);
+                    break;
+                case "!refresh":
+                    string accToken, refreshToken;
+                    long lifetime;
+                    DateTime createDate;
+
+                    GoogleCalenderTokens google = new GoogleCalenderTokens();
+                    google.GetCredential(_userId, out accToken, out refreshToken, out lifetime, out createDate);
+                    context.PostAsync("got Credentials");
+
+                    GoogleTokkenHandler tokens = new GoogleTokkenHandler();
+                    if (tokens.RenewAccessToken(refreshToken, out accToken, out createDate, out lifetime))
+                    {
+                        context.PostAsync($"success to Refresh Tokens");
+                        google.UpdateCredential(_userId, accToken, refreshToken, lifetime, createDate);
+                        context.PostAsync("updated Credentials");
+                    }
+                    else
+                    {
+                        context.PostAsync($"{accToken}");
+                    }
+
+                    //TEST google service
+                    GoogleCalendar calendar = new GoogleCalendar();
+                    calendar.SetService(accToken, refreshToken, lifetime, createDate);
+                    calendar.CreateCalendarEntry("Bot Test Eintrag", "hoffentlich klappts", new DateTime(2016, 12, 8, 13, 0, 0), new DateTime(2016, 12, 8, 15, 0, 0));
+
+
                     context.Wait(MessageReceived);
                     break;
                 case "!id":

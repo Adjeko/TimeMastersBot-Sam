@@ -64,7 +64,7 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
             {
                 //Logger.GetInstance().Error<TestGoogle>("CodeFlow Exc", ex);
             }
-            return result?.RedirectUri;
+            return $"{result?.RedirectUri}";
         }
 
         public bool GetAuthorizationTokens(string code, out string accessToken, out string refreshToken, out DateTime issued, out long expires)
@@ -118,10 +118,10 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
             return null;
         }
 
-        public TokenResponse RenewAccessToken(string refreshToken)
+        public bool RenewAccessToken(string refreshToken, out string accessToken, out DateTime issued, out long expires)
         {
             TokenResponse tokenResponse = null;
-
+            string error = "";
             try
             {
                 RefreshTokenRequest refreshRequest = new RefreshTokenRequest()
@@ -137,13 +137,22 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
                     SystemClock.Default);
 
                 tokenResponse = refreshTask.Result;
+
+                accessToken = tokenResponse.AccessToken;
+                issued = tokenResponse.Issued;
+                expires = tokenResponse.ExpiresInSeconds.GetValueOrDefault();
+                return true;
             }
             catch (System.Exception ex)
             {
-                
+                //catch something
+                error = ex.Message + "\n\n" + ex.InnerException.Message;
             }
 
-            return tokenResponse;
+            accessToken = error;
+            issued = new DateTime();
+            expires = 0;
+            return false;
         }
     }
 }

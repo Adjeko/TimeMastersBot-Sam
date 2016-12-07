@@ -8,6 +8,7 @@ using Microsoft.Bot.Builder.Luis.Models;
 using TimeMasters.Bot.Helpers.Luis;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector;
+using TimeMasters.PortableClassLibrary.Calendar.Google;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -20,6 +21,7 @@ namespace TimeMasters.Bot.Dialogs
         protected string dialogName;
         protected string actionString; //temporary solution
         protected string _ask;
+        protected dynamic list;
 
         public CalendarDialog(IDialogContext context, LuisResult result)
         {}
@@ -120,7 +122,7 @@ namespace TimeMasters.Bot.Dialogs
 
         public async void ConfirmWithUserPermissionAsync(IDialogContext context)
         {
-            var list = calendarManager.GetFinishedEntries();
+            list = calendarManager.GetFinishedEntries();
             foreach (var item in list)
             {
                 _ask += $"{item}\n\n";
@@ -136,6 +138,17 @@ namespace TimeMasters.Bot.Dialogs
             {
                 case "Yes":
                     //TODO: create calendar entry in Google or Microsoft Calendar
+
+                    if(dialogName == "Create")
+                    {
+                        GoogleCalendar google = new GoogleCalendar();
+                        
+                        foreach(var item in list)
+                        {
+
+                        }
+                    }
+
                     await context.PostAsync($"Ich habe {_ask} für dich {actionString}.");
                     break;
                 case "No":
