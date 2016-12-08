@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,10 +15,29 @@ using Google.Apis.Calendar.v3;
 using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Apis.Util.Store;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 //using TimeMasters.PortableClassLibrary.Logging;
 
 namespace TimeMasters.PortableClassLibrary.Calendar.Google
 {
+
+    public class SerializeContractResolver : DefaultContractResolver
+    {
+        public new static readonly SerializeContractResolver Instance = new SerializeContractResolver();
+
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+        {
+            JsonProperty property = base.CreateProperty(member, memberSerialization);
+            if (property.PropertyName.ToLower() == "includegrantedscopes")
+            {
+                property.Ignored = true;
+            }
+            return property;
+        }
+    }
+
+
     /// <summary>
     /// Handles the Google Authorization Process after https://tools.ietf.org/html/rfc6749
     /// </summary>
@@ -33,14 +53,15 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
         private const string RedirectUri = "http://timemastersbot.azurewebsites.net/api/Register";
         private const string OriginUri = "http://timemastersbot.azurewebsites.net";
 
-
+        public static GoogleAuthorizationCodeFlow flow;
+        public static TokenResponse tokenResponse;
         public string GetAuthenticationRedirectUri(string state)
         {
             Task<AuthorizationCodeWebApp.AuthResult> resultTask = null;
             AuthorizationCodeWebApp.AuthResult result = null;
             try
             {
-                IAuthorizationCodeFlow flow =
+                flow =
                     new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer()
                     {
                         ClientSecrets = new ClientSecrets()
@@ -68,9 +89,30 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
             return $"{result?.RedirectUri}";
         }
         
+        public CalendarService GetCalendarService(string userId)
+        {
+            var jsonSettings = new JsonSerializerSettings
+            {
+                ContractResolver = SerializeContractResolver.Instance
+            };
+
+            
+            string flowString = Newtonsoft.Json.JsonConvert.SerializeObject(flow, jsonSettings);
+            GoogleAuthorizationCodeFlow newFlow = Newtonsoft.Json.JsonConvert.DeserializeObject<GoogleAuthorizationCodeFlow>(flowString);
+            UserCredential user = new UserCredential(newFlow, userId, tokenResponse);
+
+            CalendarService service = new CalendarService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = user,
+                ApplicationName = "TimeMasters Bot"
+            });
+            return service;
+        }
+
+
         public bool GetAuthorizationTokens(string code, out string accessToken, out string refreshToken, out DateTime issued, out long expires)
         {
-            TokenResponse tokenResponse = null;
+            tokenResponse = null;
             try
             {
                 var tokenRequest = new AuthorizationCodeTokenRequest()
@@ -91,6 +133,7 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
                 refreshToken = tokenResponse.RefreshToken;
                 issued = tokenResponse.Issued;
                 expires = (long)tokenResponse.ExpiresInSeconds;
+
 
                 return true;
             }

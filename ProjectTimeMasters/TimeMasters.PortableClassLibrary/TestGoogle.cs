@@ -63,6 +63,7 @@ namespace TimeMasters.PortableClassLibrary
                     ApplicationName = "TimeMasters Bot"
                 });
 
+
                 return "UserId: " + tmp.Credential.UserId + " AccesToken: " + tmp.Credential.Token.AccessToken +
                     " RefreshToken: " + tmp.Credential.Token.RefreshToken;
             }

@@ -17,22 +17,9 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
     {
         private CalendarService _service;
 
-        public void SetService(string acc, string refr, long life, DateTime create)
+        public void SetService(CalendarService serv)
         {
-            TokenResponse tk = new TokenResponse()
-            {
-                AccessToken = acc,
-                ExpiresInSeconds = life,
-                Issued = create,
-                RefreshToken = refr,
-                Scope = CalendarService.Scope.Calendar
-            };
-            UserCredential user = new UserCredential(null, "", tk);
-            _service = new CalendarService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = user,
-                ApplicationName = "TimeMasters Bot"
-            });
+            _service = serv;
         }
 
 

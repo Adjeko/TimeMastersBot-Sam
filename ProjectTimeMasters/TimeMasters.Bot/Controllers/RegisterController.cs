@@ -21,13 +21,14 @@ namespace TimeMasters.Bot.Controllers
 
         //GET: api/Register
         
-        public string Get([FromUri] GoogleRegistration reg )
+        public string Get([FromUri] GoogleRegistration reg)
         {
             Logger.GetInstance().Info<RegisterController>($"{reg.Code}  ||||   {reg.State}");
             
             GoogleTokkenHandler.UserCodeDictionary.Add(reg.State, reg.Code + "#");
 
-            return "VIELES NETTES DANKESCHÖN";
+
+            return $"VIELES NETTES DANKESCHÖN \n Request Content: {Request.Content.ToString()} \n Request {Request.ToString()}";
         }
     }
 }
