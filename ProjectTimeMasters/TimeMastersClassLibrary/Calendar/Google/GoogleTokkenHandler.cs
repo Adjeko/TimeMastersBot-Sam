@@ -17,9 +17,8 @@ using Google.Apis.Util;
 using Google.Apis.Util.Store;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-//using TimeMasters.PortableClassLibrary.Logging;
 
-namespace TimeMasters.PortableClassLibrary.Calendar.Google
+namespace TimeMastersClassLibrary.Calendar.Google
 {
 
     public class SerializeContractResolver : DefaultContractResolver
@@ -80,7 +79,7 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
                         ("Adjeko88@gmail.com", CancellationToken.None);
 
                 result = resultTask.Result;
-                
+
             }
             catch (System.Exception ex)
             {
@@ -88,13 +87,29 @@ namespace TimeMasters.PortableClassLibrary.Calendar.Google
             }
             return $"{result?.RedirectUri}";
         }
-        
+
         public CalendarService GetCalendarService(string userId)
         {
-            string flowString = Newtonsoft.Json.JsonConvert.SerializeObject(flow, new JsonSerializerSettings {
-                ContractResolver = SerializeContractResolver.Instance
-            });
-            GoogleAuthorizationCodeFlow newFlow = Newtonsoft.Json.JsonConvert.DeserializeObject<GoogleAuthorizationCodeFlow>(flowString);
+            string flowString = Newtonsoft.Json.JsonConvert.SerializeObject(flow);//, new JsonSerializerSettings
+            //{
+            //    ContractResolver = SerializeContractResolver.Instance
+            //});
+            if (flow == null)
+            {
+                TimeMasters.PortableClassLibrary.Logging.Logger.GetInstance().Info<GoogleTokkenHandler>("flow is null");
+            }
+
+            if(flowString == "null")
+            {
+                TimeMasters.PortableClassLibrary.Logging.Logger.GetInstance().Info<GoogleTokkenHandler>("flowString is null");
+            }
+           
+
+            GoogleAuthorizationCodeFlow newFlow = Newtonsoft.Json.JsonConvert.DeserializeObject<GoogleAuthorizationCodeFlow>(flowString);//, new JsonSerializerSettings
+            //{
+            //    ContractResolver = SerializeContractResolver.Instance
+            //});
+
             UserCredential user = new UserCredential(newFlow, userId, tokenResponse);
 
             CalendarService service = new CalendarService(new BaseClientService.Initializer()

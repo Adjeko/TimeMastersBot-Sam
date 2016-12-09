@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using TimeMasters.PortableClassLibrary;
 using TimeMastersClassLibrary.Database;
-using TimeMasters.PortableClassLibrary.Calendar.Google;
+using TimeMastersClassLibrary.Calendar.Google;
 
 namespace TimeMasters.Bot.Dialogs
 {
