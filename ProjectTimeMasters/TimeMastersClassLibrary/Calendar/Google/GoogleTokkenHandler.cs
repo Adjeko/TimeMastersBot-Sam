@@ -28,6 +28,41 @@ namespace TimeMastersClassLibrary.Calendar.Google
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);
+
+
+            if(property.PropertyName == "UnsuccessfulResponseHandlers")
+            {
+                property.Ignored = true;
+            }
+
+            //if (property.PropertyName == "BackOff"
+            //    || property.PropertyName == "MaxTimeSpan"
+            //    || property.PropertyName == "HandleUnsuccessfulResponseFunc"
+            //    || property.PropertyName == "HandleExceptionFunc")
+            //{
+            //    property.Ignored = true;
+            //}
+
+
+            //if (property.PropertyName == "UnsuccessfulResponseHandlers"
+            //    || property.PropertyName == "SupportsAutomaticDecompression" 
+            //    || property.PropertyName == "SupportsProxy" 
+            //    || property.PropertyName == "SupportsRedirectConfiguration" 
+            //    || property.PropertyName == "UseCookies" 
+            //    || property.PropertyName == "CookieContainer" 
+            //    || property.PropertyName == "ClientCertificateOptions" 
+            //    || property.PropertyName == "AutomaticDecompression" 
+            //    || property.PropertyName == "UseProxy" 
+            //    || property.PropertyName == "PreAuthenticate" 
+            //    || property.PropertyName == "Credentials" 
+            //    || property.PropertyName == "AllowAutoRedirect" 
+            //    || property.PropertyName == "MaxAutomaticRedirections" 
+            //    || property.PropertyName == "MaxRequestContentBufferSize" 
+            //    || property.PropertyName == "Proxy" 
+            //    || property.PropertyName == "UseDefaultCredentials")
+            //{
+            //    property.Ignored = true;
+            //}
             if (property.DeclaringType == typeof(GoogleAuthorizationCodeFlow) && property.PropertyName == "includeGrantedScopes")
             {
                 property.Ignored = true;
@@ -43,7 +78,8 @@ namespace TimeMastersClassLibrary.Calendar.Google
     public class GoogleTokkenHandler
     {
         public static Dictionary<string, string> UserCodeDictionary = new Dictionary<string, string>();
-
+        public static Dictionary<string, GoogleAuthorizationCodeFlow> UserCodeFlows = new Dictionary<string, GoogleAuthorizationCodeFlow>();
+        public static Dictionary<string, TokenResponse> UserTokens = new Dictionary<string, TokenResponse>();
 
         private const string ClientId = "505197371577-pu20ckhu9efr09kst8f5rmob4rssa9vr.apps.googleusercontent.com";
         private const string ClientSecret = "JrpjK2xRj2UDNRGGSM1lKjX7";
@@ -52,12 +88,13 @@ namespace TimeMastersClassLibrary.Calendar.Google
         private const string RedirectUri = "http://timemastersbot.azurewebsites.net/api/Register";
         private const string OriginUri = "http://timemastersbot.azurewebsites.net";
 
-        public static GoogleAuthorizationCodeFlow flow;
-        public static TokenResponse tokenResponse;
+        private static GoogleAuthorizationCodeFlow staticFlow;
+        private static TokenResponse staticTokenResponse;
         public string GetAuthenticationRedirectUri(string state)
         {
             Task<AuthorizationCodeWebApp.AuthResult> resultTask = null;
             AuthorizationCodeWebApp.AuthResult result = null;
+            GoogleAuthorizationCodeFlow flow;
             try
             {
                 flow =
@@ -79,7 +116,12 @@ namespace TimeMastersClassLibrary.Calendar.Google
                         ("Adjeko88@gmail.com", CancellationToken.None);
 
                 result = resultTask.Result;
+                GoogleTokkenHandler.UserCodeFlows.Add(state, staticFlow);
 
+                if(staticFlow == null)
+                {
+                    staticFlow = flow;
+                }
             }
             catch (System.Exception ex)
             {
@@ -90,27 +132,30 @@ namespace TimeMastersClassLibrary.Calendar.Google
 
         public CalendarService GetCalendarService(string userId)
         {
-            string flowString = Newtonsoft.Json.JsonConvert.SerializeObject(flow);//, new JsonSerializerSettings
+            //GoogleAuthorizationCodeFlow codeFlow = UserCodeFlows[userId];
+            //TokenResponse tr = UserTokens[userId];
+            //string flowString = Newtonsoft.Json.JsonConvert.SerializeObject(codeFlow, new JsonSerializerSettings
             //{
-            //    ContractResolver = SerializeContractResolver.Instance
+            //    ContractResolver = SerializeContractResolver.Instance,
+            //    TypeNameHandling = TypeNameHandling.Objects
             //});
-            if (flow == null)
-            {
-                TimeMasters.PortableClassLibrary.Logging.Logger.GetInstance().Info<GoogleTokkenHandler>("flow is null");
-            }
-
-            if(flowString == "null")
-            {
-                TimeMasters.PortableClassLibrary.Logging.Logger.GetInstance().Info<GoogleTokkenHandler>("flowString is null");
-            }
-           
-
-            GoogleAuthorizationCodeFlow newFlow = Newtonsoft.Json.JsonConvert.DeserializeObject<GoogleAuthorizationCodeFlow>(flowString);//, new JsonSerializerSettings
+            //if (codeFlow == null)
             //{
-            //    ContractResolver = SerializeContractResolver.Instance
+            //    TimeMasters.PortableClassLibrary.Logging.Logger.GetInstance().Info<GoogleTokkenHandler>("flow is null");
+            //}
+
+            ////if(flowString == "null")
+            ////{
+            ////    TimeMasters.PortableClassLibrary.Logging.Logger.GetInstance().Info<GoogleTokkenHandler>("flowString is null");
+            ////}
+            
+            //GoogleAuthorizationCodeFlow newFlow = Newtonsoft.Json.JsonConvert.DeserializeObject<GoogleAuthorizationCodeFlow>(flowString, new JsonSerializerSettings
+            //{
+            //    ContractResolver = SerializeContractResolver.Instance,
+            //    TypeNameHandling = TypeNameHandling.Objects
             //});
 
-            UserCredential user = new UserCredential(newFlow, userId, tokenResponse);
+            UserCredential user = new UserCredential(staticFlow, userId, staticTokenResponse);
 
             CalendarService service = new CalendarService(new BaseClientService.Initializer()
             {
@@ -121,9 +166,9 @@ namespace TimeMastersClassLibrary.Calendar.Google
         }
 
 
-        public bool GetAuthorizationTokens(string code, out string accessToken, out string refreshToken, out DateTime issued, out long expires)
+        public bool GetAuthorizationTokens(string code, string userId, out string accessToken, out string refreshToken, out DateTime issued, out long expires)
         {
-            tokenResponse = null;
+            staticTokenResponse = null;
             try
             {
                 var tokenRequest = new AuthorizationCodeTokenRequest()
@@ -138,14 +183,14 @@ namespace TimeMastersClassLibrary.Calendar.Google
                 Task<TokenResponse> tokenResponseTask = tokenRequest.ExecuteAsync(new HttpClient(), "https://accounts.google.com/o/oauth2/token", CancellationToken.None,
                     SystemClock.Default);
 
-                tokenResponse = tokenResponseTask.Result;
-                tokenResponse.Issued = DateTime.Now;
-                accessToken = tokenResponse.AccessToken;
-                refreshToken = tokenResponse.RefreshToken;
-                issued = tokenResponse.Issued;
-                expires = (long)tokenResponse.ExpiresInSeconds;
+                staticTokenResponse = tokenResponseTask.Result;
+                staticTokenResponse.Issued = DateTime.Now;
+                accessToken = staticTokenResponse.AccessToken;
+                refreshToken = staticTokenResponse.RefreshToken;
+                issued = staticTokenResponse.Issued;
+                expires = (long)staticTokenResponse.ExpiresInSeconds;
 
-
+                UserTokens.Add(userId, staticTokenResponse);
                 return true;
             }
             catch (System.Exception ex)

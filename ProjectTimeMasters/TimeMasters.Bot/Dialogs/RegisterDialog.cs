@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
-using TimeMasters.PortableClassLibrary.Calendar.Google;
+using TimeMastersClassLibrary.Calendar.Google;
 using Microsoft.Bot.Connector;
 using TimeMastersClassLibrary.Database;
 
@@ -65,7 +65,7 @@ namespace TimeMasters.Bot.Dialogs
             DateTime issued;
             long expires;
 
-            if(!_google.GetAuthorizationTokens(GoogleTokkenHandler.UserCodeDictionary[_userId], out accessToken, out refreshToken, out issued, out expires))
+            if(!_google.GetAuthorizationTokens(GoogleTokkenHandler.UserCodeDictionary[_userId], _userId, out accessToken, out refreshToken, out issued, out expires))
             {
                 await context.PostAsync("lost tokens");
                 context.Done("Registration fucked up");

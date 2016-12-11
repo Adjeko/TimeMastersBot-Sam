@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using TimeMasters.PortableClassLibrary.Logging;
-using TimeMasters.PortableClassLibrary.Calendar.Google;
+using TimeMastersClassLibrary.Calendar.Google;
 
 namespace TimeMasters.Bot.Controllers
 {
@@ -23,7 +23,7 @@ namespace TimeMasters.Bot.Controllers
         
         public string Get([FromUri] GoogleRegistration reg)
         {
-            Logger.GetInstance().Info<RegisterController>($"{reg.Code}  ||||   {reg.State}");
+            //Logger.GetInstance().Info<RegisterController>($"{reg.Code}  ||||   {reg.State}");
             
             GoogleTokkenHandler.UserCodeDictionary.Add(reg.State, reg.Code + "#");
 
