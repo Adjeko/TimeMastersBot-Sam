@@ -69,7 +69,7 @@ namespace TimeMasters.Bot.Dialogs
                     //TEST google service
                     GoogleCalendar calendar = new GoogleCalendar();
                     calendar.SetService(tokens.GetCalendarService(_userId));
-                    calendar.CreateCalendarEntry("Bot Test Eintrag", "hoffentlich klappts", new DateTime(2016, 12, 9, 13, 0, 0), new DateTime(2016, 12, 9, 15, 0, 0));
+                    calendar.CreateCalendarEntry("Bot Test Eintrag", $"hoffentlich klappts {_userId}", new DateTime(2016, 12, 10, 13, 0, 0), new DateTime(2016, 12, 10, 15, 0, 0));
 
 
                     context.Wait(MessageReceived);

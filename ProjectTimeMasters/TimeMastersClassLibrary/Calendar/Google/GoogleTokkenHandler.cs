@@ -17,6 +17,7 @@ using Google.Apis.Util;
 using Google.Apis.Util.Store;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using TimeMasters.PortableClassLibrary.Logging;
 
 namespace TimeMastersClassLibrary.Calendar.Google
 {
@@ -155,7 +156,7 @@ namespace TimeMastersClassLibrary.Calendar.Google
             //    TypeNameHandling = TypeNameHandling.Objects
             //});
 
-            UserCredential user = new UserCredential(staticFlow, userId, staticTokenResponse);
+            UserCredential user = new UserCredential(staticFlow, userId, UserTokens[userId]);
 
             CalendarService service = new CalendarService(new BaseClientService.Initializer()
             {
@@ -195,7 +196,7 @@ namespace TimeMastersClassLibrary.Calendar.Google
             }
             catch (System.Exception ex)
             {
-                //Logger.GetInstance().Error<TestGoogle>("TestGrant", ex);
+                Logger.GetInstance().Error<GoogleTokkenHandler>("TestGrant", ex);
             }
 
             accessToken = "";
