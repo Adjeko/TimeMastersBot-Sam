@@ -17,7 +17,6 @@ using Google.Apis.Util;
 using Google.Apis.Util.Store;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using TimeMasters.PortableClassLibrary.Logging;
 
 namespace TimeMastersClassLibrary.Calendar.Google
 {
@@ -196,7 +195,6 @@ namespace TimeMastersClassLibrary.Calendar.Google
             }
             catch (System.Exception ex)
             {
-                Logger.GetInstance().Error<GoogleTokkenHandler>("TestGrant", ex);
             }
 
             accessToken = "";

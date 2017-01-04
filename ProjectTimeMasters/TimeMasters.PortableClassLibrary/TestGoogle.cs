@@ -11,7 +11,6 @@ using Google.Apis.Auth.OAuth2.Web;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
-using TimeMasters.PortableClassLibrary.Logging;
 
 //using Google.Apis.Auth.OAuth2.Mvc;
 
@@ -28,14 +27,12 @@ namespace TimeMasters.PortableClassLibrary
             }
             catch (System.Exception ex)
             {
-                Logger.GetInstance().Error<TestGoogle>("Google fucked up", ex);
+                
             }
         }
 
         public async Task<string> TestAuthorizationCodeFlow()
         {
-
-            Logger logger = Logger.GetInstance();
 
             try
             {
@@ -69,7 +66,6 @@ namespace TimeMasters.PortableClassLibrary
             }
             catch (System.Exception ex)
             {
-                logger.Error<TestGoogle>("Google fucked up", ex);
             }
             return "nix";
         }

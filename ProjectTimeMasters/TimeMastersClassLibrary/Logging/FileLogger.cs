@@ -9,6 +9,13 @@ namespace TimeMastersClassLibrary.Logging
 {
     public class FileLogger : ILogger
     {
+        private string _path;
+
+        public FileLogger(string path)
+        {
+            _path = path;
+        }
+
         public void Debug<T>(string message)
         {
             Log<T>(LogLevel.Debug, message);
@@ -71,12 +78,12 @@ namespace TimeMastersClassLibrary.Logging
 
         public void Log<T>(LogLevel level, string message)
         {
-            File.AppendAllText("TestFile.txt", level.ToString() + "|" + message);
+            File.AppendAllText(_path, level.ToString() + "|" + DateTime.Now.ToString() + "|" + message);
         }
 
         public void Log<T>(LogLevel level, string message, string exceptionMessage, string stackTrace)
         {
-            File.AppendAllText("TestFile.txt", level.ToString() + "|" + message + "|" + exceptionMessage + "|" + stackTrace);
+            File.AppendAllText(_path, level.ToString() + "|" + DateTime.Now.ToString() + "|" + message + "|" + exceptionMessage + "|" + stackTrace);
         }
 
         public bool IsDebugEnabled() => true;
