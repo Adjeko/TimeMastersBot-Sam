@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,12 +71,12 @@ namespace TimeMastersClassLibrary.Logging
 
         public void Log<T>(LogLevel level, string message)
         {
-           
+            File.AppendAllText("TestFile.txt", level.ToString() + "|" + message);
         }
 
         public void Log<T>(LogLevel level, string message, string exceptionMessage, string stackTrace)
         {
-            
+            File.AppendAllText("TestFile.txt", level.ToString() + "|" + message + "|" + exceptionMessage + "|" + stackTrace);
         }
 
         public bool IsDebugEnabled() => true;
