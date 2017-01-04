@@ -79,9 +79,6 @@ namespace TimeMasters.Bot.Helpers.Luis.DateTimeParser
             if (resultDateTime.Equals(new DateTime()))
             {
                 _debug += $"{entity.Entity} with type {luisBuildtinIdentifier} could not be parsed by LUIS Parser\n\n";
-            }
-            else
-            {
                 //clear all whitespaces
                 string text = new string(entity.Entity.Where(c => !char.IsWhiteSpace(c)).ToArray());
 
