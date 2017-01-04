@@ -47,15 +47,6 @@
     <Compile Include="Helpers\StringValueAttribute.cs" />
     <Compile Include="Helpers\Timer.cs" />
     <Compile Include="DirectLine\JsonKlasse.cs" />
-    <Compile Include="Logging\Environment.cs" />
-    <Compile Include="Logging\Events.cs" />
-    <Compile Include="Logging\Exception.cs" />
-    <Compile Include="Logging\ExceptionWrapper.cs" />
-    <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="Logging\Log.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LogLevel.cs" />
-    <Compile Include="Logging\MetroLogVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestGoogle.cs" />
     <Compile Include="Translator\AdmAccessToken.cs" />

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeMasters.PortableClassLibrary.Logging
+namespace TimeMastersClassLibrary.Logging
 {
     public enum LogLevel
     {
