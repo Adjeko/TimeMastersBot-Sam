@@ -51,6 +51,7 @@
     <Compile Include="Logging\Events.cs" />
     <Compile Include="Logging\Exception.cs" />
     <Compile Include="Logging\ExceptionWrapper.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LogLevel.cs" />
