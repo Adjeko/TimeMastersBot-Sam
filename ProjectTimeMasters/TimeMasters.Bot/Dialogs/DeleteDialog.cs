@@ -8,7 +8,6 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
-using TimeMasters.PortableClassLibrary.Logging;
 using TimeMasters.Bot.Helpers.Luis;
 using TimeMasters.Bot.Helpers.Luis.Calendar;
 

@@ -78,12 +78,12 @@ namespace TimeMastersClassLibrary.Logging
 
         public void Log<T>(LogLevel level, string message)
         {
-            File.AppendAllText(_path, level.ToString() + "|" + DateTime.Now.ToString() + "|" + message);
+            File.AppendAllText(_path, level.ToString() + "|" + DateTime.Now.ToString() + "|" + message + "\n");
         }
 
         public void Log<T>(LogLevel level, string message, string exceptionMessage, string stackTrace)
         {
-            File.AppendAllText(_path, level.ToString() + "|" + DateTime.Now.ToString() + "|" + message + "|" + exceptionMessage + "|" + stackTrace);
+            File.AppendAllText(_path, level.ToString() + "|" + DateTime.Now.ToString() + "|" + message + "|" + exceptionMessage + "|" + stackTrace + "\n");
         }
 
         public bool IsDebugEnabled() => true;
@@ -92,5 +92,16 @@ namespace TimeMastersClassLibrary.Logging
         public bool IsInfoEnabled() => true;
         public bool IsTraceEnabled() => true;
         public bool IsWarningEnabled() => true;
+
+        public string GetAllText()
+        {
+            return File.ReadAllText(_path);
+        }
+
+        public string[] GetAllLines()
+        {
+            return File.ReadAllLines(_path);
+        }
+
     }
 }

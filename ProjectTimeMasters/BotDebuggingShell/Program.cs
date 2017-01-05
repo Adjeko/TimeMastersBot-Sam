@@ -11,7 +11,7 @@ namespace BotDebuggingShell
     {
         static void Main(string[] args)
         {
-            LoggerFactory.GetFileLogger().Error<Program>("Das ist ein Test Log");
+            
         }
     }
 }

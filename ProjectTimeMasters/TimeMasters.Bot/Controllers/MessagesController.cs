@@ -13,7 +13,6 @@ using Newtonsoft.Json;
 using TimeMasters.Bot.Dialogs;
 using TimeMasters.PortableClassLibrary.Helpers;
 using TimeMasters.PortableClassLibrary.Translator;
-using TimeMasters.PortableClassLibrary.Logging;
 using TimeMasters.Bot.Helpers.Luis.Logging;
 
 namespace TimeMasters.Bot
@@ -21,7 +20,6 @@ namespace TimeMasters.Bot
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        private Logger logger;
 
 
 #pragma warning disable IDE1006 // Benennungsstile
@@ -32,7 +30,6 @@ namespace TimeMasters.Bot
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
 #pragma warning restore IDE1006 // Benennungsstile
         {
-            logger = Logger.GetInstance();
             if (activity.Type == ActivityTypes.Message)
             {
                 try
@@ -59,7 +56,7 @@ namespace TimeMasters.Bot
                 }
                 catch (System.Exception ex)
                 {
-                    Logger.GetInstance().Error<MessagesController>("HOLY MOLY", ex);
+                    
                 }
             }
             else

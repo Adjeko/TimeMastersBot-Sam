@@ -10,11 +10,11 @@ namespace TimeMastersClassLibrary.Logging
     {
         private static FileLogger _fileLogger;
 
-        public static FileLogger GetFileLogger()
+        public static FileLogger GetFileLogger(string s)
         {
             if (_fileLogger == null)
             {
-                _fileLogger = new FileLogger("TestLogFile.txt");
+                _fileLogger = new FileLogger(s);
             }
             return _fileLogger;
         }
