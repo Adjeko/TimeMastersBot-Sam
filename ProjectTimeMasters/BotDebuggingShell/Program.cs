@@ -118,6 +118,12 @@ namespace BotDebuggingShell
 
             for(int i = logStrings.Count - 1; i >= 0; i--)
             {
+                if(logStrings[i].Contains("Exception"))
+                {
+                    Console.WriteLine(logStrings[i]);
+                    Console.WriteLine("unable to load logs");
+                    return;
+                }
                 string s = logStrings[i];
                 LogMessage t = LogMessage.GetFromJSONString(s);
                 logs.Add(new Tuple<int, LogMessage>(i, t));
