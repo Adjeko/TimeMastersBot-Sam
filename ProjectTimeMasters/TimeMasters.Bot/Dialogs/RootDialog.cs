@@ -8,6 +8,7 @@ using Microsoft.Bot.Connector;
 using TimeMasters.PortableClassLibrary;
 using TimeMastersClassLibrary.Database;
 using TimeMastersClassLibrary.Calendar.Google;
+using TimeMastersClassLibrary.Logging;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -34,9 +35,10 @@ namespace TimeMasters.Bot.Dialogs
 
         protected override Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
+            
             IMessageActivity answer = item.GetAwaiter().GetResult();
-
-            switch(answer.Text)
+            LoggerFactory.GetFileLogger().Trace<RootDialog>($"{_userName} ({_userId}) said: {answer.Text}");
+            switch (answer.Text)
             {
                 case "!register":
                     context.Call(new RegisterDialog(_userId, _userName), Done);

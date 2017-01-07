@@ -15,77 +15,7 @@ namespace TimeMastersClassLibrary.Logging
         {
             _path = path;
         }
-
-        public void Debug<T>(string message)
-        {
-            Log<T>(LogLevel.Debug, message);
-        }
-
-        public void Debug<T>(string message, string exceptionMessage, string stackTrace)
-        {
-            Log<T>(LogLevel.Debug, message, exceptionMessage, stackTrace);
-        }
-
-        public void Error<T>(string message)
-        {
-            Log<T>(LogLevel.Error, message);
-        }
-
-        public void Error<T>(string message, string exceptionMessage, string stackTrace)
-        {
-            Log<T>(LogLevel.Error, message, exceptionMessage, stackTrace);
-        }
-
-        public void Fatal<T>(string message)
-        {
-            Log<T>(LogLevel.Fatal, message);
-        }
-
-        public void Fatal<T>(string message, string exceptionMessage, string stackTrace)
-        {
-            Log<T>(LogLevel.Fatal, message, exceptionMessage, stackTrace);
-        }
-
-        public void Info<T>(string message)
-        {
-            Log<T>(LogLevel.Info, message);
-        }
-
-        public void Info<T>(string message, string exceptionMessage, string stackTrace)
-        {
-            Log<T>(LogLevel.Info, message, exceptionMessage, stackTrace);
-        }
         
-        public void Trace<T>(string message)
-        {
-            Log<T>(LogLevel.Trace, message);
-        }
-
-        public void Trace<T>(string message, string exceptionMessage, string stackTrace)
-        {
-            Log<T>(LogLevel.Trace, message, exceptionMessage, stackTrace);
-        }
-
-        public void Warn<T>(string message)
-        {
-            Log<T>(LogLevel.Warning, message);
-        }
-
-        public void Warn<T>(string message, string exceptionMessage, string stackTrace)
-        {
-            Log<T>(LogLevel.Warning, message, exceptionMessage, stackTrace);
-        }
-
-        public void Log<T>(LogLevel level, string message)
-        {
-            File.AppendAllText(_path, level.ToString() + "|" + DateTime.Now.ToString() + "|" + message + "\n");
-        }
-
-        public void Log<T>(LogLevel level, string message, string exceptionMessage, string stackTrace)
-        {
-            File.AppendAllText(_path, level.ToString() + "|" + DateTime.Now.ToString() + "|" + message + "|" + exceptionMessage + "|" + stackTrace + "\n");
-        }
-
         public bool IsDebugEnabled() => true;
         public bool IsErrorEnabled() => true;
         public bool IsFatalEnabled() => true;
@@ -103,5 +33,187 @@ namespace TimeMastersClassLibrary.Logging
             return File.ReadAllLines(_path);
         }
 
+        public void Trace<T>(string message)
+        {
+            Log<T>(LogLevel.Trace, message);
+        }
+
+        public void Trace<T>(string message, Exception ex)
+        {
+            Log<T>(LogLevel.Trace, message, ex);
+        }
+
+        public void Trace<T>(string userId, string userName, string message)
+        {
+            Log<T>(LogLevel.Trace, userId, userName, message);
+        }
+
+        public void Trace<T>(string userId, string userName, string message, Exception ex)
+        {
+            Log<T>(LogLevel.Trace, userId, userName, message, ex);
+        }
+
+        public void Debug<T>(string message)
+        {
+            Log<T>(LogLevel.Debug, message);
+        }
+
+        public void Debug<T>(string message, Exception ex)
+        {
+            Log<T>(LogLevel.Debug, message, ex);
+        }
+
+        public void Debug<T>(string userId, string userName, string message)
+        {
+            Log<T>(LogLevel.Debug, userId, userName, message);
+        }
+
+        public void Debug<T>(string userId, string userName, string message, Exception ex)
+        {
+            Log<T>(LogLevel.Debug, userId, userName, message, ex);
+        }
+
+        public void Info<T>(string message)
+        {
+            Log<T>(LogLevel.Info, message);
+        }
+
+        public void Info<T>(string message, Exception ex)
+        {
+            Log<T>(LogLevel.Info, message, ex);
+        }
+
+        public void Info<T>(string userId, string userName, string message)
+        {
+            Log<T>(LogLevel.Info, userId, userName, message);
+        }
+
+        public void Info<T>(string userId, string userName, string message, Exception ex)
+        {
+            Log<T>(LogLevel.Info, userId, userName, message, ex);
+        }
+
+        public void Warn<T>(string message)
+        {
+            Log<T>(LogLevel.Warning, message);
+        }
+
+        public void Warn<T>(string message, Exception ex)
+        {
+            Log<T>(LogLevel.Warning, message, ex);
+        }
+
+        public void Warn<T>(string userId, string userName, string message)
+        {
+            Log<T>(LogLevel.Warning, userId, userName, message);
+        }
+
+        public void Warn<T>(string userId, string userName, string message, Exception ex)
+        {
+            Log<T>(LogLevel.Warning, userId, userName, message, ex);
+        }
+
+        public void Error<T>(string message)
+        {
+            Log<T>(LogLevel.Error, message);
+        }
+
+        public void Error<T>(string message, Exception ex)
+        {
+            Log<T>(LogLevel.Error, message, ex);
+        }
+
+        public void Error<T>(string userId, string userName, string message)
+        {
+            Log<T>(LogLevel.Error, userId, userName, message);
+        }
+
+        public void Error<T>(string userId, string userName, string message, Exception ex)
+        {
+            Log<T>(LogLevel.Error, userId, userName, message, ex);
+        }
+
+        public void Fatal<T>(string message)
+        {
+            Log<T>(LogLevel.Fatal, message);
+        }
+
+        public void Fatal<T>(string message, Exception ex)
+        {
+            Log<T>(LogLevel.Fatal, message, ex);
+        }
+
+        public void Fatal<T>(string userId, string userName, string message)
+        {
+            Log<T>(LogLevel.Fatal, userId, userName, message);
+        }
+
+        public void Fatal<T>(string userId, string userName, string message, Exception ex)
+        {
+            Log<T>(LogLevel.Fatal, userId, userName, message, ex);
+        }
+
+        public void Log<T>(LogLevel level, string message)
+        {
+            LogMessage tmp = new LogMessage {
+                level = level,
+                classType = typeof(T).FullName,
+                time = DateTime.Now,
+                userId = "",
+                userName = "",
+                message = message,
+                exceptionMessage = "",
+                stackTrace = "",
+            };
+            File.AppendAllLines(_path, new string[] { tmp.ToString() });
+        }
+
+        public void Log<T>(LogLevel level, string message, Exception ex)
+        {
+            LogMessage tmp = new LogMessage
+            {
+                level = level,
+                classType = typeof(T).FullName,
+                time = DateTime.Now,
+                userId = "",
+                userName = "",
+                message = message,
+                exceptionMessage = ex.Message,
+                stackTrace = ex.StackTrace,
+            };
+            File.AppendAllLines(_path, new string[] { tmp.ToString() });
+        }
+
+        public void Log<T>(LogLevel level, string userId, string userName, string message)
+        {
+            LogMessage tmp = new LogMessage
+            {
+                level = level,
+                classType = typeof(T).FullName,
+                time = DateTime.Now,
+                userId = userId,
+                userName = userName,
+                message = message,
+                exceptionMessage = "",
+                stackTrace = "",
+            };
+            File.AppendAllLines(_path, new string[] { tmp.ToString() });
+        }
+
+        public void Log<T>(LogLevel level, string userId, string userName, string message, Exception ex)
+        {
+            LogMessage tmp = new LogMessage
+            {
+                level = level,
+                classType = typeof(T).FullName,
+                time = DateTime.Now,
+                userId = userId,
+                userName = userName,
+                message = message,
+                exceptionMessage = ex.Message,
+                stackTrace = ex.StackTrace,
+            };
+            File.AppendAllLines(_path, new string[] { tmp.ToString() });
+        }
     }
 }

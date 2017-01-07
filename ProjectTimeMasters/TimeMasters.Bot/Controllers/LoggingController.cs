@@ -19,10 +19,9 @@ namespace TimeMasters.Bot.Controllers
             List<string> result = new List<string>();
             try
             {
-                
-                LoggerFactory.GetFileLogger(HostingEnvironment.MapPath("~/TestLogFile.txt")).Error<LoggingController>("Bot Test Log");
-
-                result = LoggerFactory.GetFileLogger("").GetAllLines().ToList<string>();
+                LoggerFactory.GetFileLogger().Info<LoggingController>("TestID", "TestName", "ID NAME JSON Test");
+                LoggerFactory.GetFileLogger().Info<LoggingController>("LogMessage JSON Test");
+                result = LoggerFactory.GetFileLogger().GetAllLines().ToList();
 
             }
             catch (Exception ex)

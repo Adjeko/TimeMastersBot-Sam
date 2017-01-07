@@ -14,6 +14,7 @@ using TimeMasters.Bot.Dialogs;
 using TimeMasters.PortableClassLibrary.Helpers;
 using TimeMasters.PortableClassLibrary.Translator;
 using TimeMasters.Bot.Helpers.Luis.Logging;
+using TimeMastersClassLibrary.Logging;
 
 namespace TimeMasters.Bot
 {
@@ -50,13 +51,13 @@ namespace TimeMasters.Bot
                         {
                             activity.Text = activity.Text.Remove(0, activity.Text.LastIndexOf('>') + 2);
                         }
-                        //logger.Info<MessagesController>($"User said: {activity.Text}");
+                        LoggerFactory.GetFileLogger().Info<MessagesController>($"User said: {activity.Text}");
                     }
                     await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Id, activity.From.Name));
                 }
                 catch (System.Exception ex)
                 {
-                    
+                    LoggerFactory.GetFileLogger().Fatal<MessagesController>("A Fatal Error occurred", ex.Message, ex.StackTrace);
                 }
             }
             else

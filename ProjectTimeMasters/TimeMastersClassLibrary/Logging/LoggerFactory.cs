@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 
 namespace TimeMastersClassLibrary.Logging
 {
@@ -17,6 +18,11 @@ namespace TimeMastersClassLibrary.Logging
                 _fileLogger = new FileLogger(s);
             }
             return _fileLogger;
+        }
+
+        public static FileLogger GetFileLogger()
+        {
+            return GetFileLogger(HostingEnvironment.MapPath("~/TestLogFile.txt"));
         }
         
 
