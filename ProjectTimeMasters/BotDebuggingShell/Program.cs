@@ -105,7 +105,14 @@ namespace BotDebuggingShell
                 return;
             }
             LogMessage t = tmp.ElementAt(0).Item2;
-            Console.WriteLine($"\n {t.level}   {t.time}\n{t.userId}   {t.userName}\n{t.message}\n{t.payload}\n\nEXCEPTION:\n{t.exceptionMessage}\n\n{t.stackTrace}\n\n");
+            Console.WriteLine($"\n {t.level}   {t.time}\n" +
+                $"ID: {t.userId}   Name: {t.userName}\n" +
+                $"******************* {t.message} ****************************\n" +
+                $"{t.payload}\n" +
+                $"\nxxxxxxxxxxxxxxxxx {t.exceptionMessage} xxxxxxxxxxxxxxxxxxxxxx\n" +
+                $"\n{t.stackTrace}\n" +
+                $"************************************************************\n" +
+                $"************************************************************\n");
         }
 
         public static void Load()
