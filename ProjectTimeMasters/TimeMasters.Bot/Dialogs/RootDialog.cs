@@ -16,7 +16,7 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class RootDialog : LuisDialog<object>
     {
-        private const string VERSION = "Sam v0.0.3T";
+        private const string VERSION = "Sam v0.0.4";
 
 
         private string _userId;
@@ -37,7 +37,7 @@ namespace TimeMasters.Bot.Dialogs
         {
             
             IMessageActivity answer = item.GetAwaiter().GetResult();
-            LoggerFactory.GetFileLogger().Trace<RootDialog>($"{_userName} ({_userId}) said: {answer.Text}");
+            LoggerFactory.GetFileLogger().Trace<RootDialog>(_userId, _userName, $"Root MessageReceived: {answer.Text}");
             switch (answer.Text)
             {
                 case "!register":
@@ -134,21 +134,21 @@ namespace TimeMasters.Bot.Dialogs
         public async Task AddEntry(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("luis create");
-            context.Call(new CreateDialog(context, result), Done);
+            context.Call(new CreateDialog(context, result, _userId, _userName), Done);
         }
 
         [LuisIntent("DeleteCalendarEntry")]
         public async Task RemoveEntry(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("luis remove");
-            context.Call(new DeleteDialog(context, result), Done);
+            context.Call(new DeleteDialog(context, result, _userId, _userName), Done);
         }
 
         [LuisIntent("UpdateCalendarEntry")]
         public async Task UpdateEntry(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("luis update");
-            context.Call(new UpdateDialog(context, result), Done);
+            context.Call(new UpdateDialog(context, result, _userId, _userName), Done);
         }
 
         [LuisIntent("AdditionalInformation")]

@@ -38,6 +38,11 @@ namespace TimeMastersClassLibrary.Logging
             Log<T>(LogLevel.Trace, message);
         }
 
+        public void Trace<T>(string message, string payload)
+        {
+            Log<T>(LogLevel.Trace, message, payload);
+        }
+
         public void Trace<T>(string message, Exception ex)
         {
             Log<T>(LogLevel.Trace, message, ex);
@@ -46,6 +51,11 @@ namespace TimeMastersClassLibrary.Logging
         public void Trace<T>(string userId, string userName, string message)
         {
             Log<T>(LogLevel.Trace, userId, userName, message);
+        }
+
+        public void Trace<T>(string userId, string userName, string message, string payload)
+        {
+            Log<T>(LogLevel.Trace, userId, userName, message, payload);
         }
 
         public void Trace<T>(string userId, string userName, string message, Exception ex)
@@ -58,6 +68,11 @@ namespace TimeMastersClassLibrary.Logging
             Log<T>(LogLevel.Debug, message);
         }
 
+        public void Debug<T>(string message, string payload)
+        {
+            Log<T>(LogLevel.Debug, message, payload);
+        }
+
         public void Debug<T>(string message, Exception ex)
         {
             Log<T>(LogLevel.Debug, message, ex);
@@ -66,6 +81,11 @@ namespace TimeMastersClassLibrary.Logging
         public void Debug<T>(string userId, string userName, string message)
         {
             Log<T>(LogLevel.Debug, userId, userName, message);
+        }
+
+        public void Debug<T>(string userId, string userName, string message, string payload)
+        {
+            Log<T>(LogLevel.Debug, userId, userName, message, payload);
         }
 
         public void Debug<T>(string userId, string userName, string message, Exception ex)
@@ -78,6 +98,11 @@ namespace TimeMastersClassLibrary.Logging
             Log<T>(LogLevel.Info, message);
         }
 
+        public void Info<T>(string message, string payload)
+        {
+            Log<T>(LogLevel.Info, message, payload);
+        }
+
         public void Info<T>(string message, Exception ex)
         {
             Log<T>(LogLevel.Info, message, ex);
@@ -86,6 +111,11 @@ namespace TimeMastersClassLibrary.Logging
         public void Info<T>(string userId, string userName, string message)
         {
             Log<T>(LogLevel.Info, userId, userName, message);
+        }
+
+        public void Info<T>(string userId, string userName, string message, string payload)
+        {
+            Log<T>(LogLevel.Info, userId, userName, message, payload);
         }
 
         public void Info<T>(string userId, string userName, string message, Exception ex)
@@ -98,6 +128,11 @@ namespace TimeMastersClassLibrary.Logging
             Log<T>(LogLevel.Warning, message);
         }
 
+        public void Warn<T>(string message, string payload)
+        {
+            Log<T>(LogLevel.Warning, message, payload);
+        }
+
         public void Warn<T>(string message, Exception ex)
         {
             Log<T>(LogLevel.Warning, message, ex);
@@ -106,6 +141,11 @@ namespace TimeMastersClassLibrary.Logging
         public void Warn<T>(string userId, string userName, string message)
         {
             Log<T>(LogLevel.Warning, userId, userName, message);
+        }
+
+        public void Warn<T>(string userId, string userName, string message, string payload)
+        {
+            Log<T>(LogLevel.Warning, userId, userName, message, payload);
         }
 
         public void Warn<T>(string userId, string userName, string message, Exception ex)
@@ -118,6 +158,11 @@ namespace TimeMastersClassLibrary.Logging
             Log<T>(LogLevel.Error, message);
         }
 
+        public void Error<T>(string message, string payload)
+        {
+            Log<T>(LogLevel.Error, message, payload);
+        }
+
         public void Error<T>(string message, Exception ex)
         {
             Log<T>(LogLevel.Error, message, ex);
@@ -126,6 +171,11 @@ namespace TimeMastersClassLibrary.Logging
         public void Error<T>(string userId, string userName, string message)
         {
             Log<T>(LogLevel.Error, userId, userName, message);
+        }
+
+        public void Error<T>(string userId, string userName, string message, string payload)
+        {
+            Log<T>(LogLevel.Error, userId, userName, message, payload);
         }
 
         public void Error<T>(string userId, string userName, string message, Exception ex)
@@ -138,6 +188,11 @@ namespace TimeMastersClassLibrary.Logging
             Log<T>(LogLevel.Fatal, message);
         }
 
+        public void Fatal<T>(string message, string payload)
+        {
+            Log<T>(LogLevel.Fatal, message, payload);
+        }
+
         public void Fatal<T>(string message, Exception ex)
         {
             Log<T>(LogLevel.Fatal, message, ex);
@@ -146,6 +201,11 @@ namespace TimeMastersClassLibrary.Logging
         public void Fatal<T>(string userId, string userName, string message)
         {
             Log<T>(LogLevel.Fatal, userId, userName, message);
+        }
+
+        public void Fatal<T>(string userId, string userName, string message, string payload)
+        {
+            Log<T>(LogLevel.Fatal, userId, userName, message, payload);
         }
 
         public void Fatal<T>(string userId, string userName, string message, Exception ex)
@@ -162,6 +222,24 @@ namespace TimeMastersClassLibrary.Logging
                 userId = "",
                 userName = "",
                 message = message,
+                payload = "",
+                exceptionMessage = "",
+                stackTrace = "",
+            };
+            File.AppendAllLines(_path, new string[] { tmp.ToString() });
+        }
+
+        public void Log<T>(LogLevel level, string message, string payload)
+        {
+            LogMessage tmp = new LogMessage
+            {
+                level = level,
+                classType = typeof(T).FullName,
+                time = DateTime.Now,
+                userId = "",
+                userName = "",
+                message = message,
+                payload = payload,
                 exceptionMessage = "",
                 stackTrace = "",
             };
@@ -194,6 +272,24 @@ namespace TimeMastersClassLibrary.Logging
                 userId = userId,
                 userName = userName,
                 message = message,
+                payload = "",
+                exceptionMessage = "",
+                stackTrace = "",
+            };
+            File.AppendAllLines(_path, new string[] { tmp.ToString() });
+        }
+
+        public void Log<T>(LogLevel level, string userId, string userName, string message, string payload)
+        {
+            LogMessage tmp = new LogMessage
+            {
+                level = level,
+                classType = typeof(T).FullName,
+                time = DateTime.Now,
+                userId = userId,
+                userName = userName,
+                message = message,
+                payload = payload,
                 exceptionMessage = "",
                 stackTrace = "",
             };

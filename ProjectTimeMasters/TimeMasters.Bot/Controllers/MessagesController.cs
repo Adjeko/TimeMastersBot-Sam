@@ -51,13 +51,13 @@ namespace TimeMasters.Bot
                         {
                             activity.Text = activity.Text.Remove(0, activity.Text.LastIndexOf('>') + 2);
                         }
-                        LoggerFactory.GetFileLogger().Info<MessagesController>($"User said: {activity.Text}");
                     }
+                    LoggerFactory.GetFileLogger().Info<MessagesController>(activity.From.Id, activity.From.Name, $"User said: {activity.Text}");
                     await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Id, activity.From.Name));
                 }
                 catch (System.Exception ex)
                 {
-                    LoggerFactory.GetFileLogger().Fatal<MessagesController>("A Fatal Error occurred", ex.Message, ex.StackTrace);
+                    LoggerFactory.GetFileLogger().Fatal<MessagesController>(activity.From.Id, activity.From.Name, "A Fatal Error occurred", ex);
                 }
             }
             else

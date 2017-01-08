@@ -15,6 +15,7 @@ namespace TimeMastersClassLibrary.Logging
         public string userId;
         public string userName;
         public string message;
+        public string payload;
         public string exceptionMessage;
         public string stackTrace;
 

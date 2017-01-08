@@ -16,7 +16,7 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class UpdateDialog : CalendarDialog
     {
-        public UpdateDialog(IDialogContext context, LuisResult lr) : base(context, lr)
+        public UpdateDialog(IDialogContext context, LuisResult lr, string userId, string userName) : base(context, lr, userId, userName)
         {
             dialogName = "Update";
             actionString = "geändert";

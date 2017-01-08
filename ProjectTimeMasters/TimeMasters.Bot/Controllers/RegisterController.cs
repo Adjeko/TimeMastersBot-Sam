@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using TimeMastersClassLibrary.Calendar.Google;
+using TimeMastersClassLibrary.Logging;
 
 namespace TimeMasters.Bot.Controllers
 {
@@ -25,7 +26,7 @@ namespace TimeMasters.Bot.Controllers
             //Logger.GetInstance().Info<RegisterController>($"{reg.Code}  ||||   {reg.State}");
             
             GoogleTokkenHandler.UserCodeDictionary.Add(reg.State, reg.Code + "#");
-
+            LoggerFactory.GetFileLogger().Info<RegisterController>($"State: {reg.State} Code:{reg.Code}");
 
             return $"VIELES NETTES DANKESCHÖN \n Request Content: {Request.Content.ToString()} \n Request {Request.ToString()}";
         }

@@ -17,7 +17,7 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class CreateDialog : CalendarDialog
     {
-        public CreateDialog(IDialogContext context, LuisResult lr) : base(context, lr)
+        public CreateDialog(IDialogContext context, LuisResult lr, string userId, string userName) : base(context, lr, userId, userName)
         {
             dialogName = "Create";
             actionString = "erstellt";

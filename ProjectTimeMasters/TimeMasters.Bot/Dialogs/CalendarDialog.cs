@@ -9,6 +9,7 @@ using TimeMasters.Bot.Helpers.Luis;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector;
 using TimeMasters.PortableClassLibrary.Calendar.Google;
+using TimeMastersClassLibrary.Logging;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -22,9 +23,14 @@ namespace TimeMasters.Bot.Dialogs
         protected string actionString; //temporary solution
         protected string _ask;
         protected dynamic list;
+        protected string _userId;
+        protected string _userName;
 
-        public CalendarDialog(IDialogContext context, LuisResult result)
-        {}
+        public CalendarDialog(IDialogContext context, LuisResult result, string userId, string userName)
+        {
+            _userId = userId;
+            _userName = userName;
+        }
 
         protected void Say(IDialogContext context, string text)
         {
@@ -43,9 +49,9 @@ namespace TimeMasters.Bot.Dialogs
 
             switch(answer.Text)
             {
-                case "!debug":
-                    Task.Run(() => DebugAsync(context));
-                    break;
+                //case "!debug":
+                //    Task.Run(() => DebugAsync(context));
+                //    break;
                 case "!exit":
                     calendarManager.Clear();
                     context.Done($"Exited {dialogName}");
@@ -127,7 +133,7 @@ namespace TimeMasters.Bot.Dialogs
             {
                 _ask += $"{item}\n\n";
             }
-
+            LoggerFactory.GetFileLogger().Info<CalendarDialog>(_userId, _userName, "DebugText", calendarManager.GetDebugMessage());
             context.Call(new ButtonDialog($"Soll ich {_ask} für dich {actionString}?", new string[] { "Yes", "No", "Change Entry" }), ConfirmAsync);
         }
 
@@ -150,16 +156,20 @@ namespace TimeMasters.Bot.Dialogs
                     }
 
                     await context.PostAsync($"Ich habe {_ask} für dich {actionString}.");
+                    LoggerFactory.GetFileLogger().Info<CalendarDialog>(_userId, _userName, $"confirmed action");
                     break;
                 case "No":
                     await context.PostAsync("Dann verwerfe ich diese Informationen wieder.");
+                    LoggerFactory.GetFileLogger().Info<CalendarDialog>(_userId, _userName, $"abborted action");
                     break;
                 case "Change Entry":
                     //TODO:
                     await context.PostAsync("Ich würde dir damit gerne helfen, aber das kann ich noch nicht :(");
+                    LoggerFactory.GetFileLogger().Info<CalendarDialog>(_userId, _userName, $"change entry action");
                     break;
                 default:
                     await context.PostAsync("You just went full retard. Never go full retard.");
+                    LoggerFactory.GetFileLogger().Info<CalendarDialog>(_userId, _userName, $"unknown action");
                     break;
             };
 

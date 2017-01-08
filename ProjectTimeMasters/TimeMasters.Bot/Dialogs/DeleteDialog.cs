@@ -17,7 +17,7 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class DeleteDialog : CalendarDialog
     {
-        public DeleteDialog(IDialogContext context, LuisResult lr) : base(context, lr)
+        public DeleteDialog(IDialogContext context, LuisResult lr, string userId, string userName) : base(context, lr, userId, userName)
         {
             dialogName = "Delete";
             actionString = "gelöscht";
