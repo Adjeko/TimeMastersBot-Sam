@@ -44,7 +44,7 @@ namespace TimeMasters.Bot.Dialogs
                     context.Call(new RegisterDialog(_userId, _userName), Done);
                     break;
                 case "!version":
-                    context.PostAsync(VERSION);
+                    context.PostAsync($"{VERSION} Name: {_userName} ID: {_userId}");
                     context.Wait(MessageReceived);
                     break;
                 case "!refresh":
