@@ -117,6 +117,7 @@ namespace BotDebuggingShell
 
         public static void Load()
         {
+            logs = new List<Tuple<int, LogMessage>>();
             var client = new RestClient("http://timemastersbot.azurewebsites.net");
             var request = new RestRequest("/api/Logging", Method.GET);
 

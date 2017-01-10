@@ -52,8 +52,9 @@ namespace TimeMasters.Bot
                             activity.Text = activity.Text.Remove(0, activity.Text.LastIndexOf('>') + 2);
                         }
                     }
+                    
+                    await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Name, activity.From.Id));
                     LoggerFactory.GetFileLogger().Info<MessagesController>(activity.From.Id, activity.From.Name, $"User said: {activity.Text}");
-                    await Conversation.SendAsync(activity, () => new RootDialog(activity.From.Id, activity.From.Name));
                 }
                 catch (System.Exception ex)
                 {

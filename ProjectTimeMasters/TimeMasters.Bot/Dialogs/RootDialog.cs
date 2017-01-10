@@ -16,7 +16,7 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class RootDialog : LuisDialog<object>
     {
-        private const string VERSION = "Sam v0.0.4";
+        private const string VERSION = "Sam v0.0.4G";
 
 
         private string _userId;
