@@ -130,7 +130,7 @@ namespace TimeMastersClassLibrary.Calendar.Google
             return $"{result?.RedirectUri}";
         }
 
-        public CalendarService GetCalendarService(string userId)
+        public static CalendarService GetCalendarService(string userId)
         {
             //GoogleAuthorizationCodeFlow codeFlow = UserCodeFlows[userId];
             //TokenResponse tr = UserTokens[userId];

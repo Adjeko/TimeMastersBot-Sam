@@ -8,8 +8,9 @@ using Microsoft.Bot.Builder.Luis.Models;
 using TimeMasters.Bot.Helpers.Luis;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector;
-using TimeMasters.PortableClassLibrary.Calendar.Google;
+using TimeMastersClassLibrary.Calendar.Google;
 using TimeMastersClassLibrary.Logging;
+using TimeMasters.Bot.Helpers.Luis.Calendar;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -148,10 +149,11 @@ namespace TimeMasters.Bot.Dialogs
                     if(dialogName == "Create")
                     {
                         GoogleCalendar google = new GoogleCalendar();
-                        
+                        google.SetService(GoogleTokkenHandler.GetCalendarService(_userId));
                         foreach(var item in list)
                         {
-
+                            var tmp = item as CreateCalendar;
+                            google.CreateCalendarEntry(tmp.Title, "eine Description", tmp.StartDateTime, tmp.EndDateTime);
                         }
                     }
 

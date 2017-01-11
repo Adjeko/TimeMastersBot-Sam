@@ -16,7 +16,7 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class RootDialog : LuisDialog<object>
     {
-        private const string VERSION = "Sam v0.0.4G";
+        private const string VERSION = "Sam v0.0.4J";
 
 
         private string _userId;
@@ -70,7 +70,7 @@ namespace TimeMasters.Bot.Dialogs
 
                     //TEST google service
                     GoogleCalendar calendar = new GoogleCalendar();
-                    calendar.SetService(tokens.GetCalendarService(_userId));
+                    calendar.SetService(GoogleTokkenHandler.GetCalendarService(_userId));
                     calendar.CreateCalendarEntry("Bot Test Eintrag", $"hoffentlich klappts {_userId}", new DateTime(2016, 12, 10, 13, 0, 0), new DateTime(2016, 12, 10, 15, 0, 0));
 
 
@@ -90,7 +90,7 @@ namespace TimeMasters.Bot.Dialogs
         [LuisIntent("Greetings")]
         public async Task GreetingsAsync(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync($"Hello {_userName}! I'm your Schedule & Appointment Manager but I'm also a Super Adorable Mate. You can just call me Sam :).");
+            await context.PostAsync($"Hello {_userName}! I'm your Schedule & Appointment Manager but I'm also a Super Adorable Mate. You can just call me S.A.M :).");
             context.Wait(MessageReceived);
         }
 
