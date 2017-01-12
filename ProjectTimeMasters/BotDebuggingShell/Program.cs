@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
+using TimeMastersClassLibrary;
 using TimeMastersClassLibrary.Logging;
 
 namespace BotDebuggingShell
@@ -34,6 +35,12 @@ namespace BotDebuggingShell
                         break;
                     case "see":
                         See(Int32.Parse(input[1]));
+                        break;
+                    case "json":
+                        RandomAnswers.JSONToFile();
+                        break;
+                    case "file":
+                        Console.WriteLine(RandomAnswers.FileToJSON());
                         break;
                     case "load":
                         Load();

@@ -97,6 +97,7 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomAnswers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TimeMasters.PortableClassLibrary\TimeMasters.PortableClassLibrary.csproj">
