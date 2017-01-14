@@ -9,6 +9,7 @@ using TimeMasters.PortableClassLibrary;
 using TimeMastersClassLibrary.Database;
 using TimeMastersClassLibrary.Calendar.Google;
 using TimeMastersClassLibrary.Logging;
+using System.Collections.Generic;
 
 namespace TimeMasters.Bot.Dialogs
 {
@@ -16,16 +17,33 @@ namespace TimeMasters.Bot.Dialogs
     [Serializable]
     public class RootDialog : LuisDialog<object>
     {
-        private const string VERSION = "Sam v0.0.4J";
+        private const string VERSION = "Sam v0.0.4L";
 
 
         private string _userId;
+        
         private string _userName;
+
+        //not actually needed but put in here because of some effects where the name would just get lost.
+        private List<string> tmpList;
 
         public RootDialog(string id, string name)
         {
             _userId = id;
             _userName = name;
+            tmpList = new List<string>();
+            tmpList.Add(id);
+            tmpList.Add(name);
+        }
+
+        public string SetIdName()
+        {
+            string result = "";
+            foreach (string s in tmpList)
+            {
+                result += s + "  ";
+            }
+            return result;
         }
 
         public override Task StartAsync(IDialogContext context)
@@ -35,7 +53,6 @@ namespace TimeMasters.Bot.Dialogs
 
         protected override Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
-            
             IMessageActivity answer = item.GetAwaiter().GetResult();
             LoggerFactory.GetFileLogger().Trace<RootDialog>(_userId, _userName, $"Root MessageReceived: {answer.Text}");
             switch (answer.Text)
@@ -44,7 +61,15 @@ namespace TimeMasters.Bot.Dialogs
                     context.Call(new RegisterDialog(_userId, _userName), Done);
                     break;
                 case "!version":
-                    context.PostAsync($"{VERSION} Name: {_userName} ID: {_userId}");
+                    if(tmpList != null)
+                    {
+                        context.PostAsync($"{VERSION} Name: {_userName} ID: {_userId}\n\nfromList: ID: {tmpList[0]} Name: {tmpList[1]} ");
+                    }
+                    else
+                    {
+                        context.PostAsync($"{VERSION} List not found");
+                    }
+                    
                     context.Wait(MessageReceived);
                     break;
                 case "!refresh":
