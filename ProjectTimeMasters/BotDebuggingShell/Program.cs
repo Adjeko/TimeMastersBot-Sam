@@ -40,7 +40,11 @@ namespace BotDebuggingShell
                         RandomAnswers.JSONToFile();
                         break;
                     case "file":
-                        Console.WriteLine(RandomAnswers.FileToJSON());
+                        Dictionary<string, string> dic = new Dictionary<string, string>();
+                        dic.Add("@name", "franz");
+                        dic.Add("@id", "123");
+                        dic.Add("@benis", "sehrgroß");
+                        Console.WriteLine(RandomAnswers.GetSentence("rejection",dic));
                         break;
                     case "load":
                         Load();

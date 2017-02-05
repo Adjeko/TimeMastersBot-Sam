@@ -14,7 +14,7 @@ namespace TimeMastersClassLibrary
         public static void JSONToFile()
         {
             fromFile = new Dictionary<string, List<string>>();
-            List<string> testList1 = new List<string> {"Rejection Statz 1", "Refasfkhaslfd Satz 2", "Hallo Sath 3" };
+            List<string> testList1 = new List<string> { "Rejection @name @id Statz 1", "Refasfkhaslfd @name @id Satz 2", "Hallo @name @id Sath 3" };
             List<string> testList2 = new List<string> { "Deine mUdda Sentence 1", "hhhhhhh Sentence 2", "Tshuschac Sentence 3" };
 
             fromFile.Add("rejection", testList1);
@@ -25,13 +25,24 @@ namespace TimeMastersClassLibrary
             File.AppendAllText("jsonTest.txt", ausgabe);
         }
 
-        public static string FileToJSON()
+        public static string GetSentence(string key, Dictionary<string, string> bigdic)
         {
-            string fileString = File.ReadAllText("jsonTest2.txt");
+            string fileString = File.ReadAllText("jsonTest.txt");
 
             Dictionary<string, List<string>> dic = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(fileString);
 
-            return dic["bitch"][0];
+            Random rnd = new Random();
+
+             string result = dic[key][rnd.Next(0, dic[key].Count)];
+
+            foreach (var x in bigdic)
+            {
+                if (result.Contains(x.Key))
+                result = result.Replace(x.Key,x.Value);
+            }
+
+
+            return result;
         }
 
     }
